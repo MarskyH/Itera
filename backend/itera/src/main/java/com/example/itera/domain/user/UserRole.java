@@ -2,7 +2,7 @@ package com.example.itera.domain.user;
 
 public enum UserRole {
     ADMIN("admin"),
-    USER("suer"),
+    USER("user"),
     ;
 
     private String role;
