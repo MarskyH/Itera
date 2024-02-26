@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import PageHeader from '@/components/PageHeader.vue'
+import PageHeader from 'src/components/PageHeader.vue'
 
 const ilustracaoPath = "src/assets/ilustracaoNovoProjeto.png"
 

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
-import CustomInput from '@/components/CustomInput.vue'
-import CustomButton from '@/components/CustomButton.vue'
-import ModeToggleButton from '@/components/ModeToggleButton.vue'
+import CustomInput from 'src/components/CustomInput.vue'
+import CustomButton from 'src/components/CustomButton.vue'
+import CustomInput2 from 'src/components/CustomInput2.vue'
+import ModeToggleButton from 'src/components/ModeToggleButton.vue'
 import { Form } from 'vee-validate'
 
 
@@ -38,6 +39,7 @@ const logoPath = computed(() =>
         <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
           Preencha com suas informações
         </p>
+        <CustomInput2 name="nome" label="Nome Completo" class-helper-text="text-lightSilver-900" :required="true" :max-length="100"/>
         <CustomInput title="Nome" placeholder="Usuário" icon="user" />
         <CustomInput title="E-mail" placeholder="E-mail" icon="envelope" />
         <CustomInput title="Senha" placeholder="Senha" icon="lock" />

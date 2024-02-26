@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import SideBarMenu from "../components/SideBarMenu.vue";
-import MainContent from "@/components/MainContent.vue";
-import SideContent from "@/components/SideContent.vue";
-import UserOptions from "@/components/UserOptions.vue";
+import MainContent from "src/components/MainContent.vue";
+import SideContent from "src/components/SideContent.vue";
+import UserOptions from "src/components/UserOptions.vue";
 
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import ModeToggleButton2 from "@/components/ModeToggleButton2.vue";
+import ModeToggleButton2 from "src/components/ModeToggleButton2.vue";
 
 </script>
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useDark, useToggle } from "@vueuse/core";
 import { computed } from 'vue';
-import CustomInput from '@/components/CustomInput.vue'
-import CustomButton from "@/components/CustomButton.vue";
-import ModeToggleButton from "@/components/ModeToggleButton.vue";
+import CustomInput from 'src/components/CustomInput.vue'
+import CustomButton from "src/components/CustomButton.vue";
+import ModeToggleButton from "src/components/ModeToggleButton.vue";
 
 
 const isDark = useDark();
