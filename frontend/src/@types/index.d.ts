@@ -20,16 +20,12 @@ export namespace API {
 
 export namespace models {
     export interface UserData {
-        exp: number
-        iat: number
-        idUsuario: number
-        isEgresso: boolean
         iss: string
-        nomeCompleto: string
+        login: string
         nome: string
-        scope: string
-        sobrenome: string
-        sub: string
+        horasDedicada: string
+        role: string
+        exp: number
     }
 
     export interface LoginModel {
@@ -39,53 +35,21 @@ export namespace models {
 
     export interface UserProfileRegisterModel {
         nome: string
-        username: string
-        registration?: string
-        email: string
-        confirmationEmail?: string
+        login: string
         password: string
         confirmationPassword?: string
-        accessLevel?: string
-        grupos?: string[]
+        horasDedicada?: number
+        role?: string
     }
 
 
     export interface UserModel {
-        id?: number
-        username: string
-        password: string
-        email: string
+        id?: string
         nome: string
-        registration?: string
-        egresso?: {
-            id: number
-            matricula: number
-            etnia: {
-                id: number
-                nome: string
-            }
-            genero: {
-                id: number
-                nome: string
-            }
-            cotista: true
-            pcd: true
-            interesseEmPos: true
-            lattes: string
-            linkedin: string
-            endereco: {
-                id: number
-                cidade: string
-                estado: string
-                pais: string
-            }
-        }
-        grupos?: [
-            {
-                id: number
-                nomeGrupo?: string
-            }
-        ]
+        login: string
+        password: string
+        horasDedicada: number
+        role: string
     }
 
 }

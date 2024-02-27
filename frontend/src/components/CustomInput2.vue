@@ -6,13 +6,11 @@
     <OField
       message-class="text-xs mt-1 max-w-[250px]"
       :label-class="classNames({
-        ['text-sm ml-1 font-normal']: true,
+        ['m-2 text-sm ml-1 font-normal dark:text-oldSilver-900']: true,
         ['opacity-80']: disabled
       })"
     >
-      <template
-        #label
-      >
+      <template #label>
         <div v-if="label">
           {{ label }}
           <sup
@@ -33,12 +31,12 @@
       <template #default>
         <div
           :class="classNames({
-            ['outline-2 outline outline-sky-400 bg-white']: focused && !disabled,
+            ['outline-2 outline outline-lavenderIndigo-900 bg-white dark:bg-blackOlive-900 text-quickSilver-900']: focused && !disabled,
             ['bg-gray-100 cursor-not-allowed']: disabled,
             ['outline-2 outline outline-red-500']: !meta.valid && meta.validated && meta.touched,
             ['outline-2 outline outline-emerald-500']: meta.valid && meta.validated && meta.dirty,
             ['']: withoutValidation,
-            [`${inputClass} rounded-lg w-64 py-1 px-3 border grid grid-cols-8`]: true
+            [`${inputClass} rounded-lg w-80 h-10 py-1 px-3 border grid grid-cols-8`]: true
           })"
           v-if="type !== 'textarea'"
         >
@@ -52,7 +50,7 @@
               v-if="imgIcon"
               alt="Icon"
             >
-  
+
             <SvgIcon
               type="mdi"
               class="col-span-1"
@@ -108,7 +106,7 @@
             v-maska
           />
         </div>
-  
+
         <div v-else>
           <OInput
             type="textarea"
@@ -144,7 +142,7 @@
           v-if="meta.validated"
           class="text-red-500"
         >
-          {{ meta.valid ? null : customErrorMessage? props.errorMessage : errorMessage }}
+          {{ meta.valid ? null : customErrorMessage ? props.errorMessage : errorMessage }}
         </div>
         <div :class="classHelperText">
           {{ helperText }}
@@ -154,93 +152,93 @@
   </div>
 </template>
   
-  <script lang="ts" setup>
-  import { ref, toRef } from 'vue'
-  import { useField } from 'vee-validate'
-  import classNames from 'classnames'
-  import SvgIcon from '@jamescoyle/vue-icon'
-  import { OField, OInput } from '@oruga-ui/oruga-next'
-  
-  type inputs = 'date' | 'text' | 'email' | 'number' | 'password' | 'textarea' | 'datetime-local'
-  
-  const $emit = defineEmits(['update:value'])
-  
-  interface Props {
-    name: string
-    label?: string
-    helperText?: string
-    placeholder?: string
-    type?: inputs
-    iconPath?: string
-    inputClass?: string
-    required?: boolean
-    mask?: string
-    maxLength?: number | string
-    imgIcon?: boolean
-    step?: number | string
-    disabled?: boolean,
-    classHelperText?: string,
-    errorMessage?: string,
-    customErrorMessage?: boolean,
-    withoutValidation?: boolean
-    money?: boolean
-    height?: string | number,
-    customLabel?: boolean
-  }
-  
-  const props = withDefaults(defineProps<Props>(), {
-    placeholder: '',
-    type: 'text',
-    label: '',
-    iconPath: '',
-    inputClass: '',
-    helperText: '',
-    mask: '',
-    maxLength: 300,
-    minLength: 1,
-    min: 0,
-    step: 1,
-    classHelperText: '',
-    errorMessage: '',
-    customErrorMessage: false,
-    withoutValidation: false,
-    money: false,
-    height: '128px',
-    customLabel: false
-  
-  })
-  
-  const focused = ref(false)
-  const name = toRef(props, 'name')
-  const config = ref({
-    prefix: 'R$ ',
-    suffix: '',
-    masked: false,
-    thousands: '.',
-    decimal: ',',
-    precision: 2,
-    allowBlank: true,
-    disableNegative: true,
-    disabled: false,
-    min: null,
-    max: null,
-    minimumNumberOfCharacters: 0,
-    shouldRound: true,
-    focusOnRight: true,
-    currentValue: 'null'
-  })
-  
-  
-  const inputValue = ref<string | number | undefined>(undefined);
-  // eslint-disable-next-line vue/no-dupe-keys
-  const {
-    handleBlur,
-    handleChange,
-    errorMessage,
-    meta
-  } = useField(name, undefined)
-  
-  function handleInput(value: string | number | unknown) {
+<script lang="ts" setup>
+import { ref, toRef } from 'vue'
+import { useField } from 'vee-validate'
+import classNames from 'classnames'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { OField, OInput } from '@oruga-ui/oruga-next'
+
+type inputs = 'date' | 'text' | 'email' | 'number' | 'password' | 'textarea' | 'datetime-local'
+
+const $emit = defineEmits(['update:value'])
+
+interface Props {
+  name: string
+  label?: string
+  helperText?: string
+  placeholder?: string
+  type?: inputs
+  iconPath?: string
+  inputClass?: string
+  required?: boolean
+  mask?: string
+  maxLength?: number | string
+  imgIcon?: boolean
+  step?: number | string
+  disabled?: boolean,
+  classHelperText?: string,
+  errorMessage?: string,
+  customErrorMessage?: boolean,
+  withoutValidation?: boolean
+  money?: boolean
+  height?: string | number,
+  customLabel?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: '',
+  type: 'text',
+  label: '',
+  iconPath: '',
+  inputClass: '',
+  helperText: '',
+  mask: '',
+  maxLength: 300,
+  minLength: 1,
+  min: 0,
+  step: 1,
+  classHelperText: '',
+  errorMessage: '',
+  customErrorMessage: false,
+  withoutValidation: false,
+  money: false,
+  height: '128px',
+  customLabel: false
+
+})
+
+const focused = ref(false)
+const name = toRef(props, 'name')
+const config = ref({
+  prefix: 'R$ ',
+  suffix: '',
+  masked: false,
+  thousands: '.',
+  decimal: ',',
+  precision: 2,
+  allowBlank: true,
+  disableNegative: true,
+  disabled: false,
+  min: null,
+  max: null,
+  minimumNumberOfCharacters: 0,
+  shouldRound: true,
+  focusOnRight: true,
+  currentValue: 'null'
+})
+
+
+const inputValue = ref<string | number | undefined>(undefined);
+// eslint-disable-next-line vue/no-dupe-keys
+const {
+  handleBlur,
+  handleChange,
+  errorMessage,
+  meta
+} = useField(name, undefined)
+
+function handleInput(value: string | number | unknown) {
   if (typeof value === 'string' || typeof value === 'number') {
     inputValue.value = value as string | number;  // ou pode usar inputValue.value = String(value) para garantir que seja uma string
     if (props.money && config.value.currentValue === 'null') {
@@ -250,4 +248,4 @@
     handleChange(value);
   }
 }
-  </script>
+</script>

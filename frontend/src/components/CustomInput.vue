@@ -18,6 +18,7 @@ const props = defineProps({
         class="border-2 border-gray-300 rounded-xl w-full pl-8 pr-4 py-2 bg-white dark:bg-blackOlive-900 text-quickSilver-900 focus:border-blue-500"
         type="text"
         :placeholder="props.placeholder"
+        on-focus=""
       />
       <span class="absolute left-3 text-silverChalice-900">
         <font-awesome-icon :icon="`fa-solid fa-${props.icon}`" />
