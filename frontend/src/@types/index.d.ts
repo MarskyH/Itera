@@ -29,7 +29,7 @@ export namespace models {
     }
 
     export interface LoginModel {
-        username: string
+        login: string
         password: string
     }
 

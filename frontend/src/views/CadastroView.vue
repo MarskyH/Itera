@@ -4,25 +4,17 @@
     @invalid-submit="onInvalid"
     :validation-schema="schema"
   >
-    <main
-      class="py-8 flex items-center justify-center min-h-screen"
-      :style="{
-        background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`
-      }"
-    >
+    <main class="py-8 flex items-center justify-center min-h-screen"
+      :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}">
       <ModeToggleButton class="absolute top-8 right-8" />
 
       <div class="flex flex-col items-center w-[800px] h-[750px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
-        <img
-          :src="logoPath"
-          alt="Itera Logo"
-          class="w-64 h-32"
-        />
+        <img :src= "logoPath" alt="Itera Logo" class="w-64 h-32"/>
         <div class="flex flex-col w-full items-center mb-4">
           <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
             Preencha com suas informações
           </p>
-          <CustomInput2
+          <CustomInput
             name="nome"
             label="Nome Completo"
             class-helper-text="text-lightSilver-900"
@@ -30,7 +22,7 @@
             :max-length="100"
             :icon-path="mdiAccount"
           />
-          <CustomInput2
+          <CustomInput
             name="login"
             label="Usuário"
             class-helper-text="text-lightSilver-900"
@@ -38,7 +30,7 @@
             :max-length="16"
             :icon-path="mdiAccount"
           />
-          <CustomInput2
+          <CustomInput
             name="email"
             type="email"
             label="E-mail"
@@ -48,7 +40,7 @@
             :required="true"
             :max-length="50"
           />
-          <CustomInput2
+          <CustomInput
             name="password"
             label="Senha"
             helper-text=""
@@ -59,7 +51,7 @@
             :max-length="80"
           />
 
-          <CustomInput2
+          <CustomInput
             name="confirmationPassword"
             label="Confirme Senha"
             :type="showPassword ? 'text' : 'password'"
@@ -95,7 +87,7 @@ import { onMounted, ref } from 'vue'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
-import CustomInput2 from 'src/components/CustomInput2.vue'
+import CustomInput from 'src/components/CustomInput.vue'
 import ModeToggleButton from 'src/components/ModeToggleButton.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
