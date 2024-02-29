@@ -9,6 +9,8 @@ import com.example.itera.infra.security.TokenService;
 import com.example.itera.domain.user.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,13 +28,20 @@ public class AuthenticationController {
     private TokenService tokenService;
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
+    public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token  = tokenService.generateToken((User) auth.getPrincipal());
+        ResponseCookie cookie = ResponseCookie.from("Token", token)
+                .httpOnly(false)  // Prevent client-side JavaScript access
+                .secure(false)   // Send only over HTTPS (if applicable)
+                .path("/")
+                .maxAge(60 * 60 * 3)
+                .build(); // Set expiration time (3 hours)
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new LoginResponseDTO(token));  // Optional: Include token in response body as well
     }
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/register")

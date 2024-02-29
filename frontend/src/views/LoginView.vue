@@ -41,7 +41,7 @@
                 Recupere aqui
               </p>
             </div>
-            <CustomButton title="Criar minha conta" color="bg-lavenderIndigo-900" color-dark="bg-ube-900" />
+            <CustomButton title="Entrar" color="bg-lavenderIndigo-900" color-dark="bg-ube-900" />
             <div class="flex">
               <p class="font text-16 text-black dark:text-lightSilver-900">
                 Não possui login?
@@ -69,13 +69,17 @@ import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
 import { useLoginStore } from 'src/stores/LoginStore'
 import { models } from 'src/@types'
+import { useRouter } from 'vue-router'
+
+
 interface UserLogin extends models.LoginModel { }
 
 
 
+
+const $router = useRouter()
 const error = ref(false)
 const errorText = ref('')
-const missingDigits = ref(0)
 const showPassword = ref(false)
 const $store = useLoginStore()
 const loading = ref(false)
@@ -107,11 +111,12 @@ const handleSubmit = async (submitData: any) => {
     profileData.login,
     profileData.password,
   )
-
+  
   if (response.status === 201 || response.status === 200) {
-    userEmail.value = submitData.email
+    error.value = false
     loading.value = false
     showRegistrationModal.value = true
+    $router.push('/home')
   } else if (response.status !== 201) {
     errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
     error.value = true

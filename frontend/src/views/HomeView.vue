@@ -1,23 +1,33 @@
 <script setup lang="ts">
-import SideBarMenu from "../components/SideBarMenu.vue";
-import MainContent from "src/components/MainContent.vue";
-import SideContent from "src/components/SideContent.vue";
-import UserOptions from "src/components/UserOptions.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+import PageHeader from 'src/components/PageHeader.vue'
+
+const ilustracaoPath = "src/assets/ilustracaoNovoProjeto.png"
 
 </script>
 
 <template>
   <div
-    class="flex h-screen items-start gap-2 p-2 bg-antiFlashWhite-900 text-neutral-700 dark:bg-night-900 dark:text-white"
-  >
-    <SideBarMenu />
+    class="flex flex-col h-full min-w-[320px] w-full rounded-md overflow-auto bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90%">
+    <PageHeader title="Home" icon="house" />
 
-    <MainContent />
+    <div class="flex flex-col w-full h-full items-center justify-center gap-8">
+      <img :src="ilustracaoPath" alt="Ilustração Novo Projeto" class="shrink-0 w-40 h-40">
 
-    <div class="flex shrink-0 flex-col h-full w-[320px] gap-2">
-      <UserOptions />
+      <span class=" w-1/2 text-center text-stone-500 dark:text-stone-400">
+        Não há projetos ativos. Use a função “Novo projeto” e acesse nossas funcionalidades.
+      </span>
 
-      <SideContent />
+      <button
+        class="flex items-center bg-gradient-to-br from-40% from-lavenderIndigo-900 to-tropicalIndigo-900 p-4 gap-4 rounded-md">
+        <FontAwesomeIcon icon="fa-solid fa-folder-plus" class="text-white" />
+
+        <span class="font-semibold text-white">
+          Comece criando um projeto
+        </span>
+      </button>
     </div>
   </div>
 </template>
+
