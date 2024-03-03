@@ -1,5 +1,8 @@
 package com.example.itera.domain.user;
 
+import com.example.itera.domain.equipe.Equipe;
+import com.example.itera.domain.projeto.Projeto;
+import com.example.itera.domain.tarefa.Tarefa;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -23,17 +26,27 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String nome;
-    private String login;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "username")
+    private String username;
     private String password;
-
+    @Column(name = "valorhora")
+    private Double valorHora;
     @Column(name = "horasdedicada")
     private Integer horasDedicada;
     private UserRole role;
+   /* @ManyToOne
+    @JoinColumn(name = "tarefa_id")  // Nome da coluna de chave estrangeira em User
+    private Tarefa tarefa;*/
 
-    public User(String nome, String login, String password, Integer horasDedicada, UserRole role) {
+
+    public User(String nome, String email, String username, String password, Double valorHora, Integer horasDedicada, UserRole role) {
         this.nome = nome;
-        this.login = login;
+        this.username = username;
+        this.email = email;
         this.password = password;
+        this.valorHora = valorHora;
         this.horasDedicada = horasDedicada;
         this.role = role;
     }
@@ -47,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override

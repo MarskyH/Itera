@@ -1,12 +1,12 @@
 package com.example.itera.controller;
 
 
-import com.example.itera.domain.user.AuthenticationDTO;
-import com.example.itera.domain.user.LoginResponseDTO;
-import com.example.itera.domain.user.RegisterDTO;
+import com.example.itera.dto.AuthenticationDTO;
+import com.example.itera.dto.LoginResponseDTO;
+import com.example.itera.dto.RegisterDTO;
 import com.example.itera.domain.user.User;
 import com.example.itera.infra.security.TokenService;
-import com.example.itera.domain.user.UserRepository;
+import com.example.itera.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +29,7 @@ public class AuthenticationController {
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token  = tokenService.generateToken((User) auth.getPrincipal());
@@ -46,11 +46,10 @@ public class AuthenticationController {
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        if(this.repository.findByUsername(data.username()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.nome(), data.login(), encryptedPassword, data.horasDedicada(), data.role());
-
+        User newUser = new User(data.nome(),  data.email(), data.username(), encryptedPassword, data.valorHora(), data.horasDedicada(), data.role());
         this.repository.save(newUser);
 
         return ResponseEntity.ok().build();

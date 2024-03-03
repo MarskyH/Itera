@@ -1,6 +1,6 @@
 package com.example.itera.services;
 
-import com.example.itera.domain.user.UserRepository;
+import com.example.itera.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +14,6 @@ public class AuthorizationService implements UserDetailsService {
     UserRepository repository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByLogin(username);
+        return repository.findByUsername(username);
     }
 }

@@ -21,7 +21,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("itera-api")
-                    .withClaim("login", user.getLogin())
+                    .withClaim("username", user.getUsername())
                     .withClaim("nome", user.getNome())
                     .withClaim("horasDedicada", user.getHorasDedicada())
                     .withClaim("role", user.getRole().toString())

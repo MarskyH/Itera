@@ -1,4 +1,4 @@
-package com.example.itera.domain.user;
+package com.example.itera.dto;
 
 public record LoginResponseDTO(String token) {
 }
