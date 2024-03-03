@@ -21,7 +21,7 @@ export namespace API {
 export namespace models {
     export interface UserData {
         iss: string
-        login: string
+        username: string
         nome: string
         horasDedicada: string
         role: string
@@ -29,15 +29,17 @@ export namespace models {
     }
 
     export interface LoginModel {
-        login: string
+        username: string
         password: string
     }
 
     export interface UserProfileRegisterModel {
         nome: string
-        login: string
+        username: string
+        email: string
         password: string
         confirmationPassword?: string
+        valorHora?: number
         horasDedicada?: number
         role?: string
     }
@@ -46,7 +48,8 @@ export namespace models {
     export interface UserModel {
         id?: string
         nome: string
-        login: string
+        username: string
+        email:string,
         password: string
         horasDedicada: number
         role: string

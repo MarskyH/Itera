@@ -17,9 +17,9 @@ export const useLoginStore = defineStore('LoginStore', {
   }),
 
   actions: {
-    async userLogin (login: string, password: string) {
+    async userLogin (username: string, password: string) {
       const data: LoginModel = {
-        login,
+        username,
         password
       }
 

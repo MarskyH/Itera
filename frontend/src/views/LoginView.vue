@@ -15,7 +15,7 @@
             Entre com suas credenciais
           </p>
           <CustomInput
-            name="login"
+            name="username"
             label="Usuário"
             class-helper-text="text-lightSilver-900"
             :required="true"
@@ -96,7 +96,7 @@ const gradientColors = computed(() => {
 })
 
 const schema = object().shape({
-  login: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
+  username: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
   password: string().required('Informe uma senha').matches(/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/, 'Senha inválida'),
 })
 
@@ -108,7 +108,7 @@ const handleSubmit = async (submitData: any) => {
   const profileData: UserLogin = submitData
   loading.value = true
   const response = await $store.userLogin(
-    profileData.login,
+    profileData.username,
     profileData.password,
   )
   
