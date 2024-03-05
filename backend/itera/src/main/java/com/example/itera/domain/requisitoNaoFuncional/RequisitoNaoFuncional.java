@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Table(name = "requisitonaofuncional")
-@Entity(name = "requisitonaofuncional")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class RequisitoNaoFuncional {
     private String titulo;
     private Integer valor;
 
-   /* @ManyToOne
-    @JoinColumn(name = "projeto_id")
-    private Projeto projeto;*/
+    @ManyToOne
+    private Projeto projeto;
 }
+

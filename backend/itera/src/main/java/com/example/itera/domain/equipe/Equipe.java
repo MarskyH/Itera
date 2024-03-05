@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Entity
 @Table(name = "equipe")
-@Entity(name = "equipe")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,8 +20,10 @@ public class Equipe {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-   /* private List<User> listaUsuarios;
-    @OneToOne
-    @JoinColumn(name = "projeto_id")
-    private Projeto projeto;*/
+
+    @OneToMany(mappedBy = "equipe")
+    private List<User> listaUsuarios;
+
+    @ManyToOne
+    private Projeto projeto;
 }

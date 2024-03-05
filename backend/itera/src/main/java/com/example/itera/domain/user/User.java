@@ -26,16 +26,26 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String nome;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "username")
     private String username;
+
     private String password;
+
     @Column(name = "valorhora")
     private Double valorHora;
+
     @Column(name = "horasdedicada")
     private Integer horasDedicada;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @ManyToOne
+    private Equipe equipe;
    /* @ManyToOne
     @JoinColumn(name = "tarefa_id")  // Nome da coluna de chave estrangeira em User
     private Tarefa tarefa;*/

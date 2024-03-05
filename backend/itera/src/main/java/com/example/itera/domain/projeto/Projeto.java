@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Entity
 @Table(name = "projeto")
-@Entity(name = "projeto")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,18 +28,19 @@ public class Projeto {
     private Integer prazo;
     private Integer tempoIteracao;
     private String nomeCliente;
-   /* @OneToOne(mappedBy = "projeto")
+
+    @OneToOne(mappedBy = "projeto")
     private Equipe equipe;
+
     @OneToMany(mappedBy = "projeto")
     private List<Requisito> listaRequisitos;
-    @OneToMany(mappedBy = "projeto")
-    private List<Tarefa> listaTarefas;
+
     @OneToMany(mappedBy = "projeto")
     private List<Risco> listaRiscos;
-    @OneToMany (mappedBy = "projeto")
-    private List<Papel> listaPapeis;
+
     @OneToMany(mappedBy = "projeto")
-    private List<RequisitoNaoFuncional> listaRequisitosNaoFuncionais;*/
+    private List<Papel> listaPapeis;
 
-
+    @OneToMany(mappedBy = "projeto")
+    private List<RequisitoNaoFuncional> listaRequisitosNaoFuncionais;
 }

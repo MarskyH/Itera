@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Table(name = "risco")
-@Entity(name = "risco")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,8 +23,11 @@ public class Risco {
     private String probabilidade;
     private String impacto;
     private String grauExposicao;
-   /* private Acao acao;
+
+    @OneToOne
+    private Acao acao;
+
     @ManyToOne
-    @JoinColumn(name = "projeto_id")
-    private Projeto projeto;*/
+    private Projeto projeto;
 }
+

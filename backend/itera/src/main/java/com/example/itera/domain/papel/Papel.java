@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Table(name = "papel")
-@Entity(name = "papel")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,8 +20,7 @@ public class Papel {
     private String funcao;
     private String habilidade;
     private String competencia;
-  /*  @ManyToOne
-    @JoinColumn(name = "projeto_id")
-    private Projeto projeto;*/
 
+    @ManyToOne
+    private Projeto projeto;
 }

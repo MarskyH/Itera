@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Table(name = "requisito")
-@Entity(name = "requisito")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class Requisito {
     private String prioridade;
     private Integer esforco;
     private Integer tamanho;
-    /*@ManyToOne
-    @JoinColumn(name = "projeto_id")
-    private Projeto projeto;*/
+
+    @ManyToOne
+    private Projeto projeto;
 }
