@@ -2,6 +2,8 @@ package com.example.itera.domain.equipe;
 
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.user.User;
+import com.example.itera.dto.equipe.EquipeRequestDTO;
+import com.example.itera.dto.equipe.EquipeResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -26,4 +28,10 @@ public class Equipe {
 
     @ManyToOne
     private Projeto projeto;
+
+    public Equipe(EquipeRequestDTO data){
+        this.listaUsuarios = data.listaUsuarios();
+        this.projeto = data.projeto();
+    }
 }
+

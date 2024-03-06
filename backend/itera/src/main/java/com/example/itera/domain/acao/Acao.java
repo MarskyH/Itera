@@ -1,6 +1,7 @@
 package com.example.itera.domain.acao;
 
 import com.example.itera.domain.risco.Risco;
+import com.example.itera.dto.acao.AcaoRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -23,5 +24,12 @@ public class Acao {
 
     @OneToOne(mappedBy = "acao")
     private Risco risco;
+
+    public Acao(AcaoRequestDTO data) {
+        this.titulo = data.titulo();
+        this.descricao = data.descricao();
+        this.tipo = data.tipo();
+        this.risco = data.risco();
+    }
 }
 

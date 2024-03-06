@@ -6,6 +6,8 @@ import com.example.itera.domain.requisito.Requisito;
 import com.example.itera.domain.requisitoNaoFuncional.RequisitoNaoFuncional;
 import com.example.itera.domain.risco.Risco;
 import com.example.itera.domain.tarefa.Tarefa;
+import com.example.itera.dto.papel.PapelRequestDTO;
+import com.example.itera.dto.projeto.ProjetoRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -43,4 +45,16 @@ public class Projeto {
 
     @OneToMany(mappedBy = "projeto")
     private List<RequisitoNaoFuncional> listaRequisitosNaoFuncionais;
+
+    public Projeto(ProjetoRequestDTO data){
+        this.nome = data.nome();
+        this.prazo = data.prazo();
+        this.tempoIteracao = data.tempoIteracao();
+        this.nomeCliente = data.nomeCliente();
+        this.equipe = data.equipe();
+        this.listaRequisitos = data.listaRequisitos();
+        this.listaRiscos = data.listaRiscos();
+        this.listaPapeis = data.listaPapeis();
+        this.listaRequisitosNaoFuncionais = data.listaRequisitosNaoFuncionais();
+    }
 }

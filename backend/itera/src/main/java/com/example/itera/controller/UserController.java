@@ -14,7 +14,7 @@ public class UserController {
     @Autowired
     private UserRepository repository;
 
-    @CrossOrigin(origins =  "*", allowedHeaders = "*")
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @GetMapping
     public List<UserResponseDTO> getAll(){
         List<UserResponseDTO> userList = repository.findAll().stream().map(UserResponseDTO::new).toList();

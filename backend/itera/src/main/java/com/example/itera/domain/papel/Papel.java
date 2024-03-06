@@ -1,6 +1,7 @@
 package com.example.itera.domain.papel;
 
 import com.example.itera.domain.projeto.Projeto;
+import com.example.itera.dto.papel.PapelRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -23,4 +24,10 @@ public class Papel {
 
     @ManyToOne
     private Projeto projeto;
+    public Papel(PapelRequestDTO data){
+        this.funcao = data.funcao();
+        this.habilidade = data.habilidade();
+        this.competencia = data.competencia();
+        this.projeto = data.projeto();
+    }
 }
