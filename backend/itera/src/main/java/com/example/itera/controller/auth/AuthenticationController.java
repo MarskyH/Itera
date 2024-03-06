@@ -1,12 +1,12 @@
-package com.example.itera.controller;
+package com.example.itera.controller.auth;
 
 
-import com.example.itera.dto.AuthenticationDTO;
-import com.example.itera.dto.LoginResponseDTO;
-import com.example.itera.dto.RegisterDTO;
+import com.example.itera.dto.auth.AuthenticationDTO;
+import com.example.itera.dto.auth.LoginResponseDTO;
+import com.example.itera.dto.user.RegisterDTO;
 import com.example.itera.domain.user.User;
 import com.example.itera.infra.security.TokenService;
-import com.example.itera.repository.UserRepository;
+import com.example.itera.repository.user.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

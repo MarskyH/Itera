@@ -1,6 +1,8 @@
 package com.example.itera.domain.requisitoNaoFuncional;
 
 import com.example.itera.domain.projeto.Projeto;
+import com.example.itera.dto.requisito.RequisitoRequestDTO;
+import com.example.itera.dto.requisitoNaoFuncional.RequisitoNaoFuncionalRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -22,5 +24,12 @@ public class RequisitoNaoFuncional {
 
     @ManyToOne
     private Projeto projeto;
+    public RequisitoNaoFuncional(RequisitoNaoFuncionalRequestDTO data){
+        this.titulo = data.titulo();
+        this.valor = data.valor();
+        this.projeto = data.projeto();
+
+    }
+
 }
 

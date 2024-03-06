@@ -1,4 +1,4 @@
-package com.example.itera.repository;
+package com.example.itera.repository.user;
 
 import com.example.itera.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

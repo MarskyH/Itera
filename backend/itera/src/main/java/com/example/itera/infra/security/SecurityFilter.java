@@ -1,6 +1,6 @@
 package com.example.itera.infra.security;
 
-import com.example.itera.repository.UserRepository;
+import com.example.itera.repository.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

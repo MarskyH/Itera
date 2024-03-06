@@ -1,7 +1,7 @@
-package com.example.itera.controller;
+package com.example.itera.controller.user;
 
-import com.example.itera.repository.UserRepository;
-import com.example.itera.dto.UserResponseDTO;
+import com.example.itera.repository.user.UserRepository;
+import com.example.itera.dto.user.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

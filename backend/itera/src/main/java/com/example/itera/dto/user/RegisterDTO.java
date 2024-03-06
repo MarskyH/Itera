@@ -1,4 +1,4 @@
-package com.example.itera.dto;
+package com.example.itera.dto.user;
 
 import com.example.itera.domain.user.UserRole;
 

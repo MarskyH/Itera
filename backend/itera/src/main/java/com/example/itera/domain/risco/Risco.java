@@ -2,6 +2,7 @@ package com.example.itera.domain.risco;
 
 import com.example.itera.domain.acao.Acao;
 import com.example.itera.domain.projeto.Projeto;
+import com.example.itera.dto.risco.RiscoRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -29,5 +30,14 @@ public class Risco {
 
     @ManyToOne
     private Projeto projeto;
+    public Risco(RiscoRequestDTO data){
+        this.titulo = data.titulo();
+        this.efeito = data.efeito();
+        this.probabilidade = data.probabilidade();
+        this.impacto = data.impacto();
+        this.grauExposicao = data.grauExposicao();
+        this.projeto = data.projeto();
+
+    }
 }
 
