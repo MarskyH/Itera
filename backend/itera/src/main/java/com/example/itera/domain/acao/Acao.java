@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "acao_seq", sequenceName = "acao_seq", allocationSize = 1)
 public class Acao {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acao_seq")
     private Long id;
     private String titulo;
     private String descricao;
@@ -31,5 +32,6 @@ public class Acao {
         this.tipo = data.tipo();
         this.risco = data.risco();
     }
+
 }
 

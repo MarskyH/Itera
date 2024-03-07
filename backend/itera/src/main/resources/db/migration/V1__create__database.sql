@@ -1,14 +1,27 @@
+--Sequencia acao_seq
+CREATE SEQUENCE public.acao_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 -- Tabela Acao
-CREATE TABLE acao (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.acao (
+    id INTEGER PRIMARY KEY,
     titulo VARCHAR(30),
     descricao VARCHAR(255),
     tipo VARCHAR(20)
 );
 
+--Linkando acao_seq com acao_id
+ALTER SEQUENCE public.acao_seq OWNED BY public.acao.id;
+
+
 -- Tabela Projeto
-CREATE TABLE projeto (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.projeto (
+    id INTEGER PRIMARY KEY,
     nome VARCHAR(50),
     prazo INTEGER,
     tempo_iteracao INTEGER,
@@ -17,14 +30,14 @@ CREATE TABLE projeto (
 );
 
 -- Tabela Equipe
-CREATE TABLE equipe (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.equipe (
+    id INTEGER PRIMARY KEY,
     projeto_id BIGINT
 );
 
 -- Tabela Papel
-CREATE TABLE papel (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.papel (
+    id INTEGER PRIMARY KEY,
     funcao VARCHAR(30),
     habilidade VARCHAR(255),
     competencia VARCHAR(255),
@@ -34,8 +47,8 @@ CREATE TABLE papel (
 
 
 -- Tabela Requisito
-CREATE TABLE requisito (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.requisito (
+    id INTEGER PRIMARY KEY,
     titulo VARCHAR(30),
     detalhamento VARCHAR(30),
     complexidade VARCHAR(30),
@@ -46,16 +59,16 @@ CREATE TABLE requisito (
 );
 
 -- Tabela RequisitoNaoFuncional
-CREATE TABLE requisitonaofuncional (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.requisitonaofuncional (
+    id INTEGER PRIMARY KEY,
     titulo VARCHAR(30),
     valor INTEGER,
     projeto_id BIGINT
 );
 
 -- Tabela Risco
-CREATE TABLE risco (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE  public.risco (
+    id INTEGER PRIMARY KEY,
     titulo VARCHAR(30),
     efeito VARCHAR(255),
     probabilidade VARCHAR(20),
@@ -66,7 +79,7 @@ CREATE TABLE risco (
 );
 
 -- Tabela Users
-CREATE TABLE users (
+CREATE TABLE  public.users (
     id TEXT PRIMARY KEY NOT NULL,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -78,32 +91,32 @@ CREATE TABLE users (
     equipe_id BIGINT
 );
 
-ALTER TABLE equipe
+ALTER TABLE  public.equipe
 ADD CONSTRAINT FK_equipe_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
 
-ALTER TABLE papel
+ALTER TABLE  public.papel
 ADD CONSTRAINT FK_papel_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-ALTER TABLE requisito
+ALTER TABLE  public.requisito
 ADD CONSTRAINT FK_requisito_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-ALTER TABLE requisitonaofuncional
+ALTER TABLE  public.requisitonaofuncional
 ADD CONSTRAINT FK_requisitonaofuncional_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-ALTER TABLE risco
+ALTER TABLE  public.risco
 ADD CONSTRAINT FK_risco_acao
 FOREIGN KEY (acao_id) REFERENCES acao(id);
 
-ALTER TABLE risco
+ALTER TABLE  public.risco
 ADD CONSTRAINT FK_risco_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-ALTER TABLE users
+ALTER TABLE  public.users
 ADD CONSTRAINT FK_users_equipe
 FOREIGN KEY (equipe_id) REFERENCES equipe(id);
 
