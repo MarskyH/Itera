@@ -1,12 +1,16 @@
 package com.example.itera.controller.acao;
 
 import com.example.itera.domain.acao.Acao;
+import com.example.itera.domain.risco.Risco;
 import com.example.itera.dto.acao.AcaoRequestDTO;
 import com.example.itera.dto.acao.AcaoResponseDTO;
 import com.example.itera.repository.acao.AcaoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Objects;
 
 import java.util.List;
 
@@ -22,7 +26,6 @@ public class AcaoController {
     public void saveAcao(@RequestBody AcaoRequestDTO data){
         Acao acaoData = new Acao(data);
         repository.save(acaoData);
-        return;
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
@@ -32,16 +35,46 @@ public class AcaoController {
         return acaoList;
     }
 
-    @PutMapping("/acao/{id}")
-    public ResponseEntity<AcaoResponseDTO> updateAcao(@PathVariable Long id, @RequestBody AcaoRequestDTO data) {
-        AcaoResponseDTO acaoById = repository.findById(id);
-        acao.setTitulo(data.titulo());
-        acao.setDescricao(data.descricao());
-        acao.setTipo(data.tipo());
-        acao.setRisco(data.risco());
-        acaoRepository.save(acao);
-        return ResponseEntity.ok(new AcaoResponseDTO(acao));
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateAcao(@PathVariable Long id, @RequestBody AcaoRequestDTO data) {
+        try {
+            Acao acaoExistente = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+            Acao acaoNova = new Acao(data);
+
+            // Validar os campos da AcaoRequestDTO, se necessário
+
+            // Atualizar a entidade usando o construtor
+            acaoExistente = new Acao(
+                    acaoNova.getTitulo(),
+                    acaoNova.getDescricao(),
+                    acaoNova.getTipo(),
+                    Objects.equals(acaoNova.getRisco(), new Risco()) ? acaoExistente.getRisco() : acaoNova.getRisco()
+            );
+
+            repository.save(acaoExistente);
+
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace(); // ou logar o erro
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAcao(@PathVariable Long id) {
+        try {
+            repository.delete(repository.getReferenceById(id));
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
 
 

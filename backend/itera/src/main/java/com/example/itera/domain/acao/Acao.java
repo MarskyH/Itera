@@ -3,14 +3,12 @@ package com.example.itera.domain.acao;
 import com.example.itera.domain.risco.Risco;
 import com.example.itera.dto.acao.AcaoRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "acao")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -33,5 +31,7 @@ public class Acao {
         this.risco = data.risco();
     }
 
+    public Acao(String titulo, String descricao, String tipo, Risco risco) {
+    }
 }
 
