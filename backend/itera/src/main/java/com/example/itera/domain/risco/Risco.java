@@ -15,9 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "risco_seq", sequenceName = "risco_seq", allocationSize = 1)
 public class Risco {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "risco_seq")
     private Long id;
     private String titulo;
     private String efeito;

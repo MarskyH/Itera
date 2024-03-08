@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "papel_seq", sequenceName = "papel_seq", allocationSize = 1)
 public class Papel {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "papel_seq")
     private Long id;
     private String funcao;
     private String habilidade;

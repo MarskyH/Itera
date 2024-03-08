@@ -7,6 +7,7 @@ CREATE SEQUENCE public.acao_seq
     NO MAXVALUE
     CACHE 1;
 
+
 -- Tabela Acao
 CREATE TABLE  public.acao (
     id INTEGER PRIMARY KEY,
@@ -18,6 +19,14 @@ CREATE TABLE  public.acao (
 --Linkando acao_seq com acao_id
 ALTER SEQUENCE public.acao_seq OWNED BY public.acao.id;
 
+--Sequencia projeto_seq
+CREATE SEQUENCE public.projeto_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 -- Tabela Projeto
 CREATE TABLE  public.projeto (
@@ -25,15 +34,38 @@ CREATE TABLE  public.projeto (
     nome VARCHAR(50),
     prazo INTEGER,
     tempo_iteracao INTEGER,
-    nome_cliente VARCHAR(50),
-    equipe_id BIGINT
+    nome_cliente VARCHAR(50)
 );
+
+--Linkando projeto_seq com projeto_id
+ALTER SEQUENCE public.projeto_seq OWNED BY public.projeto.id;
+
+--Sequencia equipe_seq
+CREATE SEQUENCE public.equipe_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 -- Tabela Equipe
 CREATE TABLE  public.equipe (
     id INTEGER PRIMARY KEY,
     projeto_id BIGINT
 );
+
+--Linkando equipe_seq com equipe_id
+ALTER SEQUENCE public.equipe_seq OWNED BY public.equipe.id;
+
+--Sequencia papel_seq
+CREATE SEQUENCE public.papel_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 -- Tabela Papel
 CREATE TABLE  public.papel (
@@ -44,7 +76,17 @@ CREATE TABLE  public.papel (
     projeto_id BIGINT
 );
 
+--Linkando papel_seq com papel_id
+ALTER SEQUENCE public.papel_seq OWNED BY public.papel.id;
 
+--Sequencia requisito_seq
+CREATE SEQUENCE public.requisito_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 -- Tabela Requisito
 CREATE TABLE  public.requisito (
@@ -58,6 +100,19 @@ CREATE TABLE  public.requisito (
     projeto_id BIGINT
 );
 
+--Linkando requisito__seq com requisito__id
+ALTER SEQUENCE public.requisito_seq OWNED BY public.requisito.id;
+
+--Sequencia requisitonaofuncional_seq
+CREATE SEQUENCE public.requisitonaofuncional_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
 -- Tabela RequisitoNaoFuncional
 CREATE TABLE  public.requisitonaofuncional (
     id INTEGER PRIMARY KEY,
@@ -65,6 +120,18 @@ CREATE TABLE  public.requisitonaofuncional (
     valor INTEGER,
     projeto_id BIGINT
 );
+
+--Linkando requisitonaofuncional_seq com requisitonaofuncional_id
+ALTER SEQUENCE public.requisitonaofuncional_seq OWNED BY public.requisitonaofuncional.id;
+
+--Sequencia risco_seq
+CREATE SEQUENCE public.risco_seq
+    AS INTEGER
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 -- Tabela Risco
 CREATE TABLE  public.risco (
@@ -78,6 +145,9 @@ CREATE TABLE  public.risco (
     projeto_id BIGINT
 );
 
+--Linkando risco_seq com risco_id
+ALTER SEQUENCE public.risco_seq OWNED BY public.risco.id;
+
 -- Tabela Users
 CREATE TABLE  public.users (
     id TEXT PRIMARY KEY NOT NULL,
@@ -90,6 +160,9 @@ CREATE TABLE  public.users (
     role VARCHAR(10) NOT NULL,
     equipe_id BIGINT
 );
+
+
+--Chaves Estrangeiras
 
 ALTER TABLE  public.equipe
 ADD CONSTRAINT FK_equipe_projeto
@@ -120,6 +193,8 @@ ALTER TABLE  public.users
 ADD CONSTRAINT FK_users_equipe
 FOREIGN KEY (equipe_id) REFERENCES equipe(id);
 
+
+--Inserção de dados
 
 INSERT INTO users (id, nome, email, username, password, valorHora, horasDedicada, role)
 VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', '"admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1');

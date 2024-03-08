@@ -5,6 +5,7 @@ import com.example.itera.dto.acao.AcaoRequestDTO;
 import com.example.itera.dto.acao.AcaoResponseDTO;
 import com.example.itera.repository.acao.AcaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,17 @@ public class AcaoController {
     public List<AcaoResponseDTO> getAll(){
         List<AcaoResponseDTO> acaoList = repository.findAll().stream().map(AcaoResponseDTO::new).toList();
         return acaoList;
+    }
+
+    @PutMapping("/acao/{id}")
+    public ResponseEntity<AcaoResponseDTO> updateAcao(@PathVariable Long id, @RequestBody AcaoRequestDTO data) {
+        AcaoResponseDTO acaoById = repository.findById(id);
+        acao.setTitulo(data.titulo());
+        acao.setDescricao(data.descricao());
+        acao.setTipo(data.tipo());
+        acao.setRisco(data.risco());
+        acaoRepository.save(acao);
+        return ResponseEntity.ok(new AcaoResponseDTO(acao));
     }
 }
 

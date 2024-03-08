@@ -22,9 +22,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "projeto_seq", sequenceName = "projeto_seq", allocationSize = 1)
 public class Projeto {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projeto_seq")
     private Long id;
     private String nome;
     private Integer prazo;

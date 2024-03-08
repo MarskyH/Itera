@@ -18,9 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "equipe_seq", sequenceName = "equipe_seq", allocationSize = 1)
 public class Equipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equipe_seq")
     private Long id;
 
     @OneToMany(mappedBy = "equipe")

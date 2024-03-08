@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@SequenceGenerator(name = "requisito_seq", sequenceName = "requisito_seq", allocationSize = 1)
 public class Requisito {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "requisito_seq")
     private Long id;
     private String titulo;
     private String detalhamento;
