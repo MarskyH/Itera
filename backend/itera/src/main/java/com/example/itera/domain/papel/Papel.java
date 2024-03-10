@@ -2,11 +2,14 @@ package com.example.itera.domain.papel;
 
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.dto.papel.PapelRequestDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "papel")
@@ -23,7 +26,10 @@ public class Papel {
     private String habilidade;
     private String competencia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "projeto_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Projeto projeto;
     public Papel(PapelRequestDTO data){
         this.funcao = data.funcao();

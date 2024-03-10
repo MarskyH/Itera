@@ -32,30 +32,10 @@ public class Projeto {
     private Integer tempoIteracao;
     private String nomeCliente;
 
-    @OneToOne(mappedBy = "projeto")
-    private Equipe equipe;
-
-    @OneToMany(mappedBy = "projeto")
-    private List<Requisito> listaRequisitos;
-
-    @OneToMany(mappedBy = "projeto")
-    private List<Risco> listaRiscos;
-
-    @OneToMany(mappedBy = "projeto")
-    private List<Papel> listaPapeis;
-
-    @OneToMany(mappedBy = "projeto")
-    private List<RequisitoNaoFuncional> listaRequisitosNaoFuncionais;
-
     public Projeto(ProjetoRequestDTO data){
         this.nome = data.nome();
         this.prazo = data.prazo();
         this.tempoIteracao = data.tempoIteracao();
         this.nomeCliente = data.nomeCliente();
-        this.equipe = data.equipe();
-        this.listaRequisitos = data.listaRequisitos();
-        this.listaRiscos = data.listaRiscos();
-        this.listaPapeis = data.listaPapeis();
-        this.listaRequisitosNaoFuncionais = data.listaRequisitosNaoFuncionais();
     }
 }

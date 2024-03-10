@@ -1,13 +1,10 @@
 package com.example.itera.controller.requisito;
 
 
-import com.example.itera.domain.projeto.Projeto;
+
 import com.example.itera.domain.requisito.Requisito;
-import com.example.itera.dto.projeto.ProjetoRequestDTO;
-import com.example.itera.dto.projeto.ProjetoResponseDTO;
 import com.example.itera.dto.requisito.RequisitoRequestDTO;
 import com.example.itera.dto.requisito.RequisitoResponseDTO;
-import com.example.itera.repository.projeto.ProjetoRepository;
 import com.example.itera.repository.requisito.RequisitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
