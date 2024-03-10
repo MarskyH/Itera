@@ -10,10 +10,10 @@ import com.example.itera.domain.risco.Risco;
 
 import java.util.List;
 
-public record ProjetoResponseDTO(Long id, String nome, Integer prazo, Integer tempoIteracao, String nomeCliente) {
+public record ProjetoResponseDTO(Long id, String nome, Integer prazo, Integer tempoIteracao, String nomeCliente, String createdBy) {
     public ProjetoResponseDTO(Projeto projeto){
 
-        this(projeto.getId(),projeto.getNome(), projeto.getPrazo(), projeto.getTempoIteracao(), projeto.getNomeCliente());
+        this(projeto.getId(),projeto.getNome(), projeto.getPrazo(), projeto.getTempoIteracao(), projeto.getNomeCliente(), projeto.getCreatedBy());
     }
 }
 

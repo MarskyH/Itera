@@ -9,16 +9,14 @@ import com.example.itera.domain.tarefa.Tarefa;
 import com.example.itera.dto.papel.PapelRequestDTO;
 import com.example.itera.dto.projeto.ProjetoRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "projeto")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -31,11 +29,13 @@ public class Projeto {
     private Integer prazo;
     private Integer tempoIteracao;
     private String nomeCliente;
+    private String createdBy;
 
     public Projeto(ProjetoRequestDTO data){
         this.nome = data.nome();
         this.prazo = data.prazo();
         this.tempoIteracao = data.tempoIteracao();
         this.nomeCliente = data.nomeCliente();
+        this.createdBy = data.createdBy();
     }
 }

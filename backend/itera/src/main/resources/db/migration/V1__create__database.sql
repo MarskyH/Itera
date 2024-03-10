@@ -31,10 +31,12 @@ CREATE SEQUENCE public.projeto_seq
 -- Tabela Projeto
 CREATE TABLE  public.projeto (
     id INTEGER PRIMARY KEY,
-    nome VARCHAR(50),
+    nome VARCHAR(50) UNIQUE,
     prazo INTEGER,
     tempo_iteracao INTEGER,
-    nome_cliente VARCHAR(50)
+    nome_cliente VARCHAR(50),
+    created_By VARCHAR(100)
+
 );
 
 --Linkando projeto_seq com projeto_id

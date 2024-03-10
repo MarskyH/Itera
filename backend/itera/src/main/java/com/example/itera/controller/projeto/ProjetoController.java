@@ -1,15 +1,14 @@
 package com.example.itera.controller.projeto;
 
 
-import com.example.itera.domain.papel.Papel;
+
 import com.example.itera.domain.projeto.Projeto;
-import com.example.itera.dto.papel.PapelRequestDTO;
-import com.example.itera.dto.papel.PapelResponseDTO;
 import com.example.itera.dto.projeto.ProjetoRequestDTO;
 import com.example.itera.dto.projeto.ProjetoResponseDTO;
-import com.example.itera.repository.papel.PapelRepository;
+import com.example.itera.infra.security.TokenService;
 import com.example.itera.repository.projeto.ProjetoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +20,16 @@ public class ProjetoController {
     @Autowired
     private ProjetoRepository repository;
 
+    @Autowired
+    TokenService tokenService;
+
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
-    public void savePapel(@RequestBody ProjetoRequestDTO data){
+    public void saveProjeto(@RequestBody ProjetoRequestDTO data){
+        String username = tokenService.validateToken(SecurityContextHolder.getContext().getAuthentication().getName());
         Projeto projetoData = new Projeto(data);
+        System.out.println("USERNAME:" + username);
+        projetoData.setCreatedBy(username);
         repository.save(projetoData);
         return;
     }
@@ -34,6 +39,13 @@ public class ProjetoController {
     public List<ProjetoResponseDTO> getAll(){
         List<ProjetoResponseDTO> projetoList = repository.findAll().stream().map(ProjetoResponseDTO::new).toList();
         return projetoList;
+    }
+
+    @GetMapping("/{id}")
+    public ProjetoResponseDTO getProjetoById(@PathVariable Long id) {
+        Projeto projeto = repository.findById(id).orElseThrow();
+
+        return new ProjetoResponseDTO(projeto);
     }
 }
 
