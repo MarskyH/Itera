@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@SequenceGenerator(name = "requisitonaofuncionalseq", sequenceName = "requisitonaofuncional_seq", allocationSize = 1)
+@SequenceGenerator(name = "requisitonaofuncional_seq", sequenceName = "requisitonaofuncional_seq", allocationSize = 1)
 public class RequisitoNaoFuncional {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "requisitonaofuncional_seq")

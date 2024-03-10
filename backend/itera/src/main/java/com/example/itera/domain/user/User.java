@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(name = "username")
-    private String username;
+    private String login;
 
     private String password;
 
@@ -51,9 +51,9 @@ public class User implements UserDetails {
     private Tarefa tarefa;*/
 
 
-    public User(String nome, String email, String username, String password, Double valorHora, Integer horasDedicada, UserRole role) {
+    public User(String nome, String email, String login, String password, Double valorHora, Integer horasDedicada, UserRole role) {
         this.nome = nome;
-        this.username = username;
+        this.login = login;
         this.email = email;
         this.password = password;
         this.valorHora = valorHora;
@@ -70,7 +70,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return login;
     }
 
     @Override

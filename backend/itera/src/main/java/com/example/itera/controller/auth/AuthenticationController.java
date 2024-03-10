@@ -10,6 +10,7 @@ import com.example.itera.repository.user.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +30,7 @@ public class AuthenticationController {
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token  = tokenService.generateToken((User) auth.getPrincipal());
@@ -45,13 +46,27 @@ public class AuthenticationController {
     }
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByUsername(data.username()) != null) return ResponseEntity.badRequest().build();
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
+        try {
+            if (this.repository.findByLogin(data.login()) != null) {
+                // Return a specific error message for duplicate login
+                return ResponseEntity
+                        .badRequest()
+                        .body("Login já existe"); // Or a custom error object for more detail
+            }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.nome(),  data.email(), data.username(), encryptedPassword, data.valorHora(), data.horasDedicada(), data.role());
-        this.repository.save(newUser);
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+            User newUser = new User(data.nome(), data.email(), data.login(), encryptedPassword, data.valorHora(), data.horasDedicada(), data.role());
+            this.repository.save(newUser);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            e.printStackTrace(); // Log the error for debugging
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao registrar usuário"); // Or a more informative error message
+        }
     }
 }
