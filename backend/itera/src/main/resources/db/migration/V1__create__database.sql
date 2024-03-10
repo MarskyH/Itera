@@ -157,7 +157,7 @@ CREATE TABLE  public.users (
     password VARCHAR(255) NOT NULL,
     valorHora DOUBLE PRECISION,
     horasDedicada INTEGER,
-    role VARCHAR(10) NOT NULL,
+    role TEXT NOT NULL,
     equipe_id BIGINT
 );
 

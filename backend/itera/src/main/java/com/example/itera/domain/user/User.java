@@ -40,8 +40,6 @@ public class User implements UserDetails {
 
     @Column(name = "horasdedicada")
     private Integer horasDedicada;
-
-    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @ManyToOne
