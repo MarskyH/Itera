@@ -170,7 +170,6 @@ ALTER TABLE  public.equipe
 ADD CONSTRAINT FK_equipe_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-
 ALTER TABLE  public.papel
 ADD CONSTRAINT FK_papel_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
