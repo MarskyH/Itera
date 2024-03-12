@@ -64,6 +64,16 @@ public class ProjetoController {
         }
     }
 
+    @GetMapping("/completo/{id}")
+    public ProjetoResponseDTO getProjetoCompleto(@PathVariable String nome) {
+        Projeto projeto = repository.findByNome(nome).orElseThrow();
+        if (projeto != null){
+            return new ProjetoResponseDTO(projeto);
+        }else{
+            return new ProjetoResponseDTO(new Projeto());
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProjeto(@PathVariable Long id) {
         try {
