@@ -9,7 +9,10 @@ import com.example.itera.dto.requisitoNaoFuncional.RequisitoNaoFuncionalRequestD
 import com.example.itera.dto.requisitoNaoFuncional.RequisitoNaoFuncionalResponseDTO;
 import com.example.itera.repository.requisito.RequisitoRepository;
 import com.example.itera.repository.requisitoNaoFuncional.RequisitoNaoFuncionalRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +37,30 @@ public class RequisitoNaoFuncionalController {
     public List<RequisitoNaoFuncionalResponseDTO> getAll(){
         List<RequisitoNaoFuncionalResponseDTO> requisitoNaoFuncionalList = repository.findAll().stream().map(RequisitoNaoFuncionalResponseDTO::new).toList();
         return requisitoNaoFuncionalList;
+    }
+
+    @GetMapping("/{id}")
+    public RequisitoNaoFuncionalResponseDTO getRequisitoNaoFuncionaById(@PathVariable Long id) {
+        RequisitoNaoFuncional requisitoNaoFuncional = repository.findById(id).orElseThrow();
+        if (requisitoNaoFuncional != null) {
+            return new RequisitoNaoFuncionalResponseDTO(requisitoNaoFuncional);
+        } else {
+            return new RequisitoNaoFuncionalResponseDTO(new RequisitoNaoFuncional());
+        }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRequisitoNaoFuncional(@PathVariable Long id) {
+        try {
+            repository.delete(repository.getReferenceById(id));
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
 

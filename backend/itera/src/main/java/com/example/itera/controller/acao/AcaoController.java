@@ -35,6 +35,18 @@ public class AcaoController {
         return acaoList;
     }
 
+    @GetMapping("/{id}")
+    public AcaoResponseDTO getAcaoById(@PathVariable Long id) {
+        Acao acao = repository.findById(id).orElseThrow();
+        if (acao != null) {
+            return new AcaoResponseDTO(acao);
+        } else {
+            return new AcaoResponseDTO(new Acao());
+        }
+    }
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateAcao(@PathVariable Long id, @RequestBody AcaoRequestDTO data) {
         try {
