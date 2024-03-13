@@ -66,7 +66,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,  "/risco").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,  "/risco/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/user/atualizar/equipe/{nomeUser}/{nomeProjeto}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/atualizar/equipe").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -6,7 +6,6 @@ import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.risco.Risco;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.acao.AcaoRequestDTO;
-import com.example.itera.dto.user.UpdateUserEquipeDTO;
 import com.example.itera.dto.user.UserEquipeRequestDTO;
 import com.example.itera.repository.equipe.EquipeRepository;
 import com.example.itera.repository.projeto.ProjetoRepository;
