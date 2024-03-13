@@ -37,7 +37,6 @@ public class Equipe {
     private Projeto projeto;
 
     public Equipe(EquipeRequestDTO data){
-        this.listaUsuarios = data.listaUsuarios();
         this.projeto = data.projeto();
     }
 }

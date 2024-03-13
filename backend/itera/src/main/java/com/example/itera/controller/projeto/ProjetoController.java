@@ -44,7 +44,7 @@ public class ProjetoController {
         return projetoList;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ProjetoResponseDTO getProjetoById(@PathVariable Long id) {
         Projeto projeto = repository.findById(id).orElseThrow();
         if (projeto != null) {
@@ -54,9 +54,9 @@ public class ProjetoController {
         }
     }
 
-    @GetMapping("/{nome}")
+    @GetMapping("/nome/{nome}")
     public ProjetoResponseDTO getProjetoByNome(@PathVariable String nome) {
-        Projeto projeto = repository.findByNome(nome).orElseThrow();
+        Projeto projeto = repository.findByNome(nome);
         if (projeto != null){
             return new ProjetoResponseDTO(projeto);
         }else{
@@ -66,7 +66,7 @@ public class ProjetoController {
 
     @GetMapping("/completo/{id}")
     public ProjetoResponseDTO getProjetoCompleto(@PathVariable String nome) {
-        Projeto projeto = repository.findByNome(nome).orElseThrow();
+        Projeto projeto = repository.findByNome(nome);
         if (projeto != null){
             return new ProjetoResponseDTO(projeto);
         }else{

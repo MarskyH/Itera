@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface EquipeRepository extends JpaRepository<Equipe, Long>{
 
-    @Query("SELECT e FROM Equipe e WHERE e.projeto_id = :id")
-    Equipe findByProjeto(@Param("id") Integer id);
+    @Query(value = "SELECT e FROM Equipe e WHERE e.projeto.id = :id")
+    Equipe findByProjeto(@Param("id") Long id);
 
 }
 

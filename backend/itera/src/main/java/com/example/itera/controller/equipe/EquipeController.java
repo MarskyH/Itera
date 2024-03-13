@@ -39,7 +39,7 @@ public class EquipeController {
     @GetMapping("/{id}")
     public EquipeResponseDTO getEquipeById(@PathVariable Long id) {
         Equipe equipe = repository.findById(id).orElseThrow();
-        if (acao != null) {
+        if (equipe != null) {
             return new EquipeResponseDTO(equipe);
         } else {
             return new EquipeResponseDTO(new Equipe());
@@ -59,6 +59,7 @@ public class EquipeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }
 
 

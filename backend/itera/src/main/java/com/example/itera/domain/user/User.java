@@ -3,11 +3,11 @@ package com.example.itera.domain.user;
 import com.example.itera.domain.equipe.Equipe;
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.tarefa.Tarefa;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "users")
 @Entity(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -42,7 +43,10 @@ public class User implements UserDetails {
     private Integer horasDedicada;
     private UserRole role;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "equipe_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Equipe equipe;
    /* @ManyToOne
     @JoinColumn(name = "tarefa_id")  // Nome da coluna de chave estrangeira em User

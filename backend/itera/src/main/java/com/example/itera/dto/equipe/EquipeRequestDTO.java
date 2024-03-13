@@ -5,7 +5,7 @@ import com.example.itera.domain.user.User;
 
 import java.util.List;
 
-public record EquipeRequestDTO(List<User> listaUsuarios, Projeto projeto) {
+public record EquipeRequestDTO(Projeto projeto) {
 }
 
 
