@@ -21,7 +21,9 @@ public class Acao {
     private String descricao;
     private String tipo;
 
-    @OneToOne(mappedBy = "acao")
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "risco_id")
     private Risco risco;
 
     public Acao(AcaoRequestDTO data) {

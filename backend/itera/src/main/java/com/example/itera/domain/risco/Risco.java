@@ -28,10 +28,6 @@ public class Risco {
     private String probabilidade;
     private String impacto;
     private String grauExposicao;
-
-    @OneToOne
-    private Acao acao;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "projeto_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

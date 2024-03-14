@@ -14,6 +14,7 @@ CREATE TABLE  public.acao (
     titulo VARCHAR(30),
     descricao VARCHAR(255),
     tipo VARCHAR(20)
+    risco_id BIGINT
 );
 
 --Linkando acao_seq com acao_id
@@ -182,9 +183,9 @@ ALTER TABLE  public.requisitonaofuncional
 ADD CONSTRAINT FK_requisitonaofuncional_projeto
 FOREIGN KEY (projeto_id) REFERENCES projeto(id);
 
-ALTER TABLE  public.risco
-ADD CONSTRAINT FK_risco_acao
-FOREIGN KEY (acao_id) REFERENCES acao(id);
+ALTER TABLE  public.acao
+ADD CONSTRAINT FK_acao_risco
+FOREIGN KEY (risco_id) REFERENCES risco(id);
 
 ALTER TABLE  public.risco
 ADD CONSTRAINT FK_risco_projeto

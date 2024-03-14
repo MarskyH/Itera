@@ -40,26 +40,6 @@ public class UserController {
         return userList;
     }
 
-   /* @PutMapping("/atualizar/equipe/{nomeUser}/{nomeProjeto}")
-    public ResponseEntity<Void> updateEquipeUser(@PathVariable String nomeUser, @PathVariable String nomeProjeto) {
-       System.out.println("nome user:" + nomeUser);
-       System.out.println("nome projeto:" + nomeProjeto);
-
-        try {
-            User dataUser = userRepository.findByNome(nomeUser);
-            Projeto dataProjeto = projetoRepository.findByNome(nomeProjeto);
-            Equipe dataEquipe = equipeRepository.findByProjeto(dataProjeto.getId());
-            dataUser.setEquipe(dataEquipe);
-            userRepository.save(dataUser);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    } */
-
     @PutMapping("/atualizar/equipe")
     public ResponseEntity<Void> updateEquipeUser(@RequestBody UserEquipeRequestDTO data) {
         System.out.println("nome user:" + data.nomeUser());
@@ -69,6 +49,8 @@ public class UserController {
             Projeto dataProjeto = projetoRepository.findByNome(data.nomeProjeto());
             Equipe dataEquipe = equipeRepository.findByProjeto(dataProjeto.getId());
             dataUser.setEquipe(dataEquipe);
+            dataUser.setValorHora(data.valorHoraHomem());
+            dataUser.setHorasDedicada(data.horasDedicadas());
             userRepository.save(dataUser);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {

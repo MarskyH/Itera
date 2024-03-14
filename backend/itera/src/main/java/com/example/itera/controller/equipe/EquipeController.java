@@ -5,6 +5,7 @@ package com.example.itera.controller.equipe;
 import com.example.itera.domain.equipe.Equipe;
 import com.example.itera.dto.equipe.EquipeRequestDTO;
 import com.example.itera.dto.equipe.EquipeResponseDTO;
+import com.example.itera.dto.user.UserResponseDTO;
 import com.example.itera.repository.equipe.EquipeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,12 @@ public class EquipeController {
         } else {
             return new EquipeResponseDTO(new Equipe());
         }
+    }
+
+    @GetMapping
+    public List<UserResponseDTO> getAllUsersEquipeById(@PathVariable Long id){
+        List<UserResponseDTO> userList = repository.findByUsersEquipe(id).stream().map(UserResponseDTO::new).toList();
+        return userList;
     }
 
 
