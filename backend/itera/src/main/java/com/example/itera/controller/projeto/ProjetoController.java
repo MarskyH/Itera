@@ -5,6 +5,7 @@ package com.example.itera.controller.projeto;
 import com.example.itera.domain.equipe.Equipe;
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.user.User;
+import com.example.itera.dto.acao.AcaoResponseDTO;
 import com.example.itera.dto.papel.PapelResponseDTO;
 import com.example.itera.dto.projeto.ProjetoCompletoResponseDTO;
 import com.example.itera.dto.projeto.ProjetoRequestDTO;
@@ -103,14 +104,25 @@ public class ProjetoController {
             Equipe equipe = equipeRepository.findByProjeto(projeto.getId());
             List<User> listaUsersEquipe = equipeRepository.findByUsersEquipe(equipe.getId());
             List<RiscoResponseDTO> listaRiscos = riscoRepository.findByProjeto(projeto.getId());
-            //List<AcaoResponseDTO> listaAcoes = acapRepository.findByProjeto(projeto.getId());
+            List<AcaoResponseDTO> listaAcoes = new ArrayList<>();
+
+            for (RiscoResponseDTO risco : listaRiscos) {
+                // Para cada risco, obtenha o ID do risco
+                Long riscoId = risco.id();
+
+                // Use o ID do risco para pesquisar as ações correspondentes
+                List<AcaoResponseDTO> acoesDoRisco = acapRepository.findByRiscoId(riscoId);
+
+                // Adicione as ações encontradas à lista de ações
+                listaAcoes.addAll(acoesDoRisco);
+            }
             List<RequisitoResponseDTO> listaRequisitos = requisitoRepository.findByProjeto(projeto.getId());
             List<RequisitoNaoFuncionalResponseDTO> listaRequisitosNaoFuncionais = requisitoNaoFuncionalRepository.findByProjeto(projeto.getId());
 
 
-            return new ProjetoCompletoResponseDTO(projeto, listPapel,listaUsersEquipe, listaRiscos, listaRequisitos, listaRequisitosNaoFuncionais);
+            return new ProjetoCompletoResponseDTO(projeto, listPapel,listaUsersEquipe, listaRiscos, listaAcoes, listaRequisitos, listaRequisitosNaoFuncionais);
         }else{
-            return new ProjetoCompletoResponseDTO(new Projeto(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            return new ProjetoCompletoResponseDTO(new Projeto(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
     }
 
