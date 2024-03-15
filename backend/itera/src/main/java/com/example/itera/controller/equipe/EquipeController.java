@@ -47,12 +47,22 @@ public class EquipeController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/projeto/{id}")
+    public EquipeResponseDTO getEquipeByProjetoId(@PathVariable Long id) {
+        Equipe equipe = repository.findByProjeto(id);
+        if (equipe != null) {
+            return new EquipeResponseDTO(equipe);
+        } else {
+            return new EquipeResponseDTO(new Equipe());
+        }
+    }
+
+    @GetMapping("/users/{id}")
     public List<UserResponseDTO> getAllUsersEquipeById(@PathVariable Long id){
+        System.out.println("Equipe: " + id);
         List<UserResponseDTO> userList = repository.findByUsersEquipe(id).stream().map(UserResponseDTO::new).toList();
         return userList;
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEquipe(@PathVariable Long id) {

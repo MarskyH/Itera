@@ -13,7 +13,7 @@ CREATE TABLE  public.acao (
     id INTEGER PRIMARY KEY,
     titulo VARCHAR(30),
     descricao VARCHAR(255),
-    tipo VARCHAR(20)
+    tipo VARCHAR(20),
     risco_id BIGINT
 );
 

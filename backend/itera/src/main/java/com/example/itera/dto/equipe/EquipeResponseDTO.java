@@ -7,9 +7,9 @@ import com.example.itera.domain.user.User;
 
 import java.util.List;
 
-public record EquipeResponseDTO(Long id, List<User> listaUsuarios, Projeto projeto) {
+public record EquipeResponseDTO(Long id) {
     public EquipeResponseDTO(Equipe equipe){
-        this(equipe.getId(), equipe.getListaUsuarios(), equipe.getProjeto());
+        this(equipe.getId());
     }
 }
 

@@ -38,6 +38,7 @@ public class PapelController {
         return papelList;
     }
 
+
     @GetMapping("/{id}")
     public PapelResponseDTO getPapelById(@PathVariable Long id) {
         Papel papel = repository.findById(id).orElseThrow();

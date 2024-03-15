@@ -5,6 +5,7 @@ import com.example.itera.domain.risco.Risco;
 import com.example.itera.dto.acao.AcaoRequestDTO;
 import com.example.itera.dto.acao.AcaoResponseDTO;
 import com.example.itera.repository.acao.AcaoRepository;
+import com.example.itera.repository.risco.RiscoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,19 @@ public class AcaoController {
     @Autowired
     private AcaoRepository repository;
 
+    @Autowired
+    private RiscoRepository riscoRepository;
+
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
     public void saveAcao(@RequestBody AcaoRequestDTO data){
-        Acao acaoData = new Acao(data);
+        // Fetch the Risco entity from the database
+        Risco risco = riscoRepository.findById(data.risco().getId()).orElseThrow(() -> new EntityNotFoundException("Risco not found"));
+
+        // Set the fetched Risco entity in the Acao object
+        Acao acaoData = new Acao(data.titulo(), data.descricao(), data.tipo(), risco);
+
+        // Save the Acao object
         repository.save(acaoData);
     }
 

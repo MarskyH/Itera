@@ -34,6 +34,10 @@ public class Acao {
     }
 
     public Acao(String titulo, String descricao, String tipo, Risco risco) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.tipo = tipo;
+        this.risco = risco;
     }
 }
 

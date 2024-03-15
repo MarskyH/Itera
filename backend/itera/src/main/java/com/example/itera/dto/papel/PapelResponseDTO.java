@@ -8,10 +8,10 @@ import com.example.itera.domain.user.User;
 
 import java.util.List;
 
-public record PapelResponseDTO(Long id, String funcao, String habilidade, String competencia, Projeto projeto) {
+public record PapelResponseDTO(Long id, String funcao, String habilidade, String competencia) {
     public PapelResponseDTO(Papel papel){
 
-        this(papel.getId(), papel.getFuncao(), papel.getHabilidade(), papel.getCompetencia(),papel.getProjeto());
+        this(papel.getId(), papel.getFuncao(), papel.getHabilidade(), papel.getCompetencia());
     }
 }
 

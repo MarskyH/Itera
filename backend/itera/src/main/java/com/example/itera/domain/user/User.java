@@ -43,8 +43,8 @@ public class User implements UserDetails {
     private Integer horasDedicada;
     private UserRole role;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "equipe_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "equipe_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Equipe equipe;

@@ -10,9 +10,9 @@ import com.example.itera.domain.risco.Risco;
 
 import java.util.List;
 
-public record RequisitoResponseDTO(Long id,String titulo, String detalhamento, String complexidade, String prioridade, Integer esforco, Integer tamanho, Projeto projeto) {
+public record RequisitoResponseDTO(Long id,String titulo, String detalhamento, String complexidade, String prioridade, Integer esforco, Integer tamanho, Long projeto_id) {
     public RequisitoResponseDTO(Requisito requisito){
-        this(requisito.getId(), requisito.getTitulo(), requisito.getDetalhamento(), requisito.getComplexidade(), requisito.getPrioridade(), requisito.getEsforco(), requisito.getTamanho(), requisito.getProjeto());
+        this(requisito.getId(), requisito.getTitulo(), requisito.getDetalhamento(), requisito.getComplexidade(), requisito.getPrioridade(), requisito.getEsforco(), requisito.getTamanho(), requisito.getProjeto().getId());
     }
 }
 
