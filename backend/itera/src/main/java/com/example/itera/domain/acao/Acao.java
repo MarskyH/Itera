@@ -22,7 +22,6 @@ public class Acao {
     private String tipo;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
     @JoinColumn(name = "risco_id")
     private Risco risco;
 

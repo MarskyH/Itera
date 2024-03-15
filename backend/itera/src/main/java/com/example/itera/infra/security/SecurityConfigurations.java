@@ -49,6 +49,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET,  "/projeto").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/projeto/nome/{nome}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/projeto/id/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/projeto/completo/{nome}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/projeto/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/projeto").permitAll()
                         .requestMatchers(HttpMethod.DELETE,  "/projeto/{id}").hasRole("ADMIN")
