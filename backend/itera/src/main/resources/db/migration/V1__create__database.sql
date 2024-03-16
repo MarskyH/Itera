@@ -35,6 +35,7 @@ CREATE TABLE  public.projeto (
     nome VARCHAR(50) UNIQUE,
     prazo INTEGER,
     tempo_iteracao INTEGER,
+    carga_horaria INTEGER,
     nome_cliente VARCHAR(50),
     created_By VARCHAR(100)
 

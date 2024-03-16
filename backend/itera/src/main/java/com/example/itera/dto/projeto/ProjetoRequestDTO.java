@@ -9,7 +9,7 @@ import com.example.itera.domain.risco.Risco;
 
 import java.util.List;
 
-public record ProjetoRequestDTO(String nome, Integer prazo, Integer tempoIteracao, String nomeCliente, String createdBy) {
+public record ProjetoRequestDTO(String nome, Integer prazo, Integer tempoIteracao, Integer cargaHoraria, String nomeCliente) {
 }
 
 

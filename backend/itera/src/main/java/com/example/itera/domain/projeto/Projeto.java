@@ -28,6 +28,7 @@ public class Projeto {
     private String nome;
     private Integer prazo;
     private Integer tempoIteracao;
+    private Integer cargaHoraria;
     private String nomeCliente;
     private String createdBy;
 
@@ -35,7 +36,7 @@ public class Projeto {
         this.nome = data.nome();
         this.prazo = data.prazo();
         this.tempoIteracao = data.tempoIteracao();
+        this.cargaHoraria = data.cargaHoraria();
         this.nomeCliente = data.nomeCliente();
-        this.createdBy = data.createdBy();
     }
 }
