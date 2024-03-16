@@ -48,7 +48,7 @@ export const useRequisitoStore = defineStore('Requisito', {
         route: '/requisito',
       })
       if (response?.status === 200) {
-        this.requisito = response.data?.content.map((elem: any) => {
+        this.requisito = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             nome: elem.nome,

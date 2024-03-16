@@ -29,13 +29,13 @@ export namespace models {
     }
 
     export interface LoginModel {
-        username: string
+        login: string
         password: string
     }
 
     export interface UserProfileRegisterModel {
         nome: string
-        username: string
+        login: string
         email: string
         password: string
         confirmationPassword?: string
@@ -48,32 +48,32 @@ export namespace models {
     export interface UserModel {
         id?: string
         nome: string
-        username: string
+        login: string
         email: string,
         password: string
         horasDedicada: number
         role: string
     }
 
-    export interface UserResponse{
-            id: string,
-			nome: string,
-			email:string,
-			login: string,
-			password: string,
-			valorHora: number,
-			horasDedicada: number,
-			role: string,
-			enabled: boolean,
-			username: string,
-			authorities: [
-				{
-					authority: string
-				}
-			],
-			accountNonLocked: boolean,
-			credentialsNonExpired: boolean,
-			accountNonExpired: boolean
+    export interface UserResponse {
+        id: string,
+        nome: string,
+        email: string,
+        login: string,
+        password: string,
+        valorHora: number,
+        horasDedicada: number,
+        role: string,
+        enabled: boolean,
+        username: string,
+        authorities: [
+            {
+                authority: string
+            }
+        ],
+        accountNonLocked: boolean,
+        credentialsNonExpired: boolean,
+        accountNonExpired: boolean
     }
 
     export interface ProjetoRegister {
@@ -202,7 +202,7 @@ export namespace models {
     }
 
 
-    export interface ProjetoCompletoResponse{
+    export interface ProjetoCompletoResponse {
         id: number,
         nome: string,
         prazo: number,

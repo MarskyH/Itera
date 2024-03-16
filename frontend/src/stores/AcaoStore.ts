@@ -44,7 +44,7 @@ export const useAcaoStore = defineStore('Acao', {
         route: '/acao',
       })
       if (response?.status === 200) {
-        this.acao = response.data?.content.map((elem: any) => {
+        this.acao = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             titulo: elem.titulo,

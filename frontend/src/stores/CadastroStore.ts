@@ -13,7 +13,7 @@ export const useCadastroPerfilStore = defineStore('CadastroPerfilStore', {
         async userProfileRegister(
             nome: string,
             email: string,
-            username: string,
+            login: string,
             password: string,
             role: string,
 
@@ -21,7 +21,7 @@ export const useCadastroPerfilStore = defineStore('CadastroPerfilStore', {
             const data: UserProfileRegisterModel = {
                 nome,
                 email,
-                username,
+                login,
                 password,
                 role,
             }

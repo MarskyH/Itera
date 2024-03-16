@@ -45,7 +45,7 @@ export const useProjetoStore = defineStore('Projeto', {
         route: '/projeto',
       })
       if (response?.status === 200) {
-        this.projetos = response.data?.content.map((elem: any) => {
+        this.projetos = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             nome: elem.nome,

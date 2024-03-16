@@ -43,7 +43,7 @@ export const useRequisitoNaoFuncionalStore = defineStore('RequisitoNaoFuncional'
         route: '/requisitoNaoFuncional',
       })
       if (response?.status === 200) {
-        this.requisitoNaoFuncional = response.data?.content.map((elem: any) => {
+        this.requisitoNaoFuncional = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             titulo: elem.titulo,

@@ -46,7 +46,7 @@ export const useRiscoStore = defineStore('Risco', {
         route: '/risco',
       })
       if (response?.status === 200) {
-        this.risco = response.data?.content.map((elem: any) => {
+        this.risco = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             titulo: elem.titulo,

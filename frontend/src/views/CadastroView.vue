@@ -29,7 +29,7 @@
             :icon-path="mdiAccount"
           />
           <CustomInput
-            name="username"
+            name="login"
             label="Usuário"
             class-helper-text="text-lightSilver-900"
             :required="true"
@@ -125,7 +125,7 @@ const gradientColors = computed(() => {
 
 const schema = object().shape({
   nome: string().required('Informe nome e sobrenome').trim().matches(/^[A-Za-zÀ-ÿ]+(?:\s[A-Za-zÀ-ÿ]+)+$/, 'Informe nome e sobrenome'),
-  username: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
+  login: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
   email: string().required('Informe um e-mail').matches(/^([A-Za-z\d]+([._][A-Za-z\d]+)*@[A-Za-z\d]+(.[A-Za-z\d]+)*(.[A-z]{2,}))?$/, 'Email inválido'),
   password: string().required('Informe uma senha').matches(/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/, 'Senha inválida'),
   confirmationPassword: string().required('Confirme a senha').oneOf([refYup('password')], 'As senhas informadas são diferentes').matches(/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/, 'Senha inválida')
@@ -141,9 +141,9 @@ const handleSubmit = async (submitData: any) => {
   const response = await $store.userProfileRegister(
     profileData.nome,
     profileData.email,
-    profileData.username,
+    profileData.login,
     profileData.password,
-    "USER",
+    "ADMIN",
   )
 
   if (response.status === 200 || response.status === 201) {
