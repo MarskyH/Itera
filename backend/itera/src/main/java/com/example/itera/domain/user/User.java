@@ -1,6 +1,7 @@
 package com.example.itera.domain.user;
 
 import com.example.itera.domain.equipe.Equipe;
+import com.example.itera.domain.papel.Papel;
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.tarefa.Tarefa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -48,6 +49,12 @@ public class User implements UserDetails {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Equipe equipe;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "papel_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JsonIgnore
+    private Papel papel;
    /* @ManyToOne
     @JoinColumn(name = "tarefa_id")  // Nome da coluna de chave estrangeira em User
     private Tarefa tarefa;*/

@@ -161,7 +161,8 @@ CREATE TABLE  public.users (
     valorHora DOUBLE PRECISION,
     horasDedicada INTEGER,
     role TEXT NOT NULL,
-    equipe_id BIGINT
+    equipe_id BIGINT,
+    papel_id BIGINT
 );
 
 
@@ -195,8 +196,12 @@ ALTER TABLE  public.users
 ADD CONSTRAINT FK_users_equipe
 FOREIGN KEY (equipe_id) REFERENCES equipe(id);
 
+ALTER TABLE  public.users
+ADD CONSTRAINT FK_users_papel
+FOREIGN KEY (papel_id) REFERENCES papel(id);
+
 
 --Inserção de dados
 
-INSERT INTO users (id, nome, email, username, password, valorHora, horasDedicada, role)
-VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', '"admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1');
+INSERT INTO users (id, nome, email, username, password, valorHora, horasDedicada, role, equipe_id, papel_id)
+VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', '"admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1', NULL, NULL);

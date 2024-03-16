@@ -2,12 +2,14 @@ package com.example.itera.controller.user;
 
 import com.example.itera.domain.acao.Acao;
 import com.example.itera.domain.equipe.Equipe;
+import com.example.itera.domain.papel.Papel;
 import com.example.itera.domain.projeto.Projeto;
 import com.example.itera.domain.risco.Risco;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.acao.AcaoRequestDTO;
 import com.example.itera.dto.user.UserEquipeRequestDTO;
 import com.example.itera.repository.equipe.EquipeRepository;
+import com.example.itera.repository.papel.PapelRepository;
 import com.example.itera.repository.projeto.ProjetoRepository;
 import com.example.itera.repository.user.UserRepository;
 import com.example.itera.dto.user.UserResponseDTO;
@@ -31,6 +33,8 @@ public class UserController {
     private EquipeRepository equipeRepository;
 
     @Autowired
+    private PapelRepository papelRepository;
+    @Autowired
     private ProjetoRepository projetoRepository;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
@@ -48,9 +52,11 @@ public class UserController {
             User dataUser = userRepository.findByNome(data.nomeUser());
             Projeto dataProjeto = projetoRepository.findByNome(data.nomeProjeto());
             Equipe dataEquipe = equipeRepository.findByProjeto(dataProjeto.getId());
+            Papel dataPapel = papelRepository.findById(data.papel_id()).orElseThrow();
             dataUser.setEquipe(dataEquipe);
             dataUser.setValorHora(data.valorHoraHomem());
             dataUser.setHorasDedicada(data.horasDedicadas());
+            dataUser.setPapel(dataPapel);
             userRepository.save(dataUser);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {

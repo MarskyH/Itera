@@ -19,6 +19,13 @@ import PageHeader from 'src/components/PageHeader.vue'
 const ilustracaoPath = "src/assets/ilustracaoNovoProjeto.png"
 
 function chamaGets(){
+    const projeto = {
+          nome: "Meu Projeto Front",
+          prazo: 150,
+          tempoIteracao:15,
+          nomeCliente: "Vue",
+          createdBy: ""
+    }
     $storeProjeto.fetchProjetos()
     $storePapel.fetchPapel()
     $storeRisco.fetchRisco()
@@ -26,6 +33,8 @@ function chamaGets(){
     $storeRequisito.fetchRequisito()
     $storeRequisitoNaoFuncional.fetchRequisitoNaoFuncional()
     $storeProjeto.fetchProjetoNome("Meu Projeto")
+    $storeProjeto.registerProjeto(projeto)
+
 }
 
 </script>
