@@ -46,6 +46,13 @@ public class RoleController {
     }
 
 
+    @GetMapping("/project/{id}")
+    public List<RoleResponseDTO> getRolesProject(@PathVariable String id){
+        List<RoleResponseDTO> roleList = repository.findByProject(id).stream().toList();
+        return roleList;
+    }
+
+
     @GetMapping("/{id}")
     public RoleResponseDTO getRoleById(@PathVariable String id) {
         Role role = repository.findById(id).orElseThrow();

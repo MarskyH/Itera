@@ -145,6 +145,13 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("/{id}/users")
+    public List<UserResponseDTO> getAllUsersTeamByProject(@PathVariable String id){
+        Team team = teamRepository.findByProject(id);
+        List<UserResponseDTO> userList = teamRepository.findByUsersTeam(team.getId()).stream().toList();
+        return userList;
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {

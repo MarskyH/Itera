@@ -29,6 +29,7 @@ public class TeamController {
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
     public void saveTeam(@RequestBody TeamRequestDTO data){
+        System.out.println("project_id" + data.project_id());
         Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
         Team teamData = new Team(projectData);
         repository.save(teamData);
@@ -52,7 +53,7 @@ public class TeamController {
         }
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}/users")
     public List<UserResponseDTO> getAllUsersTeamById(@PathVariable String id){
         List<UserResponseDTO> userList = repository.findByUsersTeam(id).stream().toList();
         return userList;

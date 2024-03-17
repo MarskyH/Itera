@@ -44,7 +44,7 @@ public class UserController {
         return userList;
     }
 
-    @PutMapping("/update/team")
+    @PutMapping("/team")
     public ResponseEntity<Void> updateTeamUser(@RequestBody UserTeamRequestDTO data) {
         System.out.println("name user:" + data.nameUser());
         System.out.println("name project:" + data.nameProject());
