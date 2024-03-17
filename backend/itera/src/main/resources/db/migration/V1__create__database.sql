@@ -1,208 +1,119 @@
---Sequencia acao_seq
-CREATE SEQUENCE public.acao_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
--- Tabela Acao
-CREATE TABLE  public.acao (
-    id INTEGER PRIMARY KEY,
-    titulo VARCHAR(30),
-    descricao VARCHAR(255),
-    tipo VARCHAR(20),
-    risco_id BIGINT
+-- Activity Table (Tabela de Atividades)
+CREATE TABLE public.activity (
+    id TEXT PRIMARY KEY, -- Identificador único da atividade
+    title VARCHAR(30), -- Título da atividade
+    description VARCHAR(255), -- Descrição da atividade
+    type VARCHAR(20), -- Tipo da atividade
+    risk_id TEXT -- Identificador de risco associado
 );
 
---Linkando acao_seq com acao_id
-ALTER SEQUENCE public.acao_seq OWNED BY public.acao.id;
-
---Sequencia projeto_seq
-CREATE SEQUENCE public.projeto_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
--- Tabela Projeto
-CREATE TABLE  public.projeto (
-    id INTEGER PRIMARY KEY,
-    nome VARCHAR(50) UNIQUE,
-    prazo INTEGER,
-    tempo_iteracao INTEGER,
-    carga_horaria INTEGER,
-    nome_cliente VARCHAR(50),
-    created_By VARCHAR(100)
-
+-- Project Table (Tabela de Projetos)
+CREATE TABLE public.project (
+    id TEXT PRIMARY KEY, -- Identificador único do projeto
+    name VARCHAR(50) UNIQUE, -- Nome único do projeto
+    deadline INTEGER, -- Prazo do projeto em dias
+    iteration_time INTEGER, -- Tempo de iteração do projeto em dias
+    work_hours INTEGER, -- Horas de trabalho do projeto por dia
+    client_name VARCHAR(50), -- Nome do cliente
+    created_by VARCHAR(100) -- Criado por (usuário responsável)
 );
 
---Linkando projeto_seq com projeto_id
-ALTER SEQUENCE public.projeto_seq OWNED BY public.projeto.id;
-
---Sequencia equipe_seq
-CREATE SEQUENCE public.equipe_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
--- Tabela Equipe
-CREATE TABLE  public.equipe (
-    id INTEGER PRIMARY KEY,
-    projeto_id BIGINT
+-- Team Table (Tabela de Equipes)
+CREATE TABLE public.team (
+    id TEXT PRIMARY KEY, -- Identificador único da equipe
+    project_id TEXT -- Identificador do projeto associado
 );
 
---Linkando equipe_seq com equipe_id
-ALTER SEQUENCE public.equipe_seq OWNED BY public.equipe.id;
-
---Sequencia papel_seq
-CREATE SEQUENCE public.papel_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
--- Tabela Papel
-CREATE TABLE  public.papel (
-    id INTEGER PRIMARY KEY,
-    funcao VARCHAR(30),
-    habilidade VARCHAR(255),
-    competencia VARCHAR(255),
-    projeto_id BIGINT
+-- Role Table (Tabela de Funções)
+CREATE TABLE public.role (
+    id TEXT PRIMARY KEY, -- Identificador único da função
+    function VARCHAR(30), -- Função
+    skill VARCHAR(255), -- Habilidade
+    competency VARCHAR(255), -- Competência
+    project_id TEXT -- Identificador do projeto associado
 );
 
---Linkando papel_seq com papel_id
-ALTER SEQUENCE public.papel_seq OWNED BY public.papel.id;
-
---Sequencia requisito_seq
-CREATE SEQUENCE public.requisito_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
--- Tabela Requisito
-CREATE TABLE  public.requisito (
-    id INTEGER PRIMARY KEY,
-    titulo VARCHAR(30),
-    detalhamento VARCHAR(30),
-    complexidade VARCHAR(30),
-    prioridade VARCHAR(30),
-    esforco INTEGER,
-    tamanho INTEGER,
-    projeto_id BIGINT
+-- Requirement Table (Tabela de Requisitos)
+CREATE TABLE public.requirement (
+    id TEXT PRIMARY KEY, -- Identificador único do requisito
+    title VARCHAR(30), -- Título do requisito
+    details VARCHAR(30), -- Detalhes do requisito
+    complexity VARCHAR(30), -- Complexidade do requisito
+    priority VARCHAR(30), -- Prioridade do requisito
+    effort INTEGER, -- Esforço necessário para o requisito
+    size_requirement INTEGER, -- Tamanho do requisito
+    project_id TEXT -- Identificador do projeto associado
 );
 
---Linkando requisito__seq com requisito__id
-ALTER SEQUENCE public.requisito_seq OWNED BY public.requisito.id;
-
---Sequencia requisitonaofuncional_seq
-CREATE SEQUENCE public.requisitonaofuncional_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
--- Tabela RequisitoNaoFuncional
-CREATE TABLE  public.requisitonaofuncional (
-    id INTEGER PRIMARY KEY,
-    titulo VARCHAR(30),
-    valor INTEGER,
-    projeto_id BIGINT
+-- Non-Functional Requirement Table (Tabela de Requisitos Não Funcionais)
+CREATE TABLE public.nonfunctionalrequirement (
+    id TEXT PRIMARY KEY, -- Identificador único do requisito não funcional
+    title VARCHAR(30), -- Título do requisito não funcional
+    value_requirement INTEGER, -- Valor do requisito não funcional
+    project_id TEXT -- Identificador do projeto associado
 );
 
---Linkando requisitonaofuncional_seq com requisitonaofuncional_id
-ALTER SEQUENCE public.requisitonaofuncional_seq OWNED BY public.requisitonaofuncional.id;
-
---Sequencia risco_seq
-CREATE SEQUENCE public.risco_seq
-    AS INTEGER
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
--- Tabela Risco
-CREATE TABLE  public.risco (
-    id INTEGER PRIMARY KEY,
-    titulo VARCHAR(30),
-    efeito VARCHAR(255),
-    probabilidade VARCHAR(20),
-    impacto VARCHAR(20),
-    grau_exposicao VARCHAR(20),
-    acao_id BIGINT,
-    projeto_id BIGINT
+-- Risk Table (Tabela de Riscos)
+CREATE TABLE public.risk (
+    id TEXT PRIMARY KEY, -- Identificador único do risco
+    title VARCHAR(30), -- Título do risco
+    effect VARCHAR(255), -- Efeito do risco
+    probability VARCHAR(20), -- Probabilidade do risco
+    impact VARCHAR(20), -- Impacto do risco
+    exposure_degree VARCHAR(20), -- Grau de exposição ao risco
+    action_id TEXT, -- Identificador da ação associada
+    project_id TEXT -- Identificador do projeto associado
 );
 
---Linkando risco_seq com risco_id
-ALTER SEQUENCE public.risco_seq OWNED BY public.risco.id;
-
--- Tabela Users
-CREATE TABLE  public.users (
-    id TEXT PRIMARY KEY NOT NULL,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    valorHora DOUBLE PRECISION,
-    horasDedicada INTEGER,
-    role TEXT NOT NULL,
-    equipe_id BIGINT,
-    papel_id BIGINT
+-- Users Table (Tabela de Usuários)
+CREATE TABLE public.users (
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do usuário
+    name VARCHAR(100) NOT NULL, -- Nome do usuário
+    email VARCHAR(100) NOT NULL, -- E-mail do usuário
+    username VARCHAR(50) NOT NULL, -- Nome de usuário
+    password VARCHAR(255) NOT NULL, -- Senha do usuário
+    hourly_rate DOUBLE PRECISION, -- Taxa horária do usuário
+    dedicated_hours INTEGER, -- Horas dedicadas pelo usuário
+    user_role TEXT NOT NULL, -- Função do usuário
+    team_id TEXT, -- Identificador da equipe associada
+    role_id TEXT -- Identificador da função associada
 );
 
+-- Foreign Keys (Chaves Estrangeiras)
 
---Chaves Estrangeiras
+ALTER TABLE public.team
+ADD CONSTRAINT FK_team_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE  public.equipe
-ADD CONSTRAINT FK_equipe_projeto
-FOREIGN KEY (projeto_id) REFERENCES projeto(id);
+ALTER TABLE public.role
+ADD CONSTRAINT FK_role_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE  public.papel
-ADD CONSTRAINT FK_papel_projeto
-FOREIGN KEY (projeto_id) REFERENCES projeto(id);
+ALTER TABLE public.requirement
+ADD CONSTRAINT FK_requirement_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE  public.requisito
-ADD CONSTRAINT FK_requisito_projeto
-FOREIGN KEY (projeto_id) REFERENCES projeto(id);
+ALTER TABLE public.nonfunctionalrequirement
+ADD CONSTRAINT FK_nonfunctionalrequirement_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE  public.requisitonaofuncional
-ADD CONSTRAINT FK_requisitonaofuncional_projeto
-FOREIGN KEY (projeto_id) REFERENCES projeto(id);
+ALTER TABLE public.activity
+ADD CONSTRAINT FK_activity_risk
+FOREIGN KEY (risk_id) REFERENCES risk(id);
 
-ALTER TABLE  public.acao
-ADD CONSTRAINT FK_acao_risco
-FOREIGN KEY (risco_id) REFERENCES risco(id);
+ALTER TABLE public.risk
+ADD CONSTRAINT FK_risk_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE  public.risco
-ADD CONSTRAINT FK_risco_projeto
-FOREIGN KEY (projeto_id) REFERENCES projeto(id);
+ALTER TABLE public.users
+ADD CONSTRAINT FK_users_team
+FOREIGN KEY (team_id) REFERENCES team(id);
 
-ALTER TABLE  public.users
-ADD CONSTRAINT FK_users_equipe
-FOREIGN KEY (equipe_id) REFERENCES equipe(id);
+ALTER TABLE public.users
+ADD CONSTRAINT FK_users_role
+FOREIGN KEY (role_id) REFERENCES role(id);
 
-ALTER TABLE  public.users
-ADD CONSTRAINT FK_users_papel
-FOREIGN KEY (papel_id) REFERENCES papel(id);
+-- Data Insertion (Inserção de Dados)
 
-
---Inserção de dados
-
-INSERT INTO users (id, nome, email, username, password, valorHora, horasDedicada, role, equipe_id, papel_id)
-VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', '"admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1', NULL, NULL);
+INSERT INTO users (id, name, email, username, password, hourly_rate, dedicated_hours, user_role, team_id, role_id)
+VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', 'admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1', NULL, NULL);

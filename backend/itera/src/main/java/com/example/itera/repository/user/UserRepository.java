@@ -1,6 +1,6 @@
 package com.example.itera.repository.user;
 
-import com.example.itera.domain.projeto.Projeto;
+import com.example.itera.domain.project.Project;
 import com.example.itera.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

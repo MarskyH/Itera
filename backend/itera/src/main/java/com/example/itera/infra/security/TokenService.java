@@ -23,9 +23,9 @@ public class TokenService {
                     .withIssuer("itera-api")
                     .withSubject(user.getUsername())
                     .withClaim("username", user.getUsername())
-                    .withClaim("nome", user.getNome())
-                    .withClaim("horasDedicada", user.getHorasDedicada())
-                    .withClaim("role", user.getRole().toString())
+                    .withClaim("name", user.getName())
+                    .withClaim("dedicatedHours", user.getDedicatedHours())
+                    .withClaim("role", user.getUserRole().toString())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;

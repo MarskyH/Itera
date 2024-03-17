@@ -71,31 +71,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.CardapioApplication.executor": "Run",
-    "Application.IteraApplication.executor": "Run",
-    "Maven.cardapio [package].executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_directory_selection": "C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio",
-    "last_opened_file_path": "C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "advanced.settings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.CardapioApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.IteraApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.cardapio [package].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/backend/itera/src/main/java/com/example/itera/repository&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.cardapio.user" />
       <recent name="com.example.cardapio.food" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\Fernanda Kipper\backend\itera\src\main\java\com\example\itera\repository" />
       <recent name="C:\Users\Lockhart\OneDrive\Projetos\Fernanda Kipper\Aplicação Cárdapio\cardapio\cardapio\src\main\resources\db\migration" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="IteraApplication" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.example.itera.IteraApplication" />
+      <module name="backend" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/itera" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

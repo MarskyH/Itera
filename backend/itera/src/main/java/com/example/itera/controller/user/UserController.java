@@ -1,16 +1,16 @@
 package com.example.itera.controller.user;
 
-import com.example.itera.domain.acao.Acao;
-import com.example.itera.domain.equipe.Equipe;
-import com.example.itera.domain.papel.Papel;
-import com.example.itera.domain.projeto.Projeto;
-import com.example.itera.domain.risco.Risco;
+import com.example.itera.domain.activity.Activity;
+import com.example.itera.domain.team.Team;
+import com.example.itera.domain.role.Role;
+import com.example.itera.domain.project.Project;
+import com.example.itera.domain. risk.Risk;
 import com.example.itera.domain.user.User;
-import com.example.itera.dto.acao.AcaoRequestDTO;
-import com.example.itera.dto.user.UserEquipeRequestDTO;
-import com.example.itera.repository.equipe.EquipeRepository;
-import com.example.itera.repository.papel.PapelRepository;
-import com.example.itera.repository.projeto.ProjetoRepository;
+import com.example.itera.dto.activity.ActivityRequestDTO;
+import com.example.itera.dto.user.UserTeamRequestDTO;
+import com.example.itera.repository.team.TeamRepository;
+import com.example.itera.repository.role.RoleRepository;
+import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.user.UserRepository;
 import com.example.itera.dto.user.UserResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,12 +30,12 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private EquipeRepository equipeRepository;
+    private TeamRepository teamRepository;
 
     @Autowired
-    private PapelRepository papelRepository;
+    private RoleRepository roleRepository;
     @Autowired
-    private ProjetoRepository projetoRepository;
+    private ProjectRepository projectRepository;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @GetMapping
@@ -44,19 +44,19 @@ public class UserController {
         return userList;
     }
 
-    @PutMapping("/atualizar/equipe")
-    public ResponseEntity<Void> updateEquipeUser(@RequestBody UserEquipeRequestDTO data) {
-        System.out.println("nome user:" + data.nomeUser());
-        System.out.println("nome projeto:" + data.nomeProjeto());
+    @PutMapping("/update/team")
+    public ResponseEntity<Void> updateTeamUser(@RequestBody UserTeamRequestDTO data) {
+        System.out.println("name user:" + data.nameUser());
+        System.out.println("name project:" + data.nameProject());
         try {
-            User dataUser = userRepository.findByNome(data.nomeUser());
-            Projeto dataProjeto = projetoRepository.findByNome(data.nomeProjeto());
-            Equipe dataEquipe = equipeRepository.findByProjeto(dataProjeto.getId());
-            Papel dataPapel = papelRepository.findById(data.papel_id()).orElseThrow();
-            dataUser.setEquipe(dataEquipe);
-            dataUser.setValorHora(data.valorHoraHomem());
-            dataUser.setHorasDedicada(data.horasDedicadas());
-            dataUser.setPapel(dataPapel);
+            User dataUser = userRepository.findByNome(data.nameUser());
+            Project dataProject = projectRepository.findByNome(data.nameProject());
+            Team dataTeam = teamRepository.findByProject(dataProject.getId());
+            Role dataRole = roleRepository.findById(data.role_id()).orElseThrow();
+            dataUser.setTeam(dataTeam);
+            dataUser.setHourlyRate(data.hourlyRate());
+            dataUser.setDedicatedHours(data.dedicatedHours());
+            dataUser.setRole(dataRole);
             userRepository.save(dataUser);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {

@@ -1,9 +1,7 @@
 package com.example.itera.domain.user;
 
-import com.example.itera.domain.equipe.Equipe;
-import com.example.itera.domain.papel.Papel;
-import com.example.itera.domain.projeto.Projeto;
-import com.example.itera.domain.tarefa.Tarefa;
+import com.example.itera.domain.team.Team;
+import com.example.itera.domain.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +25,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String nome;
+    private String name;
 
     @Column(name = "email")
     private String email;
@@ -37,43 +35,42 @@ public class User implements UserDetails {
 
     private String password;
 
-    @Column(name = "valorhora")
-    private Double valorHora;
+    @Column(name = "hourly_rate")
+    private Double hourlyRate;
 
-    @Column(name = "horasdedicada")
-    private Integer horasDedicada;
-    private UserRole role;
+    @Column(name = "dedicated_hours")
+    private Integer dedicatedHours;
+
+    @Column(name = "user_role")
+    private UserRole userRole;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "equipe_id", nullable = true)
+    @JoinColumn(name = "team_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Equipe equipe;
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "papel_id", nullable = true)
+    @JoinColumn(name = "role_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JsonIgnore
-    private Papel papel;
-   /* @ManyToOne
-    @JoinColumn(name = "tarefa_id")  // Nome da coluna de chave estrangeira em User
-    private Tarefa tarefa;*/
+    private Role role;
 
 
-    public User(String nome, String email, String login, String password, Double valorHora, Integer horasDedicada, UserRole role) {
-        this.nome = nome;
+    public User(String name, String email, String login, String password, Double hourlyRate, Integer dedicatedHours, UserRole userRole) {
+        this.name = name;
         this.login = login;
         this.email = email;
         this.password = password;
-        this.valorHora = valorHora;
-        this.horasDedicada = horasDedicada;
-        this.role = role;
+        this.hourlyRate = hourlyRate;
+        this.dedicatedHours = dedicatedHours;
+        this.userRole = userRole;
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.userRole == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
