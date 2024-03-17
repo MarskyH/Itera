@@ -21,7 +21,7 @@
             Preencha com suas informações
           </p>
           <CustomInput
-            name="nome"
+            name="name"
             label="Nome Completo"
             class-helper-text="text-lightSilver-900"
             :required="true"
@@ -94,7 +94,7 @@ import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
-import ModeToggleButton from 'src/components/ModeToggleButton.vue'
+import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
@@ -124,7 +124,7 @@ const gradientColors = computed(() => {
 })
 
 const schema = object().shape({
-  nome: string().required('Informe nome e sobrenome').trim().matches(/^[A-Za-zÀ-ÿ]+(?:\s[A-Za-zÀ-ÿ]+)+$/, 'Informe nome e sobrenome'),
+  name: string().required('Informe nome e sobrenome').trim().matches(/^[A-Za-zÀ-ÿ]+(?:\s[A-Za-zÀ-ÿ]+)+$/, 'Informe nome e sobrenome'),
   login: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
   email: string().required('Informe um e-mail').matches(/^([A-Za-z\d]+([._][A-Za-z\d]+)*@[A-Za-z\d]+(.[A-Za-z\d]+)*(.[A-z]{2,}))?$/, 'Email inválido'),
   password: string().required('Informe uma senha').matches(/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/, 'Senha inválida'),
@@ -139,7 +139,7 @@ const handleSubmit = async (submitData: any) => {
   const profileData: UserProfileRegisterModel = submitData
   loading.value = true
   const response = await $store.userProfileRegister(
-    profileData.nome,
+    profileData.name,
     profileData.email,
     profileData.login,
     profileData.password,

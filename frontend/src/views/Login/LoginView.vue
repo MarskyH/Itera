@@ -4,12 +4,18 @@
     @invalid-submit="onInvalid"
     :validation-schema="schema"
   >
-    <main class="py-8 flex items-center justify-center min-h-screen"
-      :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}">
+    <main
+      class="py-8 flex items-center justify-center min-h-screen"
+      :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}"
+    >
       <ModeToggleButton class="absolute top-8 right-8" />
 
       <div class="flex flex-col items-center w-[800px] h-[500px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
-        <img :src= "logoPath" alt="Itera Logo" class="w-64 h-32"/>
+        <img
+          :src="logoPath"
+          alt="Itera Logo"
+          class="w-64 h-32"
+        />
         <div class="flex flex-col w-full items-center mb-4">
           <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
             Entre com suas credenciais
@@ -41,7 +47,11 @@
                 Recupere aqui
               </p>
             </div>
-            <CustomButton title="Entrar" color="bg-lavenderIndigo-900" color-dark="bg-ube-900" />
+            <CustomButton
+              title="Entrar"
+              color="bg-lavenderIndigo-900"
+              color-dark="bg-ube-900"
+            />
             <div class="flex">
               <p class="font text-16 text-black dark:text-lightSilver-900">
                 Não possui login?
@@ -50,7 +60,7 @@
                 <a href="/cadastro"> Crie sua conta</a>
               </p>
             </div>
-        </div>
+          </div>
         </div>
       </div>
     </main>
@@ -63,7 +73,7 @@ import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
-import ModeToggleButton from 'src/components/ModeToggleButton.vue'
+import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'

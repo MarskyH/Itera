@@ -1,0 +1,64 @@
+<script setup lang="ts">
+  import { Field, ErrorMessage } from 'vee-validate'
+
+  defineProps({
+    label: {
+      type: String,
+      default: 'label'
+    },
+    name: {
+      type: String,
+      default: 'name'
+    },
+    placeholder: {
+      type: String,
+      default: 'placeholder'
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    options: {
+      type: Array<{ value: string; name: string; selected: boolean }>,
+      default: [],
+      required: false
+    }
+  })
+
+</script>
+
+<template>
+  <div class="flex flex-col gap-1">
+    <span
+      class="text-semibold text-sm"
+    >
+      {{ label }}
+
+      <span
+        v-if="required"
+        class="text-red-500 dark:text-red-400"
+      >*</span>
+    </span>
+
+    <Field
+      :name="name"
+      :placeholder="placeholder"
+      :as="options.length > 0 ? 'select' : 'input'"
+      class="text-xs bg-transparent dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+    >
+      <option
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+        :selected="option.selected"
+      >
+        {{ option.name }}
+      </option>
+    </Field>
+
+    <ErrorMessage
+      :name="name"
+      class="text-xs text-red-500 dark:text-red-400"
+    />
+  </div>
+</template>

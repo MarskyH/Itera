@@ -11,19 +11,19 @@ export const useCadastroPerfilStore = defineStore('CadastroPerfilStore', {
 
     actions: {
         async userProfileRegister(
-            nome: string,
+            name: string,
             email: string,
             login: string,
             password: string,
-            role: string,
+            userRole: string,
 
         ) {
             const data: UserProfileRegisterModel = {
-                nome,
+                name,
                 email,
                 login,
                 password,
-                role,
+                userRole
             }
 
             const response = await Api.request({

@@ -7,17 +7,18 @@ const isDark = useDark();
 
 const menuExpanded = ref<boolean>(true);
 
+import iteraIconDark from 'src/assets/iteraIconDark.svg'
+import iteraIconLight from 'src/assets/iteraIconDark.svg'
+import iteraLogoHorizontalDark from 'src/assets/iteraLogoHorizontalDark.svg'
+import iteraLogoHorizontalLight from 'src/assets/iteraLogoHorizontalLight.svg'
+
 const logoIconPath = computed(() =>
-  isDark.value
-    ? "src/assets/iteraIconDark.svg"
-    : "src/assets/iteraIconLight.svg"
-);
+  isDark.value ? iteraIconDark : iteraIconLight
+)
 
 const logoPath = computed(() =>
-  isDark.value
-    ? "src/assets/iteraLogoHorizontalDark.svg"
-    : "src/assets/iteraLogoHorizontalLight.svg"
-);
+  isDark.value ? iteraLogoHorizontalDark : iteraLogoHorizontalLight
+)
 
 const menuButtons = [
   {
@@ -57,7 +58,7 @@ const menuButtons = [
   <Transition>
     <div
       v-show="true"
-      class="flex flex-col shrink-0 h-full rounded-md p-3 bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90% menu-transition"
+      class="hidden lg:flex flex-col shrink-0 h-full rounded-md p-3 bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90% menu-transition"
       :style="`width: ${menuExpanded ? '240px' : '72px'}`"
     >
       <div
@@ -87,6 +88,7 @@ const menuButtons = [
           :key="menuButton.link"
           class="flex items-center rounded-md gap-4 p-3 hover:bg-gray-800/5 dark:hover:bg-gray-100/5 font-semibold"
           :class="[menuExpanded ? 'justify-start' : 'justify-center']"
+          @click="$router.push({ name: menuButton.link })"
         >
           <img
             v-if="menuButton.link === 'home' && !menuExpanded"

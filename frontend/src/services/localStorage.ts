@@ -69,7 +69,7 @@ export default class LocalStorage {
     const result: UserData = JSON.parse(this.b64DecodeUnicode(base64))
 
     result.nome = this.capitalize(result.nome)
-    result.username = this.capitalize(result.username)
+    result.login = this.capitalize(result.login)
     result.role = this.capitalize(result.role)
 
     return result
