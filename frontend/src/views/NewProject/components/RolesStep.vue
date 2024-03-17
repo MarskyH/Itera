@@ -76,7 +76,8 @@ inputFields.forEach(inputField => formValidations[inputField.name] = inputField.
 const schema = yup.object(formValidations);
 
 async function setRoles() {
-  await $roleStore.fetchRoles().then(() => {
+
+  await $roleStore.fetchRolesByProject($projectStore.project.id ? $projectStore.project.id : "").then(() => {
     roles.value = $roleStore.roles
   })
 }

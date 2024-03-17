@@ -13,6 +13,7 @@ import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useTeamStore } from "src/stores/TeamStore";
+import { useProjectStore } from "src/stores/ProjectStore";
 
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
@@ -20,6 +21,7 @@ interface Role extends models.Role {}
 const $teamStore = useTeamStore()
 const $teamMemberStore = useTeamMemberStore()
 const $roleStore = useRoleStore()
+const $projectStore = useProjectStore()
 
 const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
@@ -124,9 +126,10 @@ inputFields.forEach(inputField => formValidations[inputField.name] = inputField.
 const schema = yup.object(formValidations);
 
 async function setRoles() {
-  await $roleStore.fetchRoles().then(() => {
-    roles.value = $roleStore.roles
-  })
+
+await $roleStore.fetchRolesByProject($projectStore.project.id ? $projectStore.project.id : "").then(() => {
+  roles.value = $roleStore.roles
+})
 }
 
 async function setTeamMembers() {
