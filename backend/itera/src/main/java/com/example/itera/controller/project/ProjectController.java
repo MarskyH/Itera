@@ -2,26 +2,18 @@ package com.example.itera.controller.project;
 
 
 
-import com.example.itera.domain.team.Team;
+
 import com.example.itera.domain.project.Project;
-import com.example.itera.dto.activity.ActivityResponseDTO;
-import com.example.itera.dto.role.RoleResponseDTO;
-import com.example.itera.dto.project.ProjectCompletResponseDTO;
 import com.example.itera.dto.project.ProjectRequestDTO;
 import com.example.itera.dto.project.ProjectResponseDTO;
-import com.example.itera.dto.requirement.RequirementResponseDTO;
-import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementResponseDTO;
-import com.example.itera.dto. risk.RiskResponseDTO;
-import com.example.itera.dto.team.TeamResponseDTO;
-import com.example.itera.dto.user.UserResponseDTO;
 import com.example.itera.infra.security.TokenService;
 import com.example.itera.repository.activity.ActivityRepository;
-import com.example.itera.repository.team.TeamRepository;
 import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
 import com.example.itera.repository. risk.RiskRepository;
+import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +36,7 @@ public class ProjectController {
     private RoleRepository roleRepository;
 
     @Autowired
-    private TeamRepository teamRepository;
+    private UserRepository userRepository;
 
     @Autowired
     RiskRepository  riskRepository;
@@ -105,13 +97,13 @@ public class ProjectController {
         }
     }
 
-    @GetMapping("/completo/{name}")
+   /* @GetMapping("/completo/{name}")
     public ProjectCompletResponseDTO getProjectCompleto(@PathVariable String name) {
         Project project = projectRepository.findByNome(name);
         if (project != null){
             List<RoleResponseDTO> listRole = roleRepository.findByProject(project.getId());
-            Team team = teamRepository.findByProject(project.getId());
-            List<UserResponseDTO> listaUsersTeam = teamRepository.findByUsersTeam(team.getId());
+            //Team team = teamRepository.findByProject(project.getId());
+           // List<UserResponseDTO> listaUsersTeam = teamRepository.findByUsersTeam(team.getId());
             List<RiskResponseDTO> listaRisks =  riskRepository.findByProject(project.getId());
             List<ActivityResponseDTO> listaAcoes = new ArrayList<>();
 
@@ -150,8 +142,7 @@ public class ProjectController {
         Team team = teamRepository.findByProject(id);
         List<UserResponseDTO> userList = teamRepository.findByUsersTeam(team.getId()).stream().toList();
         return userList;
-    }
-
+    }*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {

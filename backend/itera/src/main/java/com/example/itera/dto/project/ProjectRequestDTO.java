@@ -1,6 +1,5 @@
 package com.example.itera.dto.project;
 
-import com.example.itera.domain.team.Team;
 import com.example.itera.domain.role.Role;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;

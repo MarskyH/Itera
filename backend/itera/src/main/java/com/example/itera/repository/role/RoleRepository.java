@@ -3,7 +3,7 @@ package com.example.itera.repository.role;
 
 
 
-import com.example.itera.domain.team.Team;
+
 import com.example.itera.domain.role.Role;
 import com.example.itera.dto.role.RoleResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;

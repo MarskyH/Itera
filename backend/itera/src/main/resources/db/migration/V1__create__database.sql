@@ -18,9 +18,13 @@ CREATE TABLE public.project (
     created_by VARCHAR(100) -- Criado por (usuário responsável)
 );
 
--- Team Table (Tabela de Equipes)
-CREATE TABLE public.team (
+-- Team Table (Tabela de Membros de Equipe)
+CREATE TABLE public.team_member (
     id TEXT PRIMARY KEY, -- Identificador único da equipe
+    hourly_rate DOUBLE PRECISION, -- Taxa horária do usuário
+    dedicated_hours INTEGER, -- Horas dedicadas pelo usuário
+    user_id TEXT,
+    role_id TEXT,
     project_id TEXT -- Identificador do projeto associado
 );
 
@@ -72,18 +76,11 @@ CREATE TABLE public.users (
     email VARCHAR(100) NOT NULL, -- E-mail do usuário
     username VARCHAR(50) NOT NULL, -- Nome de usuário
     password VARCHAR(255) NOT NULL, -- Senha do usuário
-    hourly_rate DOUBLE PRECISION, -- Taxa horária do usuário
-    dedicated_hours INTEGER, -- Horas dedicadas pelo usuário
-    user_role TEXT NOT NULL, -- Função do usuário
-    team_id TEXT, -- Identificador da equipe associada
-    role_id TEXT -- Identificador da função associada
+    user_role TEXT NOT NULL -- Função do usuário
 );
 
 -- Foreign Keys (Chaves Estrangeiras)
 
-ALTER TABLE public.team
-ADD CONSTRAINT FK_team_project
-FOREIGN KEY (project_id) REFERENCES project(id);
 
 ALTER TABLE public.role
 ADD CONSTRAINT FK_role_project
@@ -105,15 +102,18 @@ ALTER TABLE public.risk
 ADD CONSTRAINT FK_risk_project
 FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE public.users
-ADD CONSTRAINT FK_users_team
-FOREIGN KEY (team_id) REFERENCES team(id);
+ALTER TABLE public.team_member
+ADD CONSTRAINT FK_user_team_member
+FOREIGN KEY (user_id) REFERENCES users(id);
 
-ALTER TABLE public.users
-ADD CONSTRAINT FK_users_role
+ALTER TABLE public.team_member
+ADD CONSTRAINT FK_role_team_member
 FOREIGN KEY (role_id) REFERENCES role(id);
 
--- Data Insertion (Inserção de Dados)
+ALTER TABLE public.team_member
+ADD CONSTRAINT FK_project_team_member
+FOREIGN KEY (project_id) REFERENCES project(id);
 
-INSERT INTO users (id, name, email, username, password, hourly_rate, dedicated_hours, user_role, team_id, role_id)
-VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', 'admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW', NULL, NULL, '1', NULL, NULL);
+-- Data Insertion (Inserção de Dados)
+INSERT INTO users (id, name, email, username, password, user_role)
+VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', 'admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW','1');

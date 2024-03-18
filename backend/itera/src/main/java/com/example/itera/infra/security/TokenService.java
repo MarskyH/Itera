@@ -24,7 +24,6 @@ public class TokenService {
                     .withSubject(user.getUsername())
                     .withClaim("username", user.getUsername())
                     .withClaim("name", user.getName())
-                    .withClaim("dedicatedHours", user.getDedicatedHours())
                     .withClaim("role", user.getUserRole().toString())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);

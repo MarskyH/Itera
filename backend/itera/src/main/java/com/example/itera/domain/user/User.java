@@ -1,12 +1,8 @@
 package com.example.itera.domain.user;
 
-import com.example.itera.domain.team.Team;
-import com.example.itera.domain.role.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,44 +22,19 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
-
     @Column(name = "email")
     private String email;
-
     @Column(name = "username")
     private String login;
-
     private String password;
-
-    @Column(name = "hourly_rate")
-    private Double hourlyRate;
-
-    @Column(name = "dedicated_hours")
-    private Integer dedicatedHours;
-
     @Column(name = "user_role")
     private UserRole userRole;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "team_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    private Team team;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "role_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JsonIgnore
-    private Role role;
-
-
-    public User(String name, String email, String login, String password, Double hourlyRate, Integer dedicatedHours, UserRole userRole) {
+    public User(String name, String email, String login, String password, UserRole userRole) {
         this.name = name;
         this.login = login;
         this.email = email;
         this.password = password;
-        this.hourlyRate = hourlyRate;
-        this.dedicatedHours = dedicatedHours;
         this.userRole = userRole;
     }
 
