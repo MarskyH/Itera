@@ -12,14 +12,15 @@ import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
-import { useTeamStore } from "src/stores/TeamStore";
 import { useProjectStore } from "src/stores/ProjectStore";
+import { useUserStore } from "src/stores/UserStore";
 
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
+interface UserModel extends models.UserModel{}
 
-const $teamStore = useTeamStore()
 const $teamMemberStore = useTeamMemberStore()
+const $userStore = useUserStore()
 const $roleStore = useRoleStore()
 const $projectStore = useProjectStore()
 
@@ -27,7 +28,12 @@ const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
 const actionModalTitle = ref<string>('Adicionar integrante')
 
+const roleOptions = ref<Array<any>>([])
+const userOptions = ref<Array<any>>([])
+
 const teamMemberForm = ref<any>(null)
+
+const users = ref<UserModel[]>([])
 
 const roles = ref<Role[]>([/*
   {
@@ -77,6 +83,18 @@ const teamMembers = ref<TeamMember[]>([
 
 yup.setLocale(yupErrorMessages);
 
+function getUserOptions () {
+  return users.value.length > 0 
+    ? users.value.map((user: UserModel) => {
+      return { 
+        value: user.id ? user.id : '', 
+        name: user?.name, 
+        selected: false
+      }
+    }) 
+    : []
+}
+
 function getRolesOptions () {
   return roles.value.length > 0 
     ? roles.value.map((role: Role) => {
@@ -89,71 +107,86 @@ function getRolesOptions () {
     : []
 }
 
-const inputFields: InputFieldProps[] = [
-  {
-    name: "name",
-    label: "Nome",
-    placeholder: "Digite o nome do integrante",
-    required: true,
-    validation: yup.string().required().min(3)
-  },
-  {
-    name: "hourlyRate",
-    label: "Valor hora-homem",
-    placeholder: "R$ 0,00",
-    required: true,
-    validation: yup.number().required().min(1)
-  },
-  {
-    name: "dedicatedHours",
-    label: "Horas dedicadas",
-    placeholder: "0",
-    required: true,
-    validation: yup.number().required().min(1)
-  },
-  {
-    name: "role",
-    label: "Papel",
-    placeholder: "Selecione o papel",
-    required: true,
-    options: getRolesOptions(),
-    validation: yup.string().required()
-  }
-]
+let inputFields: InputFieldProps[] = []
 
 let formValidations: any = {}
 inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
 const schema = yup.object(formValidations);
 
-async function setRoles() {
+async function setUsers() {
+  await $userStore.fetchUsers().then(() => {
+    users.value = $userStore.users
+    console.log(users.value)
+  })
+}
 
-await $roleStore.fetchRolesByProject($projectStore.project.id ? $projectStore.project.id : "").then(() => {
-  roles.value = $roleStore.roles
-})
+async function setRoles() {
+  await $roleStore.fetchRoles($projectStore.project.id ? $projectStore.project.id : "").then(() => {
+    roles.value = $roleStore.roles
+    console.log(users.value)
+  })
 }
 
 async function setTeamMembers() {
-  const teamId: string = $teamStore.team?.id ? $teamStore.team.id : ""
 
-  await $teamMemberStore.fetchTeamMembers(teamId).then(() => {
+  const projectId = $projectStore.project.id || ''
+
+  await $teamMemberStore.fetchTeamMembers(projectId).then(() => {
     teamMembers.value = $teamMemberStore.teamMembers
   })
 }
 
-onMounted(() => {
-  setTeamMembers();
-  setRoles()
+onMounted(async () => {
+  await setUsers().then(async ()=>{
+    await setRoles().then(async ()=>{
+      await setTeamMembers().then(async ()=>{
+        roleOptions.value = getRolesOptions()
+        userOptions.value = getUserOptions()
+        inputFields =  [
+          {
+            name: "user",
+            label: "Nome",
+            placeholder: "Selecione o integrante",
+            required: true,
+            options: userOptions.value,
+            validation: yup.string().required().min(3)
+          },
+          {
+            name: "hourlyRate",
+            label: "Valor hora-homem",
+            placeholder: "R$ 0,00",
+            required: true,
+            validation: yup.number().required().min(1)
+          },
+          {
+            name: "dedicatedHours",
+            label: "Horas dedicadas",
+            placeholder: "0",
+            required: true,
+            validation: yup.number().required().min(1)
+          },
+          {
+            name: "role",
+            label: "Papel",
+            placeholder: "Selecione o papel",
+            required: true,
+            options: roleOptions.value,
+            validation: yup.string().required()
+          }
+        ]
+      });
+    })
+  })
+  
+  
+
+  console.log($roleStore.roles, $userStore.users)
 })
 
 async function createTeamMember(teamMemberFormValues: TeamMemberForm) {
-  let newTeamMember: TeamMember = {
-    ...teamMemberFormValues,
-    username: ''
-  }
+  const projectId = $projectStore.project.id || ''
 
-  let teamId: string = $teamStore.team.id ? $teamStore.team.id : ""
-
-  await $teamMemberStore.createTeamMember(teamId, newTeamMember)
+  await $teamMemberStore.createTeamMember(teamMemberFormValues, projectId)
     .then((responseStatus: any) => {
       if(responseStatus === 200) {
         setTeamMembers()
@@ -183,19 +216,22 @@ function setNewTeamMemberForm() {
 }
 
 function removeTeamMember(memberId: string | undefined) {
-  teamMembers.value = teamMembers.value.filter(member => member.id !== memberId)
+  teamMembers.value = teamMembers.value.filter((member: TeamMember) => member.id !== memberId)
 }
 
+
 function editTeamMember(memberId: string | undefined) {
+  /*
   onEditRecord.value = memberId ? memberId : null
   actionModalTitle.value = 'Editar integrante'
 
-  let member: TeamMember | undefined = teamMembers.value.find(member => member.id === memberId)
+  let member: TeamMember | undefined = teamMembers.value.find((member: TeamMember) => member.id === memberId)
   
   if (member) {
     let editTeamMemberValues: TeamMemberForm = {
       ...member,
-      role: member.role ? member.role : ''
+      roleId: member.role.id || '',
+      userId: member.user.id || ''
     }
 
     teamMemberForm.value.setValues(editTeamMemberValues)
@@ -205,7 +241,19 @@ function editTeamMember(memberId: string | undefined) {
     })
 
     if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.role)
+      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
+      
+      if (selectedOption) {
+        selectedOption.selected = true
+      }
+    }
+
+    let userField = inputFields.find((field: any) => {
+      field.name === 'user'
+    })
+
+    if(userField) {
+      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
       
       if (selectedOption) {
         selectedOption.selected = true
@@ -214,9 +262,11 @@ function editTeamMember(memberId: string | undefined) {
   }
 
   isActionModalOpen.value = true
+  */
 }
 
 function updateTeamMember(values: TeamMemberForm) {
+  /*
   let teamMemberToEdit: TeamMember | undefined = undefined
   let teamMemberIndex = null
 
@@ -228,16 +278,16 @@ function updateTeamMember(values: TeamMemberForm) {
   }) 
 
   if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.role)
-
+    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
+    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
     teamMemberToEdit = { 
       ...values,
-      username: '',
-      role: teamMemberRole?.id ? teamMemberRole.id : ""
+      roleId: teamMemberRole?.id || "",
+      userId: teamMemberUser?.id || ""
     }
 
     teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }
+  }*/
 }
 
 </script>
@@ -302,7 +352,7 @@ function updateTeamMember(values: TeamMemberForm) {
         v-for="member in teamMembers"
         :key="member.id"
         icon="user"
-        :title="member.name"
+        :title="member.user.name"
         @edit="editTeamMember(member.id)"
         @remove="removeTeamMember(member.id)"
       >
@@ -312,7 +362,7 @@ function updateTeamMember(values: TeamMemberForm) {
           </span>
 
           <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ member.role }}
+            {{ member.role.function }}
           </span>
         </div>
 

@@ -2,31 +2,19 @@
 import { Form } from 'vee-validate'
 import * as yup from 'yup'
 import { useRouter } from 'vue-router'
-
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import { InputFieldProps, models } from 'src/@types';
 import { useProjectStore } from 'src/stores/ProjectStore';
-import { useTeamStore } from 'src/stores/TeamStore';
+import router from 'src/router';
 
 interface Project extends models.Project {}
 
 const $projectStore = useProjectStore()
-const $teamStore = useTeamStore()
 
 const $router = useRouter()
 
 yup.setLocale(yupErrorMessages);
-
-async function setProject() {
-  await $projectStore.fetchProjects().then(() => {
-    $projectStore.setProject($projectStore.projects[-1])
-  })
-}
-
-async function setTeam(projectId: string) {
-  await $teamStore.fetchTeam(projectId)
-}
 
 async function createProject(projectOnCreateData: Project) {
   await $projectStore.createProject(projectOnCreateData)
@@ -35,17 +23,11 @@ async function createProject(projectOnCreateData: Project) {
       if(response.status === 200) {
         
         const projectId : string = response.data.id
-        
-        await $projectStore.fetchProject(projectId).then(async ()=>{
-          await $teamStore.createTeam(projectId).then((responseStatus) => {
-            if(responseStatus === 200) {
-              setTeam($projectStore.project.id ? $projectStore.project.id : "")
 
-              $router.push({ name: 'roles' })
-            } else {
-              alert('Falha ao criar equipe!')
-            }
-          })
+        console.log("PROJECT ID: ", projectId)
+      
+        await $projectStore.fetchProject(projectId).then(async ()=>{
+          $router.push({name:'roles'})
         })
       } else {
         alert('Falha ao criar projeto!')

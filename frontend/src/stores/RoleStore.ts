@@ -24,10 +24,10 @@ export const useRoleStore = defineStore('Role', {
   }),
 
   actions: {
-    async fetchRolesByProject(id: string) {
+    async fetchRoles(projectId: string) {
       const response = await Api.request({
         method: 'get',
-        route: `role/project/${id}`,
+        route: `role/project/${projectId}`,
       })
 
       if (response?.status === 200) {

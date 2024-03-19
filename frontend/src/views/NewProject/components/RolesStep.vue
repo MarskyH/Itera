@@ -77,7 +77,7 @@ const schema = yup.object(formValidations);
 
 async function setRoles() {
 
-  await $roleStore.fetchRolesByProject($projectStore.project.id ? $projectStore.project.id : "").then(() => {
+  await $roleStore.fetchRoles($projectStore.project.id ? $projectStore.project.id : "").then(() => {
     roles.value = $roleStore.roles
   })
 }

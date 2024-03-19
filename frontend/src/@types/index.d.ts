@@ -1,3 +1,5 @@
+import userModel from "src/model/usuarioModel"
+
 type id = number
 
 export namespace API {
@@ -21,11 +23,26 @@ export namespace API {
 export namespace models {
   export interface UserData {
     iss: string
+    sub: string
     username: string
-    nome: string
-    horasDedicada: string
+    name: string
     role: string
     exp: number
+  }
+
+  export interface UserMemberModel {
+    id: string
+    name: string
+    email: string
+    login: string
+    password?: string
+    userRole: string
+    enabled: boolean
+    authorities: Array<{ [key: string]: string }>
+    username: string
+    credentialsNonExpired: boolean
+    accountNonExpired: boolean
+    accountNonLocked: boolean
   }
 
   export interface LoginModel {
@@ -107,27 +124,31 @@ export namespace models {
 
   export interface TeamMember {
     id?: string
-    username: string
     hourlyRate: number
     dedicatedHours: number
-    role: string
+    user: UserMemberModel
+    role: Role
+    project: Project
+  }
+
+  export interface TeamMemberOnIndex {
+    id?: string
+    hourlyRate: number
+    dedicatedHours: number
+    user: { id: string; name: string}
+    roleName: { id: string; name: string}
+    projectId: string
   }
 
   export interface TeamMemberOnCreate {
-    name: string
-    username: string
     hourlyRate: number
     dedicatedHours: number
-    role: string
-  }
-
-  export interface Team {
-    id?: string
-  }
-
-  export interface TeamOnCreate {
+    user_id: string
+    role_id: string
     project_id: string
   }
+
+
 
   /*
 
@@ -241,7 +262,7 @@ export interface RoleForm {
 }
 
 export interface TeamMemberForm {
-  name: string
+  user: string
   hourlyRate: number
   dedicatedHours: number
   role: string
