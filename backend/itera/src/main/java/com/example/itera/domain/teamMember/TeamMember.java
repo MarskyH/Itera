@@ -53,5 +53,10 @@ public class TeamMember {
         this.role = roleData;
         this.project = projectData;
     }
+
+    public TeamMember(TeamMemberRequestDTO data) {
+        this.hourlyRate = data.hourlyRate();
+        this.dedicatedHours = data.dedicatedHours();
+    }
 }
 

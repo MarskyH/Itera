@@ -4,6 +4,7 @@ import com.example.itera.domain.activity.Activity;
 import com.example.itera.domain. risk.Risk;
 import com.example.itera.dto.activity.ActivityRequestDTO;
 import com.example.itera.dto.activity.ActivityResponseDTO;
+import com.example.itera.dto.risk.RiskResponseDTO;
 import com.example.itera.repository.activity.ActivityRepository;
 import com.example.itera.repository. risk.RiskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,10 +30,10 @@ public class ActivityController {
     @PostMapping
     public void saveActivity(@RequestBody ActivityRequestDTO data){
         // Fetch the Risk entity from the database
-        Risk  risk =  riskRepository.findById(data. risk().getId()).orElseThrow(() -> new EntityNotFoundException("Risk not found"));
+        Risk  risk =  riskRepository.findById(data.risk_id()).orElseThrow(() -> new EntityNotFoundException("Risk not found"));
 
         // Set the fetched Risk entity in the Activity object
-        Activity activityData = new Activity(data.title(), data.description(), data.type(),  risk);
+        Activity activityData = new Activity(data.title(), data.description(), data.type(), risk);
 
         // Save the Activity object
         repository.save(activityData);
@@ -44,6 +45,12 @@ public class ActivityController {
         List<ActivityResponseDTO> activityList = repository.findAll().stream().map(ActivityResponseDTO::new).toList();
         return activityList;
     }
+ /*
+    @GetMapping("/project/{id}")
+    public List<RiskResponseDTO> getActionProject(@PathVariable String id){
+        List<RiskResponseDTO> roleList = repository.findByProject(id).stream().toList();
+        return roleList;
+    }*/
 
     @GetMapping("/{id}")
     public ActivityResponseDTO getActivityById(@PathVariable String id) {

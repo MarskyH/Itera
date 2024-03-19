@@ -4,6 +4,7 @@ import com.example.itera.domain.project.Project;
 import com.example.itera.domain.role.Role;
 import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
+import com.example.itera.dto.role.RoleRequestDTO;
 import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberRequestDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
@@ -59,6 +60,37 @@ public class TeamMemberController {
             teamMemberList.add(new TeamMemberResponseDTO(teamMember.getId(), teamMember.getHourlyRate(), teamMember.getDedicatedHours(), teamMember.getUser(), teamMember.getRole(), teamMember.getProject()));
         }
         return teamMemberList;
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateTeamMember(@PathVariable String id, @RequestBody TeamMemberRequestDTO data) {
+        try {
+            User userData = userRepository.findById(data.user_id()).orElseThrow();
+            Role roleData = roleRepository.findById(data.role_id()).orElseThrow();
+            Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
+            TeamMember teamMember = teamMemberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            TeamMember teamMemberNew = new TeamMember(data.hourlyRate(), data.dedicatedHours(), userData, roleData, projectData);
+
+
+            // Atualizar a entidade usando o construtor
+            teamMember = new TeamMember(
+                    teamMember.getId(),
+                    teamMemberNew.getHourlyRate(),
+                    teamMemberNew.getDedicatedHours(),
+                    teamMemberNew.getUser(),
+                    teamMemberNew.getRole(),
+                    teamMember.getProject()
+            );
+
+            teamMemberRepository.save(teamMember);
+
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @DeleteMapping("/{id}")

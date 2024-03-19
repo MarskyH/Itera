@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("role")
 public class RoleController {
@@ -29,19 +30,9 @@ public class RoleController {
     @PostMapping
     public void saveRole(@RequestBody RoleRequestDTO data){
         Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
-
         Role roleData = new Role(data.function(), data.skill(), data.competency(), projectData);
         repository.save(roleData);
-        return;
     }
-
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
-    @GetMapping
-    public List<RoleResponseDTO> getAll(){
-        List<RoleResponseDTO> roleList = repository.findAll().stream().map(RoleResponseDTO::new).toList();
-        return roleList;
-    }
-
 
     @GetMapping("/project/{id}")
     public List<RoleResponseDTO> getRolesProject(@PathVariable String id){
@@ -57,6 +48,32 @@ public class RoleController {
             return new RoleResponseDTO(role);
         } else {
             return new RoleResponseDTO(new Role());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateRole(@PathVariable String id, @RequestBody RoleRequestDTO data) {
+        try {
+            Role role = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+            Role roleNew = new Role(data);
+
+            // Atualizar a entidade usando o construtor
+            role = new Role(
+                    role.getId(),
+                    roleNew.getFunction(),
+                    roleNew.getSkill(),
+                    roleNew.getCompetency(),
+                    role.getProject()
+            );
+
+            repository.save(role);
+
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

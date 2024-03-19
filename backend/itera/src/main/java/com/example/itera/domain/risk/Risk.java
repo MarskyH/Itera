@@ -38,8 +38,15 @@ public class Risk {
         this.probability = data.probability();
         this.impact = data.impact();
         this.exposureDegree = data.exposureDegree();
-        this.project = data.project();
+    }
 
+    public Risk(String title, String effect, String probability, String impact, String exposureDegree, Project project){
+        this.title = title;
+        this.effect = effect;
+        this.probability = probability;
+        this.impact = impact;
+        this.exposureDegree = exposureDegree;
+        this.project = project;
     }
 }
 

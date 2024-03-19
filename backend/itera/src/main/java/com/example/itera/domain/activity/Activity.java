@@ -28,14 +28,13 @@ public class Activity {
         this.title = data.title();
         this.description = data.description();
         this.type = data.type();
-        this. risk = data. risk();
     }
 
-    public Activity(String title, String description, String type, Risk  risk) {
+    public Activity(String title, String description, String type, Risk risk) {
         this.title = title;
         this.description = description;
         this.type = type;
-        this. risk =  risk;
+        this.risk =  risk;
     }
 }
 
