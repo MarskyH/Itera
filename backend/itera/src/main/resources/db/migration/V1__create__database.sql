@@ -4,7 +4,8 @@ CREATE TABLE public.activity (
     title VARCHAR(30), -- Título da atividade
     description VARCHAR(255), -- Descrição da atividade
     type VARCHAR(20), -- Tipo da atividade
-    risk_id TEXT -- Identificador de risco associado
+    risk_id TEXT, -- Identificador de risco associado
+    project_id TEXT -- Identificador de projeto associado
 );
 
 -- Project Table (Tabela de Projetos)
@@ -65,7 +66,8 @@ CREATE TABLE public.risk (
     probability VARCHAR(20), -- Probabilidade do risco
     impact VARCHAR(20), -- Impacto do risco
     exposure_degree VARCHAR(20), -- Grau de exposição ao risco
-    action_id TEXT, -- Identificador da ação associada
+    description VARCHAR(255), -- Descrição da atividade
+    type VARCHAR(20), -- Tipo da atividade
     project_id TEXT -- Identificador do projeto associado
 );
 
@@ -97,6 +99,10 @@ FOREIGN KEY (project_id) REFERENCES project(id);
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_risk
 FOREIGN KEY (risk_id) REFERENCES risk(id);
+
+ALTER TABLE public.activity
+ADD CONSTRAINT FK_activity_project
+FOREIGN KEY (project_id) REFERENCES project(id);
 
 ALTER TABLE public.risk
 ADD CONSTRAINT FK_risk_project

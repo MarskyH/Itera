@@ -55,7 +55,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET,  "/project").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/name/{name}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,  "/project//{id}/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/project/user/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/completo/{name}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/project/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/project").permitAll()

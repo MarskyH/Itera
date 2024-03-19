@@ -1,9 +1,7 @@
 package com.example.itera.controller.project;
 
-
-
-
 import com.example.itera.domain.project.Project;
+import com.example.itera.domain.user.User;
 import com.example.itera.dto.project.ProjectRequestDTO;
 import com.example.itera.dto.project.ProjectResponseDTO;
 import com.example.itera.infra.security.TokenService;
@@ -39,16 +37,16 @@ public class ProjectController {
     private UserRepository userRepository;
 
     @Autowired
-    RiskRepository  riskRepository;
+    private RiskRepository riskRepository;
 
     @Autowired
-    ActivityRepository acapRepository;
+    private ActivityRepository acapRepository;
 
     @Autowired
-    RequirementRepository requirementRepository;
+    private RequirementRepository requirementRepository;
 
     @Autowired
-    NonFunctionalRequirementRepository nonFunctionalRequirementRepository;
+    private NonFunctionalRequirementRepository nonFunctionalRequirementRepository;
 
 
     @Autowired
@@ -58,8 +56,9 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<?> saveProject(@RequestBody ProjectRequestDTO data){
         String username = tokenService.validateToken(SecurityContextHolder.getContext().getAuthentication().getName());
+        User userData = userRepository.findByNome(username);
         Project projectData = new Project(data);
-        projectData.setCreatedBy(username);
+        projectData.setCreatedBy(userData.getId());
         projectRepository.save(projectData);
 
         // Criar um mapa com o ID do projeto
@@ -87,17 +86,13 @@ public class ProjectController {
         }
     }
 
-    @GetMapping("/name/{name}")
-    public ProjectResponseDTO getProjectByNome(@PathVariable String name) {
-        Project project = projectRepository.findByNome(name);
-        if (project != null){
-            return new ProjectResponseDTO(project);
-        }else{
-            return new ProjectResponseDTO(new Project());
-        }
+    @GetMapping("/user/{id}")
+    public List<ProjectResponseDTO> getProjectByCreatedBy(@PathVariable String id) {
+        List<ProjectResponseDTO> projectList = projectRepository.findByCreatedBy(id).stream().toList();
+        return projectList;
     }
 
-   /* @GetMapping("/completo/{name}")
+    /*@GetMapping("/completo/{name}")
     public ProjectCompletResponseDTO getProjectCompleto(@PathVariable String name) {
         Project project = projectRepository.findByNome(name);
         if (project != null){
@@ -125,24 +120,8 @@ public class ProjectController {
         }else{
             return new ProjectCompletResponseDTO(new Project(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
-    }
-
-    @GetMapping("/{id}/team")
-    public TeamResponseDTO getTeamByProjectId(@PathVariable String id) {
-        Team team = teamRepository.findByProject(id);
-        if (team != null) {
-            return new TeamResponseDTO(team);
-        } else {
-            return new TeamResponseDTO(new Team());
-        }
-    }
-
-    @GetMapping("/{id}/users")
-    public List<UserResponseDTO> getAllUsersTeamByProject(@PathVariable String id){
-        Team team = teamRepository.findByProject(id);
-        List<UserResponseDTO> userList = teamRepository.findByUsersTeam(team.getId()).stream().toList();
-        return userList;
     }*/
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {

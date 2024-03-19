@@ -30,35 +30,28 @@ public class RiskController {
     private RiskRepository repository;
 
     @Autowired
-    ProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
     public void saveRisk(@RequestBody RiskRequestDTO data){
         Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
-        Risk riskData = new Risk(data.title(), data.effect(), data.probability(), data.impact(), data.exposureDegree(), projectData);
+        Risk riskData = new Risk(data.title(), data.effect(), data.probability(), data.impact(), data.exposureDegree(), data.description(), data.type(), projectData);
         repository.save(riskData);
 
     }
 
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
-    @GetMapping
-    public List<RiskResponseDTO> getAll(){
-        List<RiskResponseDTO>  riskList = repository.findAll().stream().map(RiskResponseDTO::new).toList();
-        return  riskList;
-    }
-
     @GetMapping("/project/{id}")
     public List<RiskResponseDTO> getRisksProject(@PathVariable String id){
-        List<RiskResponseDTO> roleList = repository.findByProject(id).stream().toList();
-        return roleList;
+        List<RiskResponseDTO> riskList = repository.findByProject(id).stream().toList();
+        return riskList;
     }
 
     @GetMapping("/{id}")
     public RiskResponseDTO getRiskById(@PathVariable String id) {
         Risk  risk = repository.findById(id).orElseThrow();
         if ( risk != null) {
-            return new RiskResponseDTO( risk);
+            return new RiskResponseDTO(risk);
         } else {
             return new RiskResponseDTO(new Risk());
         }
@@ -79,6 +72,8 @@ public class RiskController {
                     riskNew.getProbability(),
                     riskNew.getImpact(),
                     riskNew.getExposureDegree(),
+                    riskNew.getDescription(),
+                    riskNew.getType(),
                     risk.getProject()
             );
             repository.save(risk);

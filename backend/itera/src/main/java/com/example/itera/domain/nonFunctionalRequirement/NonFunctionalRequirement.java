@@ -13,7 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "requirementnaofuncional")
+@Table(name = "nonfunctionalrequirement")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,12 +30,16 @@ public class NonFunctionalRequirement {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Project project;
+
     public NonFunctionalRequirement(NonFunctionalRequirementRequestDTO data){
         this.title = data.title();
         this.valueRequirement = data.valueRequirement();
-        this.project = data.project();
-
     }
 
+    public NonFunctionalRequirement(String title, Integer valueRequirement, Project project) {
+        this.title = title;
+        this.valueRequirement = valueRequirement;
+        this.project = project;
+    }
 }
 

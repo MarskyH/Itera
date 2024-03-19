@@ -13,8 +13,8 @@ import java.util.List;
 public interface ActivityRepository extends JpaRepository<Activity, String>{
 
 
-    @Query(value = "SELECT a FROM Activity a WHERE a. risk.id = :id")
-    List<ActivityResponseDTO> findByRiskId(@Param("id") String id);
+    @Query(value = "SELECT a FROM Activity a WHERE a.project.id = :id")
+    List<ActivityResponseDTO> findByProjectId(@Param("id") String id);
 }
 
 

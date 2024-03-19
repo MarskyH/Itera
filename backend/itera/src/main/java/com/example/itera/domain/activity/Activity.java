@@ -1,6 +1,7 @@
 package com.example.itera.domain.activity;
 
-import com.example.itera.domain. risk.Risk;
+import com.example.itera.domain.risk.Risk;
+import com.example.itera.domain.project.Project;
 import com.example.itera.dto.activity.ActivityRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +22,12 @@ public class Activity {
     private String type;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = " risk_id")
+    @JoinColumn(name = "risk_id")
     private Risk risk;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     public Activity(ActivityRequestDTO data) {
         this.title = data.title();
@@ -30,11 +35,12 @@ public class Activity {
         this.type = data.type();
     }
 
-    public Activity(String title, String description, String type, Risk risk) {
+    public Activity(String title, String description, String type, Risk risk, Project project) {
         this.title = title;
         this.description = description;
         this.type = type;
-        this.risk =  risk;
+        this.risk = risk;
+        this.project = project;
     }
 }
 

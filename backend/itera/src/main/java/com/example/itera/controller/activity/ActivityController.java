@@ -1,11 +1,13 @@
 package com.example.itera.controller.activity;
 
 import com.example.itera.domain.activity.Activity;
+import com.example.itera.domain.project.Project;
 import com.example.itera.domain. risk.Risk;
 import com.example.itera.dto.activity.ActivityRequestDTO;
 import com.example.itera.dto.activity.ActivityResponseDTO;
 import com.example.itera.dto.risk.RiskResponseDTO;
 import com.example.itera.repository.activity.ActivityRepository;
+import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository. risk.RiskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,31 +28,30 @@ public class ActivityController {
     @Autowired
     private RiskRepository  riskRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
     public void saveActivity(@RequestBody ActivityRequestDTO data){
         // Fetch the Risk entity from the database
-        Risk  risk =  riskRepository.findById(data.risk_id()).orElseThrow(() -> new EntityNotFoundException("Risk not found"));
+        Risk risk =  riskRepository.findById(data.risk_id()).orElseThrow(() -> new EntityNotFoundException("Risk not found"));
 
-        // Set the fetched Risk entity in the Activity object
-        Activity activityData = new Activity(data.title(), data.description(), data.type(), risk);
+        // Fetch the Risk and Project entity from the database
+        Project project = projectRepository.findById(data.project_id()).orElseThrow(() -> new EntityNotFoundException("Project not found"));
+
+        // Set the fetched Risk and Project entity in the Activity object
+        Activity activityData = new Activity(data.title(), data.description(), data.type(), risk, project);
 
         // Save the Activity object
         repository.save(activityData);
     }
 
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
-    @GetMapping
-    public List<ActivityResponseDTO> getAll(){
-        List<ActivityResponseDTO> activityList = repository.findAll().stream().map(ActivityResponseDTO::new).toList();
+    @GetMapping("/project/{id}")
+    public List<ActivityResponseDTO> getActionProject(@PathVariable String id){
+        List<ActivityResponseDTO> activityList = repository.findByProjectId(id).stream().toList();
         return activityList;
     }
- /*
-    @GetMapping("/project/{id}")
-    public List<RiskResponseDTO> getActionProject(@PathVariable String id){
-        List<RiskResponseDTO> roleList = repository.findByProject(id).stream().toList();
-        return roleList;
-    }*/
 
     @GetMapping("/{id}")
     public ActivityResponseDTO getActivityById(@PathVariable String id) {
@@ -63,21 +64,20 @@ public class ActivityController {
     }
 
 
-
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateActivity(@PathVariable String id, @RequestBody ActivityRequestDTO data) {
         try {
             Activity activityExistente = repository.findById(id).orElseThrow(EntityNotFoundException::new);
             Activity activityNova = new Activity(data);
 
-            // Validar os campos da ActivityRequestDTO, se necessário
-
             // Atualizar a entidade usando o construtor
             activityExistente = new Activity(
+                    activityExistente.getId(),
                     activityNova.getTitle(),
                     activityNova.getDescription(),
                     activityNova.getType(),
-                    Objects.equals(activityNova.getRisk(), new Risk()) ? activityExistente.getRisk() : activityNova.getRisk()
+                    activityExistente.getRisk(),
+                    activityExistente.getProject()
             );
 
             repository.save(activityExistente);

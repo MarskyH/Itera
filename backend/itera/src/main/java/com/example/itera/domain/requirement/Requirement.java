@@ -33,6 +33,7 @@ public class Requirement {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Project project;
+
     public Requirement(RequirementRequestDTO data){
         this.title = data.title();
         this.details = data.details();
@@ -40,7 +41,15 @@ public class Requirement {
         this.priority = data.priority();
         this.effort = data.effort();
         this.sizeRequirement = data.sizeRequirement();
-        this.project = data.project();
+    }
 
+    public Requirement(String title, String details, String complexity, String priority, Integer effort, Integer sizeRequirement, Project project){
+        this.title = title;
+        this.details = details;
+        this.complexity = complexity;
+        this.priority = priority;
+        this.effort = effort;
+        this.sizeRequirement = sizeRequirement;
+        this.project = project;
     }
 }
