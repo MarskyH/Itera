@@ -116,14 +116,12 @@ const schema = yup.object(formValidations);
 async function setUsers() {
   await $userStore.fetchUsers().then(() => {
     users.value = $userStore.users
-    console.log(users.value)
   })
 }
 
 async function setRoles() {
   await $roleStore.fetchRoles($projectStore.project.id ? $projectStore.project.id : "").then(() => {
     roles.value = $roleStore.roles
-    console.log(users.value)
   })
 }
 

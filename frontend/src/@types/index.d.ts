@@ -135,8 +135,8 @@ export namespace models {
     id?: string
     hourlyRate: number
     dedicatedHours: number
-    user: { id: string; name: string}
-    roleName: { id: string; name: string}
+    user: { id: string; name: string }
+    roleName: { id: string; name: string }
     projectId: string
   }
 
@@ -148,28 +148,31 @@ export namespace models {
     project_id: string
   }
 
+  export interface RiskOnCreate {
+    title: string
+    effect: string
+    probability: string
+    impact: string
+    exposureDegree: string
+    description: string
+    type: string
+    project_id: string
+  }
+
+  export interface Risk {
+    id?: string
+    title: string
+    effect: string
+    probability: string
+    impact: string
+    exposureDegree: string
+    description: string
+    type: string
+    project: Project
+  }
 
 
   /*
-
-  export interface RiscoRegister {
-    titulo: string
-    efeito: string
-    probabilidade: string
-    impacto: string
-    grauExposicao: string
-    projeto: ProjetoResponse
-  }
-
-  export interface RiscoResponse {
-    id: number
-    titulo: string
-    efeito: string
-    probabilidade: string
-    impacto: string
-    grauExposicao: string
-    projeto_id: number
-  }
 
   export interface AcaoRegister {
     titulo: string
@@ -266,4 +269,14 @@ export interface TeamMemberForm {
   hourlyRate: number
   dedicatedHours: number
   role: string
+}
+
+export interface RiskForm {
+  title: string
+  effect: string
+  probability: string
+  impact: string
+  exposureDegree: string
+  description: string
+  type: string
 }

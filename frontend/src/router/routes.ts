@@ -1,3 +1,4 @@
+
 import RecentProjects from 'src/components/RecentProjects.vue'
 
 export default [
@@ -16,7 +17,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
