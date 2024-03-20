@@ -60,7 +60,7 @@ export const useRiskStore = defineStore('Risk', {
     async fetchRisks(projectId: string) {
       const response = await Api.request({
         method: 'get',
-        route: `project/${projectId}/risk`,
+        route: `risk/project/${projectId}`,
       })
       if (response?.status === 200) {
         this.risks = response.data?.map((elem: any) => {

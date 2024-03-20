@@ -99,7 +99,7 @@ onMounted(async () => {
         label: "Tipo de ação",
         placeholder: "Selecione o tipo de ação",
         required: true,
-        options: setOptions(degreeOptions),
+        options: setOptions(riskTypeOptions),
         validation: yup.string().required()
       },
       {
