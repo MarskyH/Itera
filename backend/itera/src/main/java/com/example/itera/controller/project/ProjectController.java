@@ -1,9 +1,15 @@
 package com.example.itera.controller.project;
 
 import com.example.itera.domain.project.Project;
+import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
+import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementResponseDTO;
 import com.example.itera.dto.project.ProjectRequestDTO;
 import com.example.itera.dto.project.ProjectResponseDTO;
+import com.example.itera.dto.requirement.RequirementResponseDTO;
+import com.example.itera.dto.risk.RiskResponseDTO;
+import com.example.itera.dto.role.RoleResponseDTO;
+import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.example.itera.infra.security.TokenService;
 import com.example.itera.repository.activity.ActivityRepository;
 import com.example.itera.repository.role.RoleRepository;
@@ -11,6 +17,7 @@ import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
 import com.example.itera.repository. risk.RiskRepository;
+import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +39,9 @@ public class ProjectController {
     private ProjectRepository projectRepository;
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -91,6 +101,44 @@ public class ProjectController {
         List<ProjectResponseDTO> projectList = projectRepository.findByCreatedBy(id).stream().toList();
         return projectList;
     }
+
+    @GetMapping("/{id}/roles")
+    public List<RoleResponseDTO> getProjectRoles(@PathVariable String id){
+        List<RoleResponseDTO> roleList = roleRepository.findByProject(id).stream().toList();
+        return roleList;
+    }
+
+    @GetMapping("/{id}/teamMembers")
+    public List<TeamMemberResponseDTO> getTProjectTeamMembers(@PathVariable String id){
+        List<TeamMember> teamMembers = teamMemberRepository.findAllByProjectId(id);
+        List<TeamMemberResponseDTO> teamMemberList = new ArrayList<>();
+        for (TeamMember teamMember : teamMembers) {
+            teamMember.getUser();
+            teamMember.getRole();
+            teamMember.getProject();
+            teamMemberList.add(new TeamMemberResponseDTO(teamMember.getId(), teamMember.getHourlyRate(), teamMember.getDedicatedHours(), teamMember.getUser(), teamMember.getRole(), teamMember.getProject()));
+        }
+        return teamMemberList;
+    }
+
+    @GetMapping("/{id}/risks")
+    public List<RiskResponseDTO> getProjectRisks(@PathVariable String id){
+        List<RiskResponseDTO> riskList = riskRepository.findByProject(id).stream().toList();
+        return riskList;
+    }
+
+    @GetMapping("/{id}/requirements")
+    public List<RequirementResponseDTO> getRequirementProject(@PathVariable String id){
+        List<RequirementResponseDTO> requirementList = requirementRepository.findByProject(id).stream().toList();
+        return requirementList;
+    }
+
+    @GetMapping("{id}/nonFunctionalRequirement")
+    public List<NonFunctionalRequirementResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
+        List<NonFunctionalRequirementResponseDTO> nonFunctionalRequiremenList = nonFunctionalRequirementRepository.findByProject(id).stream().toList();
+        return nonFunctionalRequiremenList;
+    }
+
 
     /*@GetMapping("/completo/{name}")
     public ProjectCompletResponseDTO getProjectCompleto(@PathVariable String name) {

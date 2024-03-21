@@ -43,23 +43,10 @@ public class TeamMemberController {
         teamMemberRepository.save(teamData);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public TeamMemberResponseDTO get(@PathVariable String id){
         TeamMember teamMember = teamMemberRepository.findById(id).orElseThrow();
         return new TeamMemberResponseDTO(teamMember);
-    }
-
-    @GetMapping("project/{id}")
-    public List<TeamMemberResponseDTO> getAll(@PathVariable String id){
-        List<TeamMember> teamMembers = teamMemberRepository.findAllByProjectId(id);
-        List<TeamMemberResponseDTO> teamMemberList = new ArrayList<>();
-        for (TeamMember teamMember : teamMembers) {
-            teamMember.getUser();
-            teamMember.getRole();
-            teamMember.getProject();
-            teamMemberList.add(new TeamMemberResponseDTO(teamMember.getId(), teamMember.getHourlyRate(), teamMember.getDedicatedHours(), teamMember.getUser(), teamMember.getRole(), teamMember.getProject()));
-        }
-        return teamMemberList;
     }
 
     @PutMapping("/{id}")

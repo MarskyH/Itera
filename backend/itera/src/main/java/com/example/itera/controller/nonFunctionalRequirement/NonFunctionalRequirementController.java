@@ -29,19 +29,12 @@ public class NonFunctionalRequirementController {
     @Autowired
     private ProjectRepository projectRepository;
 
-
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
     public void saveNonFunctionalRequirement(@RequestBody NonFunctionalRequirementRequestDTO data){
         Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
         NonFunctionalRequirement nonFunctionalRequirementData = new NonFunctionalRequirement(data.title(), data.valueRequirement(), projectData);
         repository.save(nonFunctionalRequirementData);
-    }
-
-    @GetMapping("/project/{id}")
-    public List<NonFunctionalRequirementResponseDTO> getNonFunctionalRequiremenProject(@PathVariable String id){
-        List<NonFunctionalRequirementResponseDTO> nonFunctionalRequiremenList = repository.findByProject(id).stream().toList();
-        return nonFunctionalRequiremenList;
     }
 
     @GetMapping("/{id}")

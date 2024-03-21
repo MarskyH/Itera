@@ -34,11 +34,7 @@ public class RequirementController {
         repository.save(requirementData);
     }
 
-    @GetMapping("/project/{id}")
-    public List<RequirementResponseDTO> getRequirementProject(@PathVariable String id){
-        List<RequirementResponseDTO> requirementList = repository.findByProject(id).stream().toList();
-        return requirementList;
-    }
+
 
     @GetMapping("/{id}")
     public RequirementResponseDTO getRequirementById(@PathVariable String id) {

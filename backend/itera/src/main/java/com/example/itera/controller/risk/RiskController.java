@@ -41,11 +41,7 @@ public class RiskController {
 
     }
 
-    @GetMapping("/project/{id}")
-    public List<RiskResponseDTO> getRisksProject(@PathVariable String id){
-        List<RiskResponseDTO> riskList = repository.findByProject(id).stream().toList();
-        return riskList;
-    }
+
 
     @GetMapping("/{id}")
     public RiskResponseDTO getRiskById(@PathVariable String id) {
