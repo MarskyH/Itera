@@ -10,20 +10,20 @@ CREATE TABLE public.activity (
 
 -- Project Table (Tabela de Projetos)
 CREATE TABLE public.project (
-    id TEXT PRIMARY KEY, -- Identificador único do projeto
-    name VARCHAR(50) UNIQUE, -- Nome único do projeto
-    deadline INTEGER, -- Prazo do projeto em dias
-    iteration_time INTEGER, -- Tempo de iteração do projeto em dias
-    work_hours INTEGER, -- Horas de trabalho do projeto por dia
-    client_name VARCHAR(50), -- Nome do cliente
-    created_by VARCHAR(100) -- Criado por (usuário responsável)
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do projeto
+    name VARCHAR(50) UNIQUE NOT NULL, -- Nome único do projeto
+    deadline INTEGER NOT NULL, -- Prazo do projeto em dias
+    iteration_time INTEGER NOT NULL, -- Tempo de iteração do projeto em dias
+    work_hours INTEGER NOT NULL, -- Horas de trabalho do projeto por dia
+    client_name VARCHAR(50) NOT NULL, -- Nome do cliente
+    created_by VARCHAR(100) NOT NULL -- Criado por (usuário responsável)
 );
 
 -- Team Table (Tabela de Membros de Equipe)
 CREATE TABLE public.team_member (
-    id TEXT PRIMARY KEY, -- Identificador único da equipe
-    hourly_rate DOUBLE PRECISION, -- Taxa horária do usuário
-    dedicated_hours INTEGER, -- Horas dedicadas pelo usuário
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único da equipe
+    hourly_rate DOUBLE PRECISION NOT NULL, -- Taxa horária do usuário
+    dedicated_hours INTEGER NOT NULL, -- Horas dedicadas pelo usuário
     user_id TEXT,
     role_id TEXT,
     project_id TEXT -- Identificador do projeto associado
@@ -31,43 +31,43 @@ CREATE TABLE public.team_member (
 
 -- Role Table (Tabela de Funções)
 CREATE TABLE public.role (
-    id TEXT PRIMARY KEY, -- Identificador único da função
-    function VARCHAR(30), -- Função
-    skill VARCHAR(255), -- Habilidade
-    competency VARCHAR(255), -- Competência
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único da função
+    function VARCHAR(30) NOT NULL, -- Função
+    skill VARCHAR(255) NOT NULL, -- Habilidade
+    competency VARCHAR(255) NOT NULL, -- Competência
     project_id TEXT -- Identificador do projeto associado
 );
 
 -- Requirement Table (Tabela de Requisitos)
 CREATE TABLE public.requirement (
-    id TEXT PRIMARY KEY, -- Identificador único do requisito
-    title VARCHAR(30), -- Título do requisito
-    details VARCHAR(30), -- Detalhes do requisito
-    complexity VARCHAR(30), -- Complexidade do requisito
-    priority VARCHAR(30), -- Prioridade do requisito
-    effort INTEGER, -- Esforço necessário para o requisito
-    size_requirement INTEGER, -- Tamanho do requisito
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito
+    title VARCHAR(30) NOT NULL, -- Título do requisito
+    details VARCHAR(30) NOT NULL, -- Detalhes do requisito
+    complexity VARCHAR(30) NOT NULL, -- Complexidade do requisito
+    priority VARCHAR(30) NOT NULL, -- Prioridade do requisito
+    effort INTEGER NOT NULL, -- Esforço necessário para o requisito
+    size_requirement INTEGER NOT NULL, -- Tamanho do requisito
     project_id TEXT -- Identificador do projeto associado
 );
 
 -- Non-Functional Requirement Table (Tabela de Requisitos Não Funcionais)
 CREATE TABLE public.nonfunctionalrequirement (
-    id TEXT PRIMARY KEY, -- Identificador único do requisito não funcional
-    title VARCHAR(30), -- Título do requisito não funcional
-    value_requirement INTEGER, -- Valor do requisito não funcional
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito não funcional
+    title VARCHAR(30) NOT NULL, -- Título do requisito não funcional
+    value_requirement INTEGER NOT NULL, -- Valor do requisito não funcional
     project_id TEXT -- Identificador do projeto associado
 );
 
 -- Risk Table (Tabela de Riscos)
 CREATE TABLE public.risk (
-    id TEXT PRIMARY KEY, -- Identificador único do risco
-    title VARCHAR(30), -- Título do risco
-    effect VARCHAR(255), -- Efeito do risco
-    probability VARCHAR(20), -- Probabilidade do risco
-    impact VARCHAR(20), -- Impacto do risco
-    exposure_degree VARCHAR(20), -- Grau de exposição ao risco
-    description VARCHAR(255), -- Descrição da atividade
-    type VARCHAR(20), -- Tipo da atividade
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do risco
+    title VARCHAR(30) NOT NULL, -- Título do risco
+    effect VARCHAR(255) NOT NULL, -- Efeito do risco
+    probability VARCHAR(20) NOT NULL, -- Probabilidade do risco
+    impact VARCHAR(20) NOT NULL, -- Impacto do risco
+    exposure_degree VARCHAR(20) NOT NULL, -- Grau de exposição ao risco
+    description VARCHAR(255) NOT NULL, -- Descrição da atividade
+    type VARCHAR(20) NOT NULL, -- Tipo da atividade
     project_id TEXT -- Identificador do projeto associado
 );
 
@@ -79,6 +79,16 @@ CREATE TABLE public.users (
     username VARCHAR(50) NOT NULL, -- Nome de usuário
     password VARCHAR(255) NOT NULL, -- Senha do usuário
     user_role TEXT NOT NULL -- Função do usuário
+);
+
+CREATE TABLE public.risk_action_type (
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do usuário
+    name VARCHAR(100) NOT NULL -- Nome do usuário
+);
+
+CREATE TABLE public.exposure_degree (
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do usuário
+    name VARCHAR(100) NOT NULL -- Nome do usuário
 );
 
 -- Foreign Keys (Chaves Estrangeiras)
@@ -123,3 +133,19 @@ FOREIGN KEY (project_id) REFERENCES project(id);
 -- Data Insertion (Inserção de Dados)
 INSERT INTO users (id, name, email, username, password, user_role)
 VALUES ('2e8a8fd2-448c-4f5d-a2c2-7d3aabe9f406', 'ADMIN ADMIN', 'admin@itera.com.br', 'admin', '$2a$10$aRMLnzAkwiSDxjoQgZTEcOWKtq2QAmH24i0nVQ5bYlkzfI9k3luYW','1');
+
+INSERT INTO risk_action_type (id, name)
+VALUES ('1', 'Mitigação');
+
+INSERT INTO risk_action_type (id, name)
+VALUES ('2', 'Contingência');
+
+INSERT INTO exposure_degree (id, name)
+VALUES ('1', 'Alto');
+
+INSERT INTO exposure_degree (id, name)
+VALUES ('2', 'Médio');
+
+INSERT INTO exposure_degree (id, name)
+VALUES ('3', 'Baixo');
+
