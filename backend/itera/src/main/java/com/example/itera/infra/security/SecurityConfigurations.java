@@ -83,7 +83,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/team").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/riskActionType").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET,  "/exposureDegree").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/degree").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

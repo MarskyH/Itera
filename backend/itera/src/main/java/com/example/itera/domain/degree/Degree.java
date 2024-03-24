@@ -1,16 +1,16 @@
-package com.example.itera.domain.exposureDegree;
+package com.example.itera.domain.degree;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "exposure_degree")
+@Table(name = "degree")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ExposureDegree {
+public class Degree {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

@@ -86,7 +86,7 @@ CREATE TABLE public.risk_action_type (
     name VARCHAR(100) NOT NULL -- Nome do usuário
 );
 
-CREATE TABLE public.exposure_degree (
+CREATE TABLE public.degree (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único do usuário
     name VARCHAR(100) NOT NULL -- Nome do usuário
 );
@@ -140,12 +140,12 @@ VALUES ('1', 'Mitigação');
 INSERT INTO risk_action_type (id, name)
 VALUES ('2', 'Contingência');
 
-INSERT INTO exposure_degree (id, name)
+INSERT INTO degree (id, name)
 VALUES ('1', 'Alto');
 
-INSERT INTO exposure_degree (id, name)
+INSERT INTO degree (id, name)
 VALUES ('2', 'Médio');
 
-INSERT INTO exposure_degree (id, name)
+INSERT INTO degree (id, name)
 VALUES ('3', 'Baixo');
 

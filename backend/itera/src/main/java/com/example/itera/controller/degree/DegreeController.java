@@ -1,7 +1,7 @@
-package com.example.itera.controller.exposureDegree;
+package com.example.itera.controller.degree;
 
-import com.example.itera.dto.exposureDegree.ExposureDegreeResponseDTO;
-import com.example.itera.repository.exposureDegree.ExposureDegreeRepository;
+import com.example.itera.dto.degree.DegreeResponseDTO;
+import com.example.itera.repository.degree.DegreeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,25 +20,25 @@ import java.util.List;
  * @since 23/03/2024
  */
 @RestController
-@RequestMapping("exposureDegree")
-public class ExposureDegreeController {
+@RequestMapping("degree")
+public class DegreeController {
 
     @Autowired
-    ExposureDegreeRepository repository;
+    DegreeRepository repository;
 
 
     /**
      * Endpoint responsável por retornar um requisito específico, buscando pelo seu identificador.
-     * @return Lista no formato RiskActionTypeResponseDTO
+     * @return Lista no formato DegreeResponseDTO
      * @author Marcus Loureiro
-     * @see ExposureDegreeResponseDTO
+     * @see DegreeResponseDTO
      * @since 23/03/2024
      */
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public List<ExposureDegreeResponseDTO> getAll()  {
-        return repository.findAll().stream().map(ExposureDegreeResponseDTO::new).toList();
+    public List<DegreeResponseDTO> getAll()  {
+        return repository.findAll().stream().map(DegreeResponseDTO::new).toList();
     }
 
 }
