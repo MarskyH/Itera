@@ -11,12 +11,12 @@ import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
-import { useProjectStore } from "src/stores/ProjectStore";
+import { useRoute } from "vue-router";
 
 interface Role extends models.Role {}
 
+const $route = useRoute()
 const $roleStore = useRoleStore()
-const $projectStore = useProjectStore()
 
 const isActionModalOpen = ref<boolean>(false)
 
@@ -77,7 +77,7 @@ const schema = yup.object(formValidations);
 
 async function setRoles() {
 
-  await $roleStore.fetchRoles($projectStore.project.id ? $projectStore.project.id : "").then(() => {
+  await $roleStore.fetchRoles(String($route.params.projectId)).then(() => {
     roles.value = $roleStore.roles
   })
 }
@@ -85,10 +85,7 @@ async function setRoles() {
 onMounted(() => setRoles())
 
 async function createRole(roleFormValues: RoleForm) {
-
-  console.log($projectStore.project)
-
-  const projectId : string = $projectStore.project.id ? $projectStore.project.id : ''
+  const projectId : string = String($route.params.projectId)
   
   await $roleStore.createRole(projectId, roleFormValues)
     .then((responseStatus: any) => {

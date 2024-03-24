@@ -55,7 +55,7 @@ export const useTeamMemberStore = defineStore('TeamMember', {
     async fetchTeamMembers(projectId: string) {
       const response = await Api.request({
         method: 'get',
-        route: `teamMember/project/${projectId}`
+        route: `project/${projectId}/teamMembers`
       })
 
       if (response?.status === 200) {
@@ -83,7 +83,7 @@ export const useTeamMemberStore = defineStore('TeamMember', {
 
       const response = await Api.request({
         method: 'post',
-        route: `/teamMember`,
+        route: `teamMember`,
         body: teamMemberCreateData
       })
 

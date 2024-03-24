@@ -14,6 +14,11 @@
       type: String,
       default: 'placeholder'
     },
+    type: {
+      type: String,
+      default: 'input',
+      required: false
+    },
     required: {
       type: Boolean,
       default: false
@@ -43,7 +48,7 @@
     <Field
       :name="name"
       :placeholder="placeholder"
-      :as="options.length > 0 ? 'select' : 'input'"
+      :as="type"
       class="text-xs bg-transparent dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
     >
       <option
