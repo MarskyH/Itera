@@ -41,16 +41,16 @@ public class RoleController {
      * Endpoint para cadastrar um papel.
      *
      * @param data Estrutura de dados contendo as informações necessárias para persistir o papel.
-     * @param project_id Identificador do projeto associado à função.
      * @throws EntityNotFoundException Exceção lançada caso o projeto não seja encontrado.
      * @since 23/03/2024
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveRole(@RequestBody RoleRequestDTO data, @RequestParam String project_id) {
+    public ResponseEntity<?> saveRole(@RequestBody RoleRequestDTO data) {
+        System.out.println(data);
         Map<String, String> response = new HashMap<>();
         try {
-        Project projectData = projectRepository.findById(project_id).orElseThrow(EntityNotFoundException::new);
+        Project projectData = projectRepository.findById(data.project_id()).orElseThrow(EntityNotFoundException::new);
         Role roleData = new Role(data.function(), data.skill(), data.competency(), projectData);
             repository.save(roleData);
             response.put("project_id:", projectData.getId());
