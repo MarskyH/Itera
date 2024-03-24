@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="feat: riskActionType e exposureDegree">
+    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="fix: rota post de role">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/role/RoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/role/RoleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/itera/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/user/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +24,7 @@
         <option value="Enum" />
         <option value="Class" />
         <option value="Record" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -65,25 +67,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.CardapioApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.IteraApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Maven. [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.cardapio [package].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat-cadastro-projeto&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/repository&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.CardapioApplication.executor": "Run",
+    "Application.IteraApplication.executor": "Run",
+    "JUnit.UserRepositoryTest.executor": "Run",
+    "Maven. [install].executor": "Run",
+    "Maven.cardapio [package].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "feat-cadastro-projeto",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio",
+    "last_opened_file_path": "C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/repository",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "terminal"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.cardapio.user" />
@@ -96,6 +101,13 @@
       <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\controller" />
       <recent name="C:\Users\Lockhart\OneDrive\Projetos\Fernanda Kipper\backend\itera\src\main\java\com\example\itera\repository" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.example.itera.repository.teamMember" />
+      <recent name="com.example.itera.repository.user" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.example.itera.controller.exposureDegree" />
       <recent name="com.example.itera.repository.exposureDegree" />
@@ -104,7 +116,7 @@
       <recent name="com.example.itera.dto.exposureDegree" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.UserRepositoryTest">
     <configuration name="IteraApplication" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../../../../../Program Files/Java/jdk-21" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -115,6 +127,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="itera" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.itera.repository.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.itera.repository.user" />
+      <option name="MAIN_CLASS_NAME" value="com.example.itera.repository.user.UserRepositoryTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserRepositoryTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -148,7 +180,23 @@
       <option name="project" value="LOCAL" />
       <updated>1711213610112</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix: rota post de role">
+      <option name="closed" value="true" />
+      <created>1711241693975</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1711241693975</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix: rota post de role">
+      <option name="closed" value="true" />
+      <created>1711241761164</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1711241761164</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -165,6 +213,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: tratamento de erros das rotas" />
     <MESSAGE value="feat: riskActionType e exposureDegree" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: riskActionType e exposureDegree" />
+    <MESSAGE value="fix: rota post de role" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: rota post de role" />
   </component>
 </project>

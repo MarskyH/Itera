@@ -1,6 +1,7 @@
 package com.example.itera.domain.user;
 
 
+import com.example.itera.dto.user.RegisterDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,14 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.userRole = userRole;
+    }
+
+    public User(RegisterDTO data){
+        this.name = data.name();
+        this.login = data.login();
+        this.email = data.email();
+        this.password = data.password();
+        this.userRole = data.userRole();
     }
 
 
