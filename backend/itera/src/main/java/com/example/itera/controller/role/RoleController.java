@@ -47,7 +47,6 @@ public class RoleController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveRole(@RequestBody RoleRequestDTO data) {
-        System.out.println(data);
         Map<String, String> response = new HashMap<>();
         try {
         Project projectData = projectRepository.findById(data.project_id()).orElseThrow(EntityNotFoundException::new);
