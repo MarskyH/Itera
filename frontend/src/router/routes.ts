@@ -53,27 +53,27 @@ export default [
                 component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
               },
               {
-                path: 'habilidades-e-competencias',
+                path: ':projectId/habilidades-e-competencias',
                 name: 'roles',
                 component: async () => await import('src/views/NewProject/components/RolesStep.vue')
               },
               {
-                path: 'equipe',
+                path: ':projectId/equipe',
                 name: 'team',
                 component: async () => await import('src/views/NewProject/components/TeamStep.vue')
               },
               {
-                path: 'riscos',
+                path: ':projectId/riscos',
                 name: 'risks',
                 component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
               },
               {
-                path: 'requisitos-funcionais',
+                path: ':projectId/requisitos-funcionais',
                 name: 'functional-requirements',
                 component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
               },
               {
-                path: 'requisitos-nao-funcionais',
+                path: ':projectId/requisitos-nao-funcionais',
                 name: 'non-functional-requirements',
                 component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
               }

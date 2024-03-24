@@ -6,7 +6,6 @@ import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import { InputFieldProps, models } from 'src/@types';
 import { useProjectStore } from 'src/stores/ProjectStore';
-import router from 'src/router';
 
 interface Project extends models.Project {}
 
@@ -24,10 +23,8 @@ async function createProject(projectOnCreateData: Project) {
         
         const projectId : string = response.data.id
 
-        console.log("PROJECT ID: ", projectId)
-      
         await $projectStore.fetchProject(projectId).then(async ()=>{
-          $router.push({name:'roles'})
+          $router.push({ name:'roles', params: { projectId: $projectStore.project.id }})
         })
       } else {
         alert('Falha ao criar projeto!')
@@ -65,7 +62,7 @@ const inputFields: InputFieldProps[] = [
     validation: yup.number().required().min(1)
   },
   {
-    name: "workload",
+    name: "workHours",
     label: "Carga Horária Diária",
     placeholder: "Digite a carga horária diária do projeto",
     required: true,
@@ -99,6 +96,7 @@ const schema = yup.object(formValidations);
         :label="inputField.label"
         :name="inputField.name"
         :placeholder="inputField.placeholder"
+        :type="inputField.type"
         :required="inputField.required"
       />
     </div>

@@ -253,6 +253,7 @@ export interface InputFieldProps {
   name: string
   label: string
   placeholder: string
+  type?: string
   required: boolean
   options?: { value: string; name: string; selected: boolean }[]
   validation: any

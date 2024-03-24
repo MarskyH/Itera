@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import Api from 'src/services/api'
 import { type models } from 'src/@types'
 interface Role extends models.Role { }
-interface Project extends models.Project { }
 interface RoleOnCreate extends models.RoleOnCreate { }
 
 interface State {
@@ -27,7 +26,7 @@ export const useRoleStore = defineStore('Role', {
     async fetchRoles(projectId: string) {
       const response = await Api.request({
         method: 'get',
-        route: `role/project/${projectId}`,
+        route: `project/${projectId}/roles`,
       })
 
       if (response?.status === 200) {
@@ -52,7 +51,7 @@ export const useRoleStore = defineStore('Role', {
 
       const response = await Api.request({
         method: 'post',
-        route: '/role',
+        route: 'role',
         body: roleCreateData
       })
 

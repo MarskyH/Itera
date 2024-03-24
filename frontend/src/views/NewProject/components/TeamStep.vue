@@ -12,17 +12,17 @@ import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
-import { useProjectStore } from "src/stores/ProjectStore";
 import { useUserStore } from "src/stores/UserStore";
+import { useRoute } from "vue-router";
 
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
 
+const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
 const $userStore = useUserStore()
 const $roleStore = useRoleStore()
-const $projectStore = useProjectStore()
 
 const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
@@ -110,8 +110,7 @@ function getRolesOptions () {
 let inputFields: InputFieldProps[] = []
 
 let formValidations: any = {}
-inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
-const schema = yup.object(formValidations);
+let schema: any
 
 async function setUsers() {
   await $userStore.fetchUsers().then(() => {
@@ -120,16 +119,13 @@ async function setUsers() {
 }
 
 async function setRoles() {
-  await $roleStore.fetchRoles($projectStore.project.id ? $projectStore.project.id : "").then(() => {
+  await $roleStore.fetchRoles(String($route.params.projectId)).then(() => {
     roles.value = $roleStore.roles
   })
 }
 
 async function setTeamMembers() {
-
-  const projectId = $projectStore.project.id || ''
-
-  await $teamMemberStore.fetchTeamMembers(projectId).then(() => {
+  await $teamMemberStore.fetchTeamMembers(String($route.params.projectId)).then(() => {
     teamMembers.value = $teamMemberStore.teamMembers
   })
 }
@@ -145,6 +141,7 @@ onMounted(async () => {
             name: "user",
             label: "Nome",
             placeholder: "Selecione o integrante",
+            type: "select",
             required: true,
             options: userOptions.value,
             validation: yup.string().required().min(3)
@@ -167,22 +164,22 @@ onMounted(async () => {
             name: "role",
             label: "Papel",
             placeholder: "Selecione o papel",
+            type: "select",
             required: true,
             options: roleOptions.value,
             validation: yup.string().required()
           }
         ]
+
+        inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
+        schema = yup.object(formValidations);
       });
     })
   })
-  
-  
-
-  console.log($roleStore.roles, $userStore.users)
 })
 
 async function createTeamMember(teamMemberFormValues: TeamMemberForm) {
-  const projectId = $projectStore.project.id || ''
+  const projectId: string = String($route.params.projectId)
 
   await $teamMemberStore.createTeamMember(teamMemberFormValues, projectId)
     .then((responseStatus: any) => {
@@ -432,6 +429,7 @@ function updateTeamMember(values: TeamMemberForm) {
           :label="inputField.label"
           :name="inputField.name"
           :placeholder="inputField.placeholder"
+          :type="inputField.type"
           :required="inputField.required"
           :options="inputField.options"
         />
