@@ -180,82 +180,20 @@ export namespace models {
     id: number
     name: string
   }
-
-  /*
-
-  export interface AcaoRegister {
-    titulo: string
-    descricao: string
-    tipo: string
-    risco: {
-      id: number
-      titulo: string
-      efeito: string
-      probabilidade: string
-      impacto: string
-      grauExposicao: string
-    }
+  export interface NonFunctionalRequirementOnCreate {
+    title: string
+    valueRequirement: number
+    project_id: string
   }
 
-  export interface AcaoResponse {
-    id: number
-    titulo: string
-    descricao: string
-    tipo: string
-    risco_id: number
-  }
-
-  export interface RequisitoRegister {
-    nome: string
-    titulo: string
-    detalhamento: string
-    complexidade: string
-    prioridade: string
-    esforco: number
-    tamanho: number
-    projeto: ProjetoResponse
-  }
-  export interface RequisitoResponse {
-    id: number
-    nome: string
-    titulo: string
-    detalhamento: string
-    complexidade: string
-    prioridade: string
-    esforco: number
-    tamanho: number
-    projeto_id: number
-  }
-
-  export interface RequisitoNaoFuncionalRegister {
-    titulo: string
-    valor: number
-    projeto: ProjetoResponse
-  }
-
-  export interface RequisitoNaoFuncionalResponse {
-    id: number
-    titulo: string
-    valor: number
-    projeto_id: number
+  export interface NonFunctionalRequirement {
+    id?: string
+    title: string
+    valueRequirement: number
+    project: Project
   }
 
 
-  export interface ProjetoCompletoResponse {
-    id: number
-    nome: string
-    prazo: number
-    tempoIteracao: number
-    nomeCliente: string
-    createdBy: string
-    listaPapel: PapelResponse[]
-    listaUserEquipe: UserResponse[]
-    listaRiscos: RiscoResponse[]
-    listaRequisitos: RequisitoResponse[]
-    listaRequisitosNaoFuncionais: RequisitoNaoFuncionalResponse[]
-  }
-
-  */
 }
 
 export interface InputFieldProps {
@@ -264,8 +202,6 @@ export interface InputFieldProps {
   placeholder: string
   type?: string
   required: boolean
-  disabled?: boolean
-  value?: string
   options?: { value: string; name: string; selected: boolean }[]
   validation: any
 }
@@ -292,3 +228,86 @@ export interface RiskForm {
   description: string
   type: string
 }
+
+export interface NonFunctionalRequirementForm {
+  title: string
+  valueRequirement: number
+}
+
+
+
+/*
+
+export interface AcaoRegister {
+  titulo: string
+  descricao: string
+  tipo: string
+  risco: {
+    id: number
+    titulo: string
+    efeito: string
+    probabilidade: string
+    impacto: string
+    grauExposicao: string
+  }
+}
+
+export interface AcaoResponse {
+  id: number
+  titulo: string
+  descricao: string
+  tipo: string
+  risco_id: number
+}
+
+export interface RequisitoRegister {
+  nome: string
+  titulo: string
+  detalhamento: string
+  complexidade: string
+  prioridade: string
+  esforco: number
+  tamanho: number
+  projeto: ProjetoResponse
+}
+export interface RequisitoResponse {
+  id: number
+  nome: string
+  titulo: string
+  detalhamento: string
+  complexidade: string
+  prioridade: string
+  esforco: number
+  tamanho: number
+  projeto_id: number
+}
+
+export interface RequisitoNaoFuncionalRegister {
+  titulo: string
+  valor: number
+  projeto: ProjetoResponse
+}
+
+export interface RequisitoNaoFuncionalResponse {
+  id: number
+  titulo: string
+  valor: number
+  projeto_id: number
+}
+
+
+export interface ProjetoCompletoResponse {
+  id: number
+  nome: string
+  prazo: number
+  tempoIteracao: number
+  nomeCliente: string
+  createdBy: string
+  listaPapel: PapelResponse[]
+  listaUserEquipe: UserResponse[]
+  listaRiscos: RiscoResponse[]
+  listaRequisitos: RequisitoResponse[]
+  listaRequisitosNaoFuncionais: RequisitoNaoFuncionalResponse[]
+}
+
+*/

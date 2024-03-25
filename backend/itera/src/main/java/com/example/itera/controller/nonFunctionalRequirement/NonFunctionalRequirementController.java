@@ -17,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,14 +53,22 @@ public class NonFunctionalRequirementController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveNonFunctionalRequirement(@RequestBody NonFunctionalRequirementRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<?> saveNonFunctionalRequirements(@RequestBody List<NonFunctionalRequirementRequestDTO> data) {
+        System.out.println(data.toString());
+        Map<String, Object> response = new HashMap<>();
         try {
-            Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
-            NonFunctionalRequirement nonFunctionalRequirementData = new NonFunctionalRequirement(data.title(), data.valueRequirement(), projectData);
-            repository.save(nonFunctionalRequirementData);
-            response.put("project_id:", projectData.getId());
-            response.put("requirement_id:", nonFunctionalRequirementData.getId());
+            List<Map<String, String>> savedRequirements = new ArrayList<>();
+            for (NonFunctionalRequirementRequestDTO requirementDTO : data) {
+                Project projectData = projectRepository.findById(requirementDTO.project_id())
+                        .orElseThrow(() -> new ValidationException("Project not found for ID: " + requirementDTO.project_id()));
+                NonFunctionalRequirement nonFunctionalRequirementData = new NonFunctionalRequirement(requirementDTO.title(), requirementDTO.valueRequirement(), projectData);
+                repository.save(nonFunctionalRequirementData);
+                Map<String, String> savedRequirement = new HashMap<>();
+                savedRequirement.put("project_id", projectData.getId());
+                savedRequirement.put("requirement_id", nonFunctionalRequirementData.getId());
+                savedRequirements.add(savedRequirement);
+            }
+            response.put("saved_requirements", savedRequirements);
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
