@@ -171,6 +171,61 @@ export namespace models {
     project: Project
   }
 
+  export interface NonFunctionalRequirementOnCreate {
+    title: string
+    valueRequirement: number
+    project_id: string
+  }
+
+  export interface NonFunctionalRequirement {
+    id?: string
+    title: string
+    valueRequirement: number
+    project: Project
+  }
+
+
+}
+
+export interface InputFieldProps {
+  name: string
+  label: string
+  placeholder: string
+  type?: string
+  required: boolean
+  options?: { value: string; name: string; selected: boolean }[]
+  validation: any
+}
+
+export interface RoleForm {
+  function: string
+  skill: string
+  competency: string
+}
+
+export interface TeamMemberForm {
+  user: string
+  hourlyRate: number
+  dedicatedHours: number
+  role: string
+}
+
+export interface RiskForm {
+  title: string
+  effect: string
+  probability: string
+  impact: string
+  exposureDegree: string
+  description: string
+  type: string
+}
+
+export interface NonFunctionalRequirementForm {
+  title: string
+  valueRequirement: number
+}
+
+
 
   /*
 
@@ -247,37 +302,3 @@ export namespace models {
   }
 
   */
-}
-
-export interface InputFieldProps {
-  name: string
-  label: string
-  placeholder: string
-  type?: string
-  required: boolean
-  options?: { value: string; name: string; selected: boolean }[]
-  validation: any
-}
-
-export interface RoleForm {
-  function: string
-  skill: string
-  competency: string
-}
-
-export interface TeamMemberForm {
-  user: string
-  hourlyRate: number
-  dedicatedHours: number
-  role: string
-}
-
-export interface RiskForm {
-  title: string
-  effect: string
-  probability: string
-  impact: string
-  exposureDegree: string
-  description: string
-  type: string
-}
