@@ -171,6 +171,15 @@ export namespace models {
     project: Project
   }
 
+  export interface Degree {
+    id: number
+    name: string
+  }
+
+  export interface RiskActionType {
+    id: number
+    name: string
+  }
 
   /*
 
@@ -255,6 +264,8 @@ export interface InputFieldProps {
   placeholder: string
   type?: string
   required: boolean
+  disabled?: boolean
+  value?: string
   options?: { value: string; name: string; selected: boolean }[]
   validation: any
 }
