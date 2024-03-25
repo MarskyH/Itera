@@ -50,7 +50,7 @@ async function setNonFunctionalRequirements() {
 onMounted(async () => {
   inputFields.value = [
     {
-      name: "Comunicação de Dados",
+      name: "rnf1",
       label: "Comunicação de Dados",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -59,7 +59,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Volume de Transações",
+      name: "rnf2",
       label: "Volume de Transações",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -68,7 +68,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Processamento Complexo",
+      name: "rnf3",
       label: "Processamento Complexo",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -77,7 +77,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Facilidade Operacional",
+      name: "rnf4",
       label: "Facilidade Operacional",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -86,7 +86,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Processamento Distribuído",
+      name: "rnf5",
       label: "Processamento Distribuído",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -95,7 +95,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Entrada de Dados ON-LINE",
+      name: "rnf6",
       label: "Entrada de Dados ON-LINE",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -104,7 +104,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Reutilização de Código",
+      name: "rnf7",
       label: "Reutilização de Código",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -113,7 +113,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Múltiplos Locais",
+      name: "rnf8",
       label: "Múltiplos Locais",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -122,7 +122,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Desempenho",
+      name: "rnf9",
       label: "Desempenho",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -131,7 +131,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Eficiência do Usuário Final",
+      name: "rnf10",
       label: "Eficiência do Usuário Final",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -140,7 +140,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Facilidade de Implantação",
+      name: "rnf11",
       label: "Facilidade de Implantação",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -149,7 +149,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Facilidades de Mudanças",
+      name: "rnf12",
       label: "Facilidades de Mudanças",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -158,7 +158,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Utilização do Equipamento",
+      name: "rnf13",
       label: "Utilização do Equipamento",
       placeholder: "Selecione o grau de importância",
       type: "select",
@@ -167,7 +167,7 @@ onMounted(async () => {
       validation: yup.string().required(),
     },
     {
-      name: "Atualização ON-LINE",
+      name: "rnf14",
       label: "Atualização ON-LINE",
       placeholder: "Selecione o grau de importância",
       type: "select",
