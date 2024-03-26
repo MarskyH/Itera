@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="fix: exposureDegree para Degree">
-      <change afterPath="$PROJECT_DIR$/../frontend/src/stores/NonFunctionalRequirementStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/nonFunctionalRequirement/NonFunctionalRequirementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/nonFunctionalRequirement/NonFunctionalRequirementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/enumeration/ResponseType.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/enumeration/ResponseType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/@types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/@types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/views/NewProject/components/NonFunctionalRequirementsStep.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/NewProject/components/NonFunctionalRequirementsStep.vue" afterDir="false" />
-    </list>
+    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="fix: exposureDegree para Degree" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
