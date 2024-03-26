@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
-import { onMounted, ref } from "vue";
-import { Form } from 'vee-validate'
+import { onMounted, ref, watch } from "vue";
+import { Form, useField, useFieldValue, useForm } from 'vee-validate'
+
 import * as yup from 'yup'
 
 import ilustracao from "src/assets/ilustracaoRiscos.png"
@@ -11,39 +12,65 @@ import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import { InputFieldProps, RiskForm, models } from "src/@types";
 import { useRiskStore } from "src/stores/RiskStore";
+import { useDegreeStore } from "src/stores/DegreeStore";
+import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useRoute } from "vue-router";
 
 interface Risk extends models.Risk { }
+interface Degree extends models.Degree { }
+interface RiskActionType extends models.RiskActionType { }
 
 const $route = useRoute()
 const $riskStore = useRiskStore()
+const $degreeStore = useDegreeStore()
+const $riskActionTypeStore = useRiskActionTypeStore()
 
 const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
 const actionModalTitle = ref<string>('Adicionar risco')
 
-const riskTypeOptions = ['Contigência', 'Mitigação']
-const degreeOptions = ['Alto', 'Médio', 'Baixo']
-
+const formOnLoad = ref<boolean>(true)
 const riskForm = ref<any>(null)
 
 const risks = ref<Risk[]>([])
+const degreeOptions = ref<Degree[]>([])
+const riskActionTypeOptions = ref<RiskActionType[]>([])
+const exposureDegree = ref<string | undefined>(undefined)
+
 const inputFields = ref<InputFieldProps[]>([])
 
 yup.setLocale(yupErrorMessages);
 
-const setOptions = (options: string[]) => {
-  return options.length > 0 ? options.map((option: string) => {
+let formValidations: any = {}
+let schema: any
+
+const setSelectOptions = (options: { id: number; name: string }[]) => {
+  return options.length > 0 ? options.map((option: { id: number; name: string }) => {
     return {
-      value: option,
-      name: option,
+      value: option.name,
+      name: option.name,
       selected: false
     }
   }) : []
 }
 
-let formValidations: any = {}
-let schema: any
+const computeExposureDegree = (probability: string, impact: string) => {
+  if (probability === 'Alto' || impact === 'Alto') return 'Alto'
+  if (probability === 'Médio' || impact === 'Médio') return 'Médio'
+  return 'Baixo'
+}
+
+async function setDegreeOptions() {
+  await $degreeStore.fetchDegrees().then(() => {
+    degreeOptions.value = $degreeStore.degrees
+  })
+}
+
+async function setRiskActionTypeOptions() {
+  await $riskActionTypeStore.fetchRiskActionTypes().then(() => {
+    riskActionTypeOptions.value = $riskActionTypeStore.riskActionTypes
+  })
+}
 
 async function setRisks() {
   await $riskStore.fetchRisks(String($route.params.projectId)).then(() => {
@@ -53,71 +80,80 @@ async function setRisks() {
 
 onMounted(async () => {
   await setRisks().then(async () => {
-    inputFields.value = [
-      {
-        name: "title",
-        label: "Risco",
-        placeholder: "Digite o título do risco",
-        required: true,
-        validation: yup.string().required().min(3)
-      },
-      {
-        name: "effect",
-        label: "Efeito",
-        placeholder: "Digite o efeito do risco",
-        required: true,
-        validation: yup.number().required().min(1)
-      },
-      {
-        name: "probability",
-        label: "Probabilidade",
-        placeholder: "Selecione a probabilidade",
-        type: "select",
-        required: true,
-        options: setOptions(degreeOptions),
-        validation: yup.string().required()
-      },
-      {
-        name: "impact",
-        label: "Impacto",
-        placeholder: "Selecione a probabilidade",
-        type: "select",
-        required: true,
-        options: setOptions(degreeOptions),
-        validation: yup.string().required()
-      },
-      {
-        name: "exposureDegree",
-        label: "Grau de exposição",
-        placeholder: "Informe o grau de exposição do risco",
-        type: "select",
-        required: true,
-        options: setOptions(degreeOptions),
-        validation: yup.string().required().min(3)
-      },
-      {
-        name: "type",
-        label: "Tipo de ação",
-        placeholder: "Selecione o tipo de ação",
-        required: true,
-        type: "select",
-        options: setOptions(riskTypeOptions),
-        validation: yup.string().required()
-      },
-      {
-        name: "description",
-        label: "Descrição da ação",
-        placeholder: "Digite a ação a ser tomada com esse risco",
-        type: "textarea",
-        required: true,
-        validation: yup.string().required().min(3)
-      },
-    ]
-
-    inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
-    schema = yup.object(formValidations);
-  });
+    await setDegreeOptions().then(async () => {
+      await setRiskActionTypeOptions().then(async () => {
+        inputFields.value = [
+          {
+            name: "title",
+            label: "Risco",
+            placeholder: "Digite o título do risco",
+            required: true,
+            validation: yup.string().required().min(3)
+          },
+          {
+            name: "effect",
+            label: "Efeito",
+            placeholder: "Digite o efeito do risco",
+            required: true,
+            validation: yup.number().required().min(1)
+          },
+          {
+            name: "probability",
+            label: "Probabilidade",
+            placeholder: "Selecione a probabilidade",
+            type: "select",
+            required: true,
+            options: setSelectOptions(degreeOptions.value),
+            validation: yup.string().required()
+          },
+          {
+            name: "impact",
+            label: "Impacto",
+            placeholder: "Selecione a probabilidade",
+            type: "select",
+            required: true,
+            options: setSelectOptions(degreeOptions.value),
+            validation: yup.string().required()
+          },
+          {
+            name: "exposureDegree",
+            label: "Grau de exposição",
+            placeholder: "Informe o grau de exposição do risco",
+            type: "select",
+            required: true,
+            disabled: true,
+            value: exposureDegree.value,
+            options: setSelectOptions(degreeOptions.value),
+            validation: yup.string().required().min(3)
+          },
+          {
+            name: "type",
+            label: "Tipo de ação",
+            placeholder: "Selecione o tipo de ação",
+            required: true,
+            type: "select",
+            options: setSelectOptions(riskActionTypeOptions.value),
+            validation: yup.string().required()
+          },
+          {
+            name: "description",
+            label: "Descrição da ação",
+            placeholder: "Digite a ação a ser tomada com esse risco",
+            type: "textarea",
+            required: true,
+            validation: yup.string().required().min(3)
+          },
+        ]
+    
+        inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
+        schema = yup.object(formValidations);
+        
+        formOnLoad.value = false
+      })
+    })
+  })
 })
+
 
 async function createRisk(riskFormValues: RiskForm) {
   const projectId = String($route.params.projectId)
@@ -341,6 +377,7 @@ function updateRisk(values: RiskForm) {
     ref="riskForm"
     :validation-schema="schema"
     @submit="onSubmit"
+    v-if="!formOnLoad"
   >
     <ActionModal
       v-model="isActionModalOpen"
@@ -353,13 +390,16 @@ function updateRisk(values: RiskForm) {
             v-for="(inputField, index) in inputFields"
             v-show="index < inputFields.length - 1"
             :key="inputField.name"
+            v-slot="{ field }"
             :label="inputField.label"
             :name="inputField.name"
             :placeholder="inputField.placeholder"
             :type="inputField.type"
             :required="inputField.required"
             :options="inputField.options"
-          />
+          >
+            {{ console.log(field.onInput) }}
+          </InputField>
         </div>
         
         <div class="grid grid-cols-1 w-full gap-5">

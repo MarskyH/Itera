@@ -243,7 +243,7 @@ function updateRole(values: RoleForm) {
     <div class="flex gap-5 justify-center">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'general' })"
+        @click="$router.push({ name: 'new-project' })"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-angle-left"

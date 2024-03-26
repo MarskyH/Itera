@@ -23,13 +23,20 @@
       type: Boolean,
       default: false
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    value: {
+      type: String,
+      default: ''
+    },
     options: {
       type: Array<{ value: string; name: string; selected: boolean }>,
       default: [],
       required: false
     }
   })
-
 </script>
 
 <template>
@@ -47,8 +54,11 @@
 
     <Field
       :name="name"
+      :validate-on-input="true"
       :placeholder="placeholder"
       :as="type"
+      :value="value"
+      :disabled="disabled"
       class="text-xs bg-transparent dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
     >
       <option

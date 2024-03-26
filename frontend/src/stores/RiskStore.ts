@@ -79,7 +79,6 @@ export const useRiskStore = defineStore('Risk', {
       }
     },
 
-
     async createRisk(riskFormData: RiskForm, projectId: string) {
       const riskOnCreateData: RiskOnCreate = {
         title: riskFormData.title,

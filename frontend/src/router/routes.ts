@@ -37,10 +37,10 @@ export default [
             }
           },
           {
-            path: '/novo-projeto',
-            name: 'new-project',
+            path: '/projeto',
+            name: 'project',
             component: async () => await import('src/views/NewProject/NewProjectView.vue'),
-            redirect: { name: 'general' },
+            redirect: { name: 'new-project' },
             meta: {
               title: 'Novo Projeto',
               icon: 'folder-plus',
@@ -48,8 +48,8 @@ export default [
             },
             children: [
               {
-                path: 'geral',
-                name: 'general',
+                path: 'novo',
+                name: 'new-project',
                 component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
               },
               {

@@ -31,6 +31,7 @@ const actionModalTitle = ref<string>('Adicionar integrante')
 const roleOptions = ref<Array<any>>([])
 const userOptions = ref<Array<any>>([])
 
+const formOnLoad = ref<boolean>(true)
 const teamMemberForm = ref<any>(null)
 
 const users = ref<UserModel[]>([])
@@ -173,6 +174,8 @@ onMounted(async () => {
 
         inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
         schema = yup.object(formValidations);
+
+        formOnLoad.value = false
       });
     })
   })
@@ -414,6 +417,7 @@ function updateTeamMember(values: TeamMemberForm) {
     ref="teamMemberForm"
     :validation-schema="schema"
     @submit="onSubmit"
+    v-if="!formOnLoad"
   >
     <ActionModal
       v-model="isActionModalOpen"
