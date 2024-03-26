@@ -59,7 +59,6 @@ export namespace models {
     userRole?: string
   }
 
-
   export interface UserModel {
     id?: string
     name: string
@@ -180,9 +179,24 @@ export namespace models {
     id: number
     name: string
   }
-  export interface NonFunctionalRequirementOnCreate {
+
+  export interface FunctionalRequirement {
+    id?: string
     title: string
-    valueRequirement: number
+    details: string
+    complexity: string
+    priority: string
+    effort: number
+    sizeRequirement: number
+  }
+
+  export interface FunctionalRequirementOnCreate {
+    title: string
+    details: string
+    complexity: string
+    priority: string
+    effort: number
+    sizeRequirement: number
     project_id: string
   }
 
@@ -192,8 +206,12 @@ export namespace models {
     valueRequirement: number
     project: Project
   }
-
-
+  
+  export interface NonFunctionalRequirementOnCreate {
+    title: string
+    valueRequirement: number
+    project_id: string
+  }
 }
 
 export interface InputFieldProps {
@@ -202,8 +220,11 @@ export interface InputFieldProps {
   placeholder: string
   type?: string
   required: boolean
+  disabled?: boolean
+  value?: string
   options?: { value: string; name: string; selected: boolean }[]
-  validation: any
+  validation: any,
+  onChange?(): any
 }
 
 export interface RoleForm {
@@ -227,6 +248,16 @@ export interface RiskForm {
   exposureDegree: string
   description: string
   type: string
+}
+
+export interface FunctionalRequirementForm {
+  id: string
+  title: string
+  details: string
+  complexity: string
+  priority: string
+  effort: number
+  sizeRequirement: number
 }
 
 export interface NonFunctionalRequirementForm {

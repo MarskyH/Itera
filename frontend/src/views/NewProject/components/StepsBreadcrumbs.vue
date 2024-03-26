@@ -3,7 +3,7 @@
 const steps = [
   {
     title: 'Geral',
-    link: 'new-projectri'
+    link: 'new-project'
   },
   {
     title: 'Habilidades e competências',

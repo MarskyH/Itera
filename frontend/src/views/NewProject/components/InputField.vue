@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { Field, ErrorMessage } from 'vee-validate'
 
+  defineEmits(['change'])
+
   defineProps({
     label: {
       type: String,
@@ -59,7 +61,8 @@
       :as="type"
       :value="value"
       :disabled="disabled"
-      class="text-xs bg-transparent dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+      class="text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+      @change="() => $emit('change')"
     >
       <option
         v-for="option in options"

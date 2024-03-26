@@ -238,7 +238,7 @@ public class ProjectController {
      * @since 19/03/2024
      */
 
-    @GetMapping("{id}/nonFunctionalRequirement")
+    @GetMapping("{id}/nonFunctionalRequirements")
     @ResponseStatus(code = HttpStatus.OK)
     public List<NonFunctionalRequirementResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
         return nonFunctionalRequirementRepository.findByProject(id).stream().toList();

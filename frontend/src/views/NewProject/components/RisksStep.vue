@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { onMounted, ref, watch } from "vue";
-import { Form, useField, useFieldValue, useForm } from 'vee-validate'
+import { onMounted, ref } from "vue";
+import { Form } from 'vee-validate'
 
 import * as yup from 'yup'
 
@@ -54,7 +54,16 @@ const setSelectOptions = (options: { id: number; name: string }[]) => {
   }) : []
 }
 
+function setExposureDegreeValue() {
+  let probability: string = riskForm.value.values.probability
+  let impact: string = riskForm.value.values.impact
+  
+  probability !== "" && impact !== "" 
+    && riskForm.value.setFieldValue('exposureDegree', computeExposureDegree(probability, impact))
+}
+
 const computeExposureDegree = (probability: string, impact: string) => {
+  if (probability === '' || impact === '') return ''
   if (probability === 'Alto' || impact === 'Alto') return 'Alto'
   if (probability === 'Médio' || impact === 'Médio') return 'Médio'
   return 'Baixo'
@@ -95,7 +104,7 @@ onMounted(async () => {
             label: "Efeito",
             placeholder: "Digite o efeito do risco",
             required: true,
-            validation: yup.number().required().min(1)
+            validation: yup.string().required().min(1)
           },
           {
             name: "probability",
@@ -104,7 +113,8 @@ onMounted(async () => {
             type: "select",
             required: true,
             options: setSelectOptions(degreeOptions.value),
-            validation: yup.string().required()
+            validation: yup.string().required(),
+            onChange: setExposureDegreeValue,
           },
           {
             name: "impact",
@@ -113,17 +123,16 @@ onMounted(async () => {
             type: "select",
             required: true,
             options: setSelectOptions(degreeOptions.value),
-            validation: yup.string().required()
+            validation: yup.string().required(),
+            onChange: setExposureDegreeValue
           },
           {
             name: "exposureDegree",
             label: "Grau de exposição",
-            placeholder: "Informe o grau de exposição do risco",
-            type: "select",
+            placeholder: "Preencha Probabilidade e Impacto",
             required: true,
             disabled: true,
             value: exposureDegree.value,
-            options: setSelectOptions(degreeOptions.value),
             validation: yup.string().required().min(3)
           },
           {
@@ -395,8 +404,11 @@ function updateRisk(values: RiskForm) {
             :name="inputField.name"
             :placeholder="inputField.placeholder"
             :type="inputField.type"
+            :disabled="inputField.disabled"
+            :value="inputField.value"
             :required="inputField.required"
             :options="inputField.options"
+            @change="inputField.onChange"
           >
             {{ console.log(field.onInput) }}
           </InputField>
