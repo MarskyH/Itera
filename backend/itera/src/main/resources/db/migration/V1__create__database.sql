@@ -53,8 +53,8 @@ CREATE TABLE public.requirement (
 -- Non-Functional Requirement Table (Tabela de Requisitos Não Funcionais)
 CREATE TABLE nonfunctionalrequirement (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito não funcional
-    title VARCHAR(30) NOT NULL, -- Título do requisito não funcional
-    description INTEGER NOT NULL, -- descrição do requisito não funcional
+    title VARCHAR(100) NOT NULL, -- Título do requisito não funcional
+    description VARCHAR NOT NULL, -- descrição do requisito não funcional
     weights JSONB NOT NULL, -- pesos entre 0 e 6 do requisito funcional
     multiple BOOLEAN NOT NULL -- aceita ou não mais de um value
 );
@@ -62,8 +62,8 @@ CREATE TABLE nonfunctionalrequirement (
 CREATE TABLE nonfunctionalrequirementproject (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito não funcional do projetp
     project_id TEXT, -- Identificador do projeto associado
-    nonfunctionalrequirement_id INTEGER NOT NULL, -- Identificador d requisito não funcional associado
-    weight_value INTEGER NOT NULL, -- Valor do requisisto não funcional
+    nonfunctionalrequirement_id TEXT NOT NULL, -- Identificador d requisito não funcional associado
+    weight_value INTEGER NOT NULL -- Valor do requisisto não funcional
 );
 
 -- Risk Table (Tabela de Riscos)
@@ -110,10 +110,6 @@ ALTER TABLE public.requirement
 ADD CONSTRAINT FK_requirement_project
 FOREIGN KEY (project_id) REFERENCES project(id);
 
-ALTER TABLE nonfunctionalrequirement
-ADD CONSTRAINT FK_nonfunctionalrequirement_project
-FOREIGN KEY (project_id) REFERENCES project(id);
-
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_risk
 FOREIGN KEY (risk_id) REFERENCES risk(id);
@@ -144,7 +140,7 @@ FOREIGN KEY (project_id) REFERENCES project(id);
 
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_nonfunctionalrequirement_nonfunctionalrequirementproject
-FOREIGN KEY (nonfunctionalrequirement_id) REFERENCES nonfunctionalrequirementid);
+FOREIGN KEY (nonfunctionalrequirement_id) REFERENCES nonfunctionalrequirement(id);
 
 -- Data Insertion (Inserção de Dados)
 INSERT INTO users (id, name, email, username, password, user_role)
@@ -199,7 +195,7 @@ INSERT INTO nonfunctionalrequirement (id, title, description, weights, multiple)
 VALUES ('rfn11', 'Facilidade de Instalação', 'Um plano e/ou ferramentas de conversão e instalação foram fornecidos e testados durante a fase de instalação.', '{"0": {"value": 0, "description": "O usuário não definiu considerações especiais, assim como não é requerido nenhum setup para a instalação."}, "1": {"value": 1, "description": "O usuário não definiu considerações especiais, mas é necessário setup para a instalação."}, "2": {"value": 2, "description": "Requisitos de instalação e conversão foram definidos pelo usuário, e guias de conversão e instalação foram fornecidos e testados. Não é considerado importante o impacto da conversão."}, "3": {"value": 3, "description": "Requisitos de instalação e conversão foram definidos pelo usuário, e guias de conversão e instalação foram fornecidos e testados. É considerado importante o impacto da conversão."}, "4": {"value": 4, "description": "Além do item 2 acima, ferramentas de instalação e conversão automáticas foram fornecidas e testadas."}, "5": {"value": 5, "description": "Além do item 3 acima, ferramentas de instalação e conversão automáticas foram fornecidas e testadas."}}', FALSE);
 
 INSERT INTO nonfunctionalrequirement (id, title, description, weights, multiple)
-VALUES ('rfn12', 'Facilidade de Operação', 'Descreve em que nível a aplicação atende a alguns aspectos operacionais como: inicialização, segurança e remoção da aplicação.', '{"0": {"value": 0, "description": "Não foram estabelecidas pelo usuário outra consideração que não os procedimentos de segurança normais."}, "1-4": {"value": 1, "description": "Um, alguns ou todos os seguintes itens são válidos para a aplicação. Selecione todos aqueles que sejam válidos. Cada item tem um value de um ponto, a exceção de onde seja citado o contrário: * procedimentos de inicialização, salva e recuperação foram fornecidos, mas é necessária a intervenção do operador; * procedimentos de inicialização, salva e recuperação foram fornecidos, e não é necessária a intervenção do operador (conte como dois itens); * a aplicação minimiza a necessidade de montagem de fitas; * a aplicação minimiza a necessidade de manipulação de papel."}, "5": {"value": 5, "description": "Aplicação projetada para operação não assistida. Isto é, não é necessária nenhuma intervenção do operador para operar o sistema, que não seja a inicialização e término da aplicação. A recuperação automática de erros é uma característica da aplicação."}}', FALSE);
+VALUES ('rfn12', 'Facilidade de Operação', 'Descreve em que nível a aplicação atende a alguns aspectos operacionais como: inicialização, segurança e remoção da aplicação.', '{"0": {"value": 0, "description": "Não foram estabelecidas pelo usuário outra consideração que não os procedimentos de segurança normais."}, "1-4": {"value": 1, "description": "Um, alguns ou todos os seguintes itens são válidos para a aplicação. Selecione todos aqueles que sejam válidos. Cada item tem um value de um ponto, a exceção de onde seja citado o contrário: * procedimentos de inicialização, salva e recuperação foram fornecidos, mas é necessária a intervenção do operador; * procedimentos de inicialização, salva e recuperação foram fornecidos, e não é necessária a intervenção do operador (conte como dois itens); * a aplicação minimiza a necessidade de montagem de fitas; * a aplicação minimiza a necessidade de manipulação de papel."}, "5": {"value": 5, "description": "Aplicação projetada para operação não assistida. Isto é, não é necessária nenhuma intervenção do operador para operar o sistema, que não seja a inicialização e término da aplicação. A recuperação automática de erros é uma característica da aplicação."}}', TRUE);
 
 INSERT INTO public.nonfunctionalrequirement (id, title, description, weights, multiple)
 VALUES ('rfn13', 'Múltiplos Locais', 'Descreve em que nível a aplicação foi especificamente projetada, desenvolvida e suportada para diferentes ambientes de hardware e software', '{"0": {"value": 0, "description": "Os requisitos do usuário não consideram a necessidade de mais de um usuário/local de instalação."}, "1": {"value": 1, "description": "Necessidade de múltiplos locais foi considerada no projeto, e a aplicação foi projetada para operar apenas nos mesmos ambientes de hardware e software."}, "2": {"value": 2, "description": "Necessidade de múltiplos locais foi considerada no projeto, e a aplicação foi projetada para operar apenas ambientes de hardware e software similares."}, "3": {"value": 3, "description": "Necessidade de múltiplos locais foi considerada no projeto, e a aplicação foi projetada para operar ambientes diferentes de hardware e software."}, "4": {"value": 4, "description": "Adicionalmente aos itens 1 e 2, plano de suporte e documentação são fornecidos e testados para suportar a aplicação em múltiplos locais."}, "5": {"value": 5, "description": "Adicionalmente ao item 3, plano de suporte e documentação são fornecidos e testados para suportar a aplicação em múltiplos locais."}}', FALSE);

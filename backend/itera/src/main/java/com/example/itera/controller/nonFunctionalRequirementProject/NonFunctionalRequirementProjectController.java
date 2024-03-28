@@ -2,14 +2,25 @@ package com.example.itera.controller.nonFunctionalRequirementProject;
 
 
 import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
+import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
 import com.example.itera.domain.project.Project;
+import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementResponseDTO;
+import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
+import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
+import com.example.itera.dto.requirement.RequirementRequestDTO;
+import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
+import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRepository;
 import com.example.itera.repository.project.ProjectRepository;
+import com.example.itera.repository.requirement.RequirementRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,44 +42,45 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("nonFunctionalRequirement")
+@RequestMapping("nonFunctionalRequirementProject")
 public class NonFunctionalRequirementProjectController {
 
     @Autowired
-    NonFunctionalRequirementRepository repository;
+    NonFunctionalRequirementProjectRepository repository;
 
     @Autowired
     ProjectRepository projectRepository;
 
+    @Autowired
+    NonFunctionalRequirementRepository nonFunctionalRequirementRepository;
+
     /**
-     * Endpoint responsável por cadastrar um risco.
+     * Endpoint responsável por cadastrar um requisito funcional.
      *
-     * @param data estrutura de dados contendo as informações necessárias para persistir o requisito não funcional
-     * @return ResponseEntity confirmando a transação e retornando o ‘id’ do projeto usado e do requisito não funcional criado.
+     * @param data estrutura de dados contendo as informações necessárias para persistir o requisito
+     * @return ResponseEntity confirmando a transação e retornando o ‘id’ do projeto usado e do requesito criado.
      * @author Marcus Loureiro
-     * @see NonFunctionalRequirementRequestDTO
+     * @see RequirementRequestDTO
      * @see ResponseType
      * @since 23/03/2024
      */
 
+
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveNonFunctionalRequirements(@RequestBody List<NonFunctionalRequirementRequestDTO> data) {
-        System.out.println(data.toString());
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> saveRequirement(@RequestBody NonFunctionalRequirementProjectRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
         try {
-            List<Map<String, String>> savedRequirements = new ArrayList<>();
-            for (NonFunctionalRequirementRequestDTO requirementDTO : data) {
-                Project projectData = projectRepository.findById(requirementDTO.project_id())
-                        .orElseThrow(() -> new ValidationException("Project not found for ID: " + requirementDTO.project_id()));
-                NonFunctionalRequirement nonFunctionalRequirementData = new NonFunctionalRequirement(requirementDTO.title(), requirementDTO.valueRequirement(), projectData);
-                repository.save(nonFunctionalRequirementData);
-                Map<String, String> savedRequirement = new HashMap<>();
-                savedRequirement.put("project_id", projectData.getId());
-                savedRequirement.put("requirement_id", nonFunctionalRequirementData.getId());
-                savedRequirements.add(savedRequirement);
-            }
-            response.put("saved_requirements", savedRequirements);
+            Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
+            NonFunctionalRequirement nonFunctionalRequirementData = nonFunctionalRequirementRepository.findById(data.nonfunctionalrequirement_id()).orElseThrow();
+            NonFunctionalRequirementProject nonFunctionalRequirementProjectData = new NonFunctionalRequirementProject(
+                    projectData,
+                    nonFunctionalRequirementData,
+                    data.weight()
+            );
+            repository.save(nonFunctionalRequirementProjectData);
+            response.put("project_id:", projectData.getId());
+            response.put("nonFunctionalRequirementProject_id:", nonFunctionalRequirementProjectData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
@@ -80,50 +92,48 @@ public class NonFunctionalRequirementProjectController {
         }
     }
 
+
     /**
-     * Endpoint responsável por retornar um requisito não funcional específico, buscando pelo seu identificador.
+     * Endpoint responsável por retornar um requisito específico, buscando pelo seu identificador.
      *
-     * @param id Identificador único do risco.
-     * @return requisito não funcional no formato NonFunctionalRequirementResponseDTO caso encontrado, caso contrário, retorna erro 404 (Not Found).
-     * @throws ResourceNotFoundException Exceção lançada caso o risco não seja encontrado.
+     * @param id Identificador único do requisito.
+     * @return Requisito no formato RequirementResponseDTO caso encontrado, caso contrário, retorna erro 404 (Not Found).
+     * @throws ResourceNotFoundException Exceção lançada caso o requisito não seja encontrado.
      * @author Marcus Loureiro
-     * @see NonFunctionalRequirementResponseDTO
+     * @see RequirementResponseDTO
      * @since 23/03/2024
      */
     @GetMapping("/{id}")
-    public NonFunctionalRequirementResponseDTO getNonFunctionalRequiremenById(@PathVariable String id) throws ResourceNotFoundException {
-        NonFunctionalRequirement nonFunctionalRequirement = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
-        return new NonFunctionalRequirementResponseDTO(nonFunctionalRequirement);
+    @ResponseStatus(code = HttpStatus.OK)
+    public NonFunctionalRequirementProjectResponseDTO getRequirementById(@PathVariable String id) throws ResourceNotFoundException {
+        NonFunctionalRequirementProject nonFunctionalRequirement = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        return new NonFunctionalRequirementProjectResponseDTO(nonFunctionalRequirement);
     }
 
+
     /**
-     * Endpoint responsável por atualizar um requisito não funcional existente, identificado pelo seu ‘ID’.
+     * Endpoint responsável por atualizar um requisito existente, identificado pelo seu ‘ID’.
      *
-     * @param id   Identificador único do requisito não funcional a ser atualizado.
-     * @param data Objeto contendo os dados do requisito não funcional a serem atualizados.
+     * @param id   Identificador único do requisito a ser atualizado.
+     * @param data Objeto contendo os dados do requisito a serem atualizados.
      * @return Resposta HTTP indicando o sucesso da operação ou informações sobre o erro ocorrido.
-     * @throws EntityNotFoundException Exceção lançada caso o risco não seja encontrado.
+     * @throws EntityNotFoundException Exceção lançada caso o requisito não seja encontrado.
      * @author Marcus Loureiro
      * @since 23/03/2024
      */
-
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateNonFunctionalRequiremen(@PathVariable String id, @RequestBody NonFunctionalRequirementRequestDTO data) {
+    public ResponseEntity<?> updateRequirement(@PathVariable String id, @RequestBody NonFunctionalRequirementProjectRequestDTO data) {
         Map<String, String> response = new HashMap<>();
         try {
-            NonFunctionalRequirement nonFunctionalRequirement = repository.findById(id).orElseThrow(EntityNotFoundException::new);
-            NonFunctionalRequirement nonFunctionalRequirementNew = new NonFunctionalRequirement(data);
+            NonFunctionalRequirementProject nonFunctionalRequirementProject = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-            // Atualizar a entidade usando o construtor
-            nonFunctionalRequirement = new NonFunctionalRequirement(
-                    nonFunctionalRequirement.getId(),
-                    nonFunctionalRequirementNew.getTitle(),
-                    nonFunctionalRequirementNew.getValueRequirement(),
-                    nonFunctionalRequirement.getProject()
-            );
-            repository.save(nonFunctionalRequirement);
-            response.put("data_id:", nonFunctionalRequirement.getId());
-            response.put("message", ResponseType.SUCCESS_UPDATE.getMessage());
+            // Atualizar apenas os campos fornecidos pelo utilizador
+            if (data.weight() != null) {
+                nonFunctionalRequirementProject.setWeight(data.weight());
+            }
+            repository.save(nonFunctionalRequirementProject);
+            response.put("data_id:", nonFunctionalRequirementProject.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
@@ -135,7 +145,7 @@ public class NonFunctionalRequirementProjectController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNonFunctionalRequirement(@PathVariable String id) {
+    public ResponseEntity<Void> deleteRequirement(@PathVariable String id) {
         try {
             repository.delete(repository.getReferenceById(id));
             return ResponseEntity.noContent().build();
@@ -147,5 +157,6 @@ public class NonFunctionalRequirementProjectController {
         }
     }
 }
+
 
 

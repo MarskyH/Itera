@@ -1,16 +1,14 @@
 package com.example.itera.domain.nonFunctionalRequirement;
 
-import com.example.itera.domain.project.Project;
-import com.example.itera.dto.requirement.RequirementRequestDTO;
-import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
+
+
+import java.io.IOException;
 
 @Entity
 @Table(name = "nonfunctionalrequirement")
@@ -22,24 +20,32 @@ public class NonFunctionalRequirement {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Column(name = "title", length = 100, nullable = false)
     private String title;
-    private Integer valueRequirement;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "weights", columnDefinition = "jsonb", nullable = false)
+    private String weights;
+
+    @Column(name = "multiple", nullable = false)
+    private Boolean multiple;
+
+
+
+    // Getter and Setter for weights as JsonNode
     @JsonIgnore
-    private Project project;
-
-    public NonFunctionalRequirement(NonFunctionalRequirementRequestDTO data){
-        this.title = data.title();
-        this.valueRequirement = data.valueRequirement();
+    public JsonNode getWeightsJson() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readTree(weights);
     }
 
-    public NonFunctionalRequirement(String title, Integer valueRequirement, Project project) {
-        this.title = title;
-        this.valueRequirement = valueRequirement;
-        this.project = project;
+    @JsonIgnore
+    public void setWeightsJson(JsonNode weightsJson) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.weights = objectMapper.writeValueAsString(weightsJson);
     }
 }
 
