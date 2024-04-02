@@ -20,7 +20,7 @@ export const usePriorityStore = defineStore('Priority', {
         route: 'priority',
       })
       if (response?.status === 200) {
-        this.degrees = response.data?.map((elem: any) => {
+        this.priorities = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             name: elem.name

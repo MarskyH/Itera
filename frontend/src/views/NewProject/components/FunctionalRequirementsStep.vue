@@ -116,7 +116,7 @@ onMounted(async () => {
         },
         {
           name: "details",
-          label: "Detahamento",
+          label: "Detalhamento",
           placeholder: "Digite os detalhes",
           required: true,
           validation: yup.string().required().min(3)

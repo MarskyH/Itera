@@ -41,8 +41,8 @@ CREATE TABLE public.role (
 -- Requirement Table (Tabela de Requisitos)
 CREATE TABLE public.requirement (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito
-    title VARCHAR(30) NOT NULL, -- Título do requisito
-    details VARCHAR(30) NOT NULL, -- Detalhes do requisito
+    title VARCHAR(255) NOT NULL, -- Título do requisito
+    details VARCHAR(255) NOT NULL, -- Detalhes do requisito
     complexity VARCHAR(30) NOT NULL, -- Complexidade do requisito
     priority VARCHAR(30) NOT NULL, -- Prioridade do requisito
     effort INTEGER NOT NULL, -- Esforço necessário para o requisito
@@ -167,13 +167,13 @@ INSERT INTO degree (id, name)
 VALUES ('3', 'Baixo');
 
 INSERT INTO priority (id, name)
-VALUES ('1', 'Baixo');
+VALUES ('1', 'Baixa');
 
 INSERT INTO priority (id, name)
-VALUES ('2', 'Médio');
+VALUES ('2', 'Média');
 
 INSERT INTO priority (id, name)
-VALUES ('3', 'Difícil');
+VALUES ('3', 'Alta');
 
 INSERT INTO priority (id, name)
 VALUES ('4', 'Urgente');
