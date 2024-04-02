@@ -17,7 +17,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: false
+      requiresAuth: true
     },
     children: [
       {
@@ -73,7 +73,7 @@ export default [
                 component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
               },
               {
-                path: 'requisitos-nao-funcionais',
+                path: ':projectId/requisitos-nao-funcionais',
                 name: 'non-functional-requirements',
                 component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
               }

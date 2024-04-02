@@ -185,6 +185,11 @@ export namespace models {
     name: string
   }
 
+  export interface NonFunctionalRequirementWeights{
+    value: number
+    description: string
+  }
+
   export interface FunctionalRequirement {
     id?: string
     title: string
