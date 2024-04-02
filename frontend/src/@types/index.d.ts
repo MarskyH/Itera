@@ -213,14 +213,15 @@ export namespace models {
   export interface NonFunctionalRequirement {
     id?: string
     title: string
-    valueRequirement: number
-    project: Project
+    description: description
+    weights: NonFunctionalRequirementWeights
+    multiple: boolean
   }
   
   export interface NonFunctionalRequirementOnCreate {
-    title: string
-    valueRequirement: number
     project_id: string
+    nonfunctionalrequirement_id: string
+    weight: value
   }
 }
 
@@ -271,8 +272,8 @@ export interface FunctionalRequirementForm {
 }
 
 export interface NonFunctionalRequirementForm {
-  title: string
-  valueRequirement: number
+  id: string
+  wheight: number
 }
 
 

@@ -13,16 +13,12 @@ interface State {
 const nonFunctionalRequirementDefault: NonFunctionalRequirement = {
   id: '',
   title: '',
-  valueRequirement: 0,
-  project: {
-    id: '',
-    name: '',
-    clientName: '',
-    deadline: 0,
-    workHours: 0,
-    iterationTime: 0,
-    createdBy: '',
-  }
+  description: '',
+  weights: {
+    value: 0,
+    description: ''
+  },
+  multiple: false
 }
 
 export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequirement', {
@@ -41,12 +37,14 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
         this.nonFunctionalRequirement = {
           id: response.data?.id,
           title: response.data?.title,
-          valueRequirement: response.data?.valueRequirement,
-          project: response.data?.project
+          description: response.data.description,
+          weights: response.data?.weights,
+          multiple: response.data?.multiple
         }
       }
     },
 
+    /*
     async fetchNonFunctionalRequirements(projectId: string) {
       const response = await Api.request({
         method: 'get',
@@ -62,20 +60,20 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
           }
         })
       }
-    },
+    },*/
 
 
     async createNonFunctionalRequirements(nonFunctionalRequirementFormDataList: NonFunctionalRequirementForm[], projectId: string) {
       try {
         const nonFunctionalRequirementOnCreateDataList: NonFunctionalRequirementOnCreate[] = nonFunctionalRequirementFormDataList.map(form => ({
-          title: form.title,
-          valueRequirement: form.valueRequirement,
-          project_id: projectId
+          project_id: projectId,
+          nonfunctionalrequirement_id: form.id,
+          weight: form.wheight
         }));
 
         const response = await Api.request({
           method: 'post',
-          route: 'nonFunctionalRequirement',
+          route: 'nonFunctionalRequirementProject',
           body: nonFunctionalRequirementOnCreateDataList
         });
 

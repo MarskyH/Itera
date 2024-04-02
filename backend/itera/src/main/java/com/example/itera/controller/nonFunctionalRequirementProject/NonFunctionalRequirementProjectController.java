@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class NonFunctionalRequirementProjectController {
      * @param data estrutura de dados contendo as informações necessárias para persistir o requisito
      * @return ResponseEntity confirmando a transação e retornando o ‘id’ do projeto usado e do requesito criado.
      * @author Marcus Loureiro
-     * @see RequirementRequestDTO
+     * @see NonFunctionalRequirementProjectRequestDTO
      * @see ResponseType
      * @since 23/03/2024
      */
@@ -68,19 +69,23 @@ public class NonFunctionalRequirementProjectController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveRequirement(@RequestBody NonFunctionalRequirementProjectRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<?> saveRequirement(@RequestBody List<NonFunctionalRequirementProjectRequestDTO> data) {
+        System.out.println(data.toString());
+        Map<String, Object> response = new HashMap<>();
         try {
-            Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
-            NonFunctionalRequirement nonFunctionalRequirementData = nonFunctionalRequirementRepository.findById(data.nonfunctionalrequirement_id()).orElseThrow();
-            NonFunctionalRequirementProject nonFunctionalRequirementProjectData = new NonFunctionalRequirementProject(
-                    projectData,
-                    nonFunctionalRequirementData,
-                    data.weight()
-            );
-            repository.save(nonFunctionalRequirementProjectData);
-            response.put("project_id:", projectData.getId());
-            response.put("nonFunctionalRequirementProject_id:", nonFunctionalRequirementProjectData.getId());
+            List<Map<String, String>> savedRequirements = new ArrayList<>();
+            for (NonFunctionalRequirementProjectRequestDTO requirementDTO : data) {
+                Project projectData = projectRepository.findById(requirementDTO.project_id()).orElseThrow(() -> new ValidationException("Project not found for ID: " + requirementDTO.project_id()));
+                NonFunctionalRequirement nonFunctionalRequirementData = nonFunctionalRequirementRepository.findById(requirementDTO.nonfunctionalrequirement_id()).orElseThrow(() -> new ValidationException("Not found for ID: " + requirementDTO.nonfunctionalrequirement_id()));
+                NonFunctionalRequirementProject nonFunctionalRequirementProject = new NonFunctionalRequirementProject(projectData, nonFunctionalRequirementData, requirementDTO.weight());
+                repository.save(nonFunctionalRequirementProject);
+                Map<String, String> savedRequirement = new HashMap<>();
+                savedRequirement.put("project_id", projectData.getId());
+                savedRequirement.put("requirement_id", nonFunctionalRequirementProject.getId());
+                savedRequirement.put("wheight", String.valueOf(nonFunctionalRequirementProject.getWeight()));
+                savedRequirements.add(savedRequirement);
+            }
+            response.put("saved_requirements", savedRequirements);
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
