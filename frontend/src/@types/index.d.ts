@@ -234,7 +234,8 @@ export interface InputFieldProps {
   disabled?: boolean
   value?: string
   options?: { value: string; name: string; selected: boolean }[]
-  validation: any,
+  hoverInfo?: string
+  validation: any
   onChange?(): any
 }
 

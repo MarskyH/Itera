@@ -7,12 +7,13 @@ import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import { InputFieldProps, NonFunctionalRequirementForm, models } from "src/@types";
 import { useNonFunctionalRequirementStore } from "src/stores/NonFunctionalRequirementStore";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
 interface NonFunctionalRequirementsWeights extends models.NonFunctionalRequirementWeights { }
 
 const $route = useRoute()
+const $router = useRouter()
 const $nonFunctionalRequirementStore = useNonFunctionalRequirementStore()
 const nonFunctionalRequirements = ref<NonFunctionalRequirement[]>([])
 const inputFields = ref<InputFieldProps[]>([])
@@ -46,6 +47,7 @@ onMounted(async () => {
 
   for (const requirement of nonFunctionalRequirements.value) {
     const options = await setNonFunctionalRequirementsWeights(requirement.id || "");
+
     inputFields.value.push({
       name: requirement.id || 'name',
       label: requirement.title,
@@ -53,6 +55,7 @@ onMounted(async () => {
       type: "select",
       required: true,
       options: options,
+      hoverInfo: requirement.description,
       validation: yup.string().required(),
     });
   }
@@ -71,8 +74,9 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
   if (responseStatus === 200) {
     await setNonFunctionalRequirements();
     alert('Configuração do projeto concluída!');
+    $router.push({name: 'my-projects'})
   } else {
-    alert('Falha ao cadastrar requisito não funcional!');
+    //alert('Falha ao cadastrar requisito não funcional!');
   }
 }
 
@@ -85,8 +89,6 @@ function onSubmit(values: any) {
       weight: values[requirement.id || 'rfn1']
     });
   })
-
-  console.log(nonFunctionalRequirementFormValuesList[0])
 
   createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
 }
@@ -101,7 +103,7 @@ function onSubmit(values: any) {
   <Form
     ref="nonFunctionalRequirementForm"
     :validation-schema="schema"
-    @submit="onSubmit"
+    @submit="(values:any) => onSubmit(values)"
     class="flex flex-col gap-10 p-5 items-center"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
@@ -114,6 +116,7 @@ function onSubmit(values: any) {
         :type="inputField.type"
         :required="inputField.required"
         :options="inputField.options"
+        :hover-info="inputField.hoverInfo"
       />
     </div>
 

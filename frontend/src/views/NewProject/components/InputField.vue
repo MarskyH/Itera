@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { Field, ErrorMessage } from 'vee-validate'
+import { ref } from 'vue';
 
   defineEmits(['change'])
 
@@ -37,21 +38,39 @@
       type: Array<{ value: string; name: string; selected: boolean }>,
       default: [],
       required: false
+    },
+    hoverInfo: {
+      type: String,
+      default: undefined,
+      required: false
     }
   })
-</script>
+  
+  const infoTooltipVisible = ref<boolean>(false)
+  </script>
 
 <template>
   <div class="flex flex-col gap-1">
     <span
-      class="text-semibold text-sm"
+      class="flex text-semibold text-sm"
     >
       {{ label }}
-
+      
       <span
         v-if="required"
         class="text-red-500 dark:text-red-400"
       >*</span>
+    
+      <button
+        class="ml-1"
+        v-show="hoverInfo"
+        @click="() => infoTooltipVisible = true"
+      >
+        <FontAwesomeIcon
+          icon="fa-solid fa-circle-question"
+        />
+      </button>
+      
     </span>
 
     <Field
@@ -78,5 +97,43 @@
       :name="name"
       class="text-xs text-red-500 dark:text-red-400"
     />
+
+    
+    <div
+      v-show="infoTooltipVisible"
+    >
+      <div
+        class="inset-0 fixed top-0 left-0 bg-black/75 flex items-center justify-center"
+      >
+        <div 
+          class="flex flex-col md:w-2/4 sm:w-10/12 max-w-2xl bg-white dark:bg-eerieBlackLight-900 rounded-md m-4 p-4 gap-4"
+        >
+          <div class="flex w-full gap-4 justify-between items-center">
+            <div class="flex gap-4">
+              <FontAwesomeIcon
+                :icon="`fa-solid fa-gears`"
+                class="text-lavenderIndigo-900"
+              />
+            
+              <span class="text-sm font-semibold">
+                {{ label }}
+              </span>
+            </div>
+
+            <div
+              @click="() => infoTooltipVisible = false"
+            >
+              <FontAwesomeIcon
+                icon="fa-solid fa-xmark"
+              />
+            </div>
+          </div>
+        
+          <span class="text-sm whitespace-break-spaces">
+            {{ hoverInfo }}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
