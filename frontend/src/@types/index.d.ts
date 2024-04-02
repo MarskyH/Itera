@@ -180,12 +180,12 @@ export namespace models {
     name: string
   }
 
-  export interface Priority{
+  export interface Priority {
     id: number
     name: string
   }
 
-  export interface NonFunctionalRequirementWeights{
+  export interface NonFunctionalRequirementWeights {
     value: number
     description: string
   }
@@ -217,7 +217,7 @@ export namespace models {
     weights: NonFunctionalRequirementWeights
     multiple: boolean
   }
-  
+
   export interface NonFunctionalRequirementOnCreate {
     project_id: string
     nonfunctionalrequirement_id: string
@@ -273,7 +273,7 @@ export interface FunctionalRequirementForm {
 
 export interface NonFunctionalRequirementForm {
   id: string
-  wheight: number
+  weight: number
 }
 
 

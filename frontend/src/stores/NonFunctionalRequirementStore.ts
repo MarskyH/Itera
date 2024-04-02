@@ -9,7 +9,7 @@ interface NonFunctionalRequirementWeights extends models.NonFunctionalRequiremen
 interface State {
   nonFunctionalRequirement: NonFunctionalRequirement
   nonFunctionalRequirements: NonFunctionalRequirement[]
-  wheights: NonFunctionalRequirementWeights[]
+  weights: NonFunctionalRequirementWeights[]
 }
 
 const nonFunctionalRequirementDefault: NonFunctionalRequirement = {
@@ -27,7 +27,7 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
   state: (): State => ({
     nonFunctionalRequirement: { ...nonFunctionalRequirementDefault },
     nonFunctionalRequirements: [],
-    wheights: []
+    weights: []
   }),
 
   actions: {
@@ -47,7 +47,7 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
       }
     },
 
-    
+
     async fetchNonFunctionalRequirements() {
       const response = await Api.request({
         method: 'get',
@@ -58,7 +58,7 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
           return {
             id: elem.id,
             title: elem.title,
-            description:elem.description,
+            description: elem.description,
             weights: elem.weights,
             multiple: elem.multiple
           }
@@ -74,16 +74,16 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
         })
         if (response?.status === 200) {
           // Limpe o array antes de adicionar novos valores
-          this.wheights = [];
+          this.weights = [];
 
           // Itera sobre as chaves numeradas de "0" a "5"
           for (let i = 0; i <= 5; i++) {
             const key = i.toString();
             // Verifica se a chave existe na resposta
             if (key in response.data) {
-              // Extrai os valores de "value" e "description" e adiciona ao array wheights
+              // Extrai os valores de "value" e "description" e adiciona ao array weights
               const { value, description } = response.data[key];
-              this.wheights.push({ value, description });
+              this.weights.push({ value, description });
             }
           }
         }
@@ -94,24 +94,19 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
 
 
     async createNonFunctionalRequirements(nonFunctionalRequirementFormDataList: NonFunctionalRequirementForm[], projectId: string) {
-      try {
-        const nonFunctionalRequirementOnCreateDataList: NonFunctionalRequirementOnCreate[] = nonFunctionalRequirementFormDataList.map(form => ({
-          project_id: projectId,
-          nonfunctionalrequirement_id: form.id,
-          weight: form.wheight
-        }));
+      const nonFunctionalRequirementOnCreateDataList: NonFunctionalRequirementOnCreate[] = nonFunctionalRequirementFormDataList.map(form => ({
+        project_id: projectId,
+        nonfunctionalrequirement_id: form.id,
+        weight: form.weight
+      }));
 
-        const response = await Api.request({
-          method: 'post',
-          route: 'nonFunctionalRequirementProject',
-          body: nonFunctionalRequirementOnCreateDataList
-        });
+      const response = await Api.request({
+        method: 'post',
+        route: 'nonFunctionalRequirementProject',
+        body: nonFunctionalRequirementOnCreateDataList
+      });
 
-        return (response?.status) !== undefined ? response.status : 500;
-      } catch (error) {
-        console.error("Error while creating non-functional requirements:", error);
-        return 500;
-      }
+      return response?.status || 500;
     },
   }
 })

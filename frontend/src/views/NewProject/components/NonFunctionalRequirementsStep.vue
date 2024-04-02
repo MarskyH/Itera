@@ -37,13 +37,12 @@ async function setNonFunctionalRequirements() {
 
 async function setNonFunctionalRequirementsWeights(nonFunctionalRequirementId: string) {
   await $nonFunctionalRequirementStore.fetchNonFunctionalRequirementWeights(nonFunctionalRequirementId);
-  weights.value = $nonFunctionalRequirementStore.wheights;
+  weights.value = $nonFunctionalRequirementStore.weights;
   return setWeightOptions(weights.value);
 }
 
 onMounted(async () => {
   await setNonFunctionalRequirements();
-  const firstRequirementId = nonFunctionalRequirements.value[0]?.id || "";
 
   for (const requirement of nonFunctionalRequirements.value) {
     const options = await setNonFunctionalRequirementsWeights(requirement.id || "");
@@ -78,16 +77,18 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
 }
 
 function onSubmit(values: any) {
-  /*
-  const nonFunctionalRequirementFormValuesList: NonFunctionalRequirementForm[] = [];
-  for (const fieldName in values) {
-    nonFunctionalRequirementFormValuesList.push({
-      title: fieldName,
-      valueRequirement: values[fieldName]
-    });
-  }
+  let nonFunctionalRequirementFormValuesList: NonFunctionalRequirementForm[] = [];
 
-  createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList);*/
+  nonFunctionalRequirements.value.forEach((requirement: NonFunctionalRequirement) => {
+    nonFunctionalRequirementFormValuesList.push({
+      id: requirement.id || 'name',
+      weight: values[requirement.id || 'rfn1']
+    });
+  })
+
+  console.log(nonFunctionalRequirementFormValuesList[0])
+
+  createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
 }
 </script>
 
@@ -97,26 +98,46 @@ function onSubmit(values: any) {
     <span class="font-semibold px-2">Requisitos Não Funcionais</span>
   </div>
 
-  <Form ref="nonFunctionalRequirementForm" :validation-schema="schema" @submit="onSubmit"
-    class="flex flex-col gap-10 p-5 items-center">
+  <Form
+    ref="nonFunctionalRequirementForm"
+    :validation-schema="schema"
+    @submit="onSubmit"
+    class="flex flex-col gap-10 p-5 items-center"
+  >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <InputField v-for="inputField in inputFields" :key="inputField.name" :label="inputField.label"
-        :name="inputField.name" :placeholder="inputField.placeholder" :type="inputField.type"
-        :required="inputField.required" :options="inputField.options" />
+      <InputField
+        v-for="inputField in inputFields"
+        :key="inputField.name"
+        :label="inputField.label"
+        :name="inputField.name"
+        :placeholder="inputField.placeholder"
+        :type="inputField.type"
+        :required="inputField.required"
+        :options="inputField.options"
+      />
     </div>
 
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })">
-        <FontAwesomeIcon icon="fa-solid fa-angle-left" class="text-neutral-500 dark:text-white text-xs" />
+        @click="$router.push({ name: 'home' })"
+      >
+        <FontAwesomeIcon
+          icon="fa-solid fa-angle-left"
+          class="text-neutral-500 dark:text-white text-xs"
+        />
         <span class="font-semibold">Voltar</span>
       </button>
 
-      <button class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-        type="submit">
+      <button
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+        type="submit"
+      >
         <span class="font-semibold">Avançar</span>
-        <FontAwesomeIcon icon="fa-solid fa-angle-right" class="text-neutral-500 dark:text-white text-xs" />
+        <FontAwesomeIcon
+          icon="fa-solid fa-angle-right"
+          class="text-neutral-500 dark:text-white text-xs"
+        />
       </button>
     </div>
   </Form>
