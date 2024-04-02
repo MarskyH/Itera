@@ -36,7 +36,7 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("nonFunctionalRequirement")
+@RequestMapping("nonFunctionalRequirements")
 public class NonFunctionalRequirementController {
 
     @Autowired

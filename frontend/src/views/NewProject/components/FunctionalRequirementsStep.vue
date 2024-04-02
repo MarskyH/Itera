@@ -370,7 +370,7 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
       
       <button
         class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'nonFunctionalRequirements' })"
+        @click="$router.push({ name: 'non-functional-requirements' })"
       >
         <span class="font-semibold">Avançar</span>
 
