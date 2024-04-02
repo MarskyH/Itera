@@ -12,13 +12,16 @@ import { InputFieldProps, FunctionalRequirementForm, models } from "src/@types";
 import { useRoute } from "vue-router";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
+import { usePriorityStore } from "src/stores/PriorityStore";
 
 interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
+interface Priority extends models.Priority {}
 
 const $route = useRoute()
 const $functionalRequirementStore = useFunctionalRequirementStore()
 const $degreeStore = useDegreeStore()
+const $priorityStore = usePriorityStore()
 
 const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
@@ -28,6 +31,7 @@ const formOnLoad = ref<boolean>(true)
 const functionalRequirementForm = ref<any>(null)
 
 const degreeOptions = ref<Degree[]>([])
+const priorityOptions = ref<Priority[]>([])
 
 const functionalRequirements = ref<FunctionalRequirement[]>([
   /*
@@ -83,10 +87,17 @@ async function setDegreeOptions() {
   })
 }
 
+async function setPriorityOption(){
+  await $priorityStore.fetchPriorities().then(()=>{
+    priorityOptions.value = $priorityStore.priorities
+  })
+}
+
 onMounted(async () => {
   await setFunctionalRequirements().then(async ()=>{
     await setDegreeOptions().then(async () => {
-      inputFields =  [
+      await setPriorityOption().then(async () => {
+        inputFields =  [
         {
           name: "title",
           label: "Título",
@@ -100,7 +111,7 @@ onMounted(async () => {
           placeholder: "Selecione a prioridade",
           type: "select",
           required: true,
-          options: setSelectOptions(degreeOptions.value),
+          options: setSelectOptions(priorityOptions.value),
           validation: yup.string().required()
         },
         {
@@ -139,6 +150,7 @@ onMounted(async () => {
       schema = yup.object(formValidations);
 
       formOnLoad.value = false
+      })
     });
   });
 })
@@ -151,7 +163,7 @@ async function createFunctionalRequirement(functionalRequirementFormValues: Func
       if(responseStatus === 200) {
         setFunctionalRequirements()
       } else {
-        alert('Falha ao criar integrante!')
+        alert('Falha ao criar requisito! Tente novamente.')
       }
     }
   )

@@ -180,6 +180,11 @@ export namespace models {
     name: string
   }
 
+  export interface Priority{
+    id: number
+    name: string
+  }
+
   export interface FunctionalRequirement {
     id?: string
     title: string
