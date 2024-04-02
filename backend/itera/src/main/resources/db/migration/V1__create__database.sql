@@ -99,6 +99,11 @@ CREATE TABLE public.degree (
     name VARCHAR(100) NOT NULL -- Nome do usuário
 );
 
+CREATE TABLE public.priority (
+    id TEXT PRIMARY KEY NOT NULL, -- Identificador único da prioridade
+    name VARCHAR(100) NOT NULL -- Nome da prioridade
+);
+
 -- Foreign Keys (Chaves Estrangeiras)
 
 
@@ -160,6 +165,18 @@ VALUES ('2', 'Médio');
 
 INSERT INTO degree (id, name)
 VALUES ('3', 'Baixo');
+
+INSERT INTO priority (id, name)
+VALUES ('1', 'Baixo');
+
+INSERT INTO priority (id, name)
+VALUES ('2', 'Médio');
+
+INSERT INTO priority (id, name)
+VALUES ('3', 'Difícil');
+
+INSERT INTO priority (id, name)
+VALUES ('4', 'Urgente');
 
 INSERT INTO nonfunctionalrequirement (id, title, description, weights, multiple)
 VALUES ('rfn1', 'Comunicação de Dados', 'Descreve o nível em que a aplicação comunica-se diretamente com o processador.', '{"0": {"value": 0, "description": "A aplicação é puramente batch ou uma estação de trabalho isolada."}, "1": {"value": 1, "description": "A aplicação é batch, mas possui entrada de dados ou impressão remota."}, "2": {"value": 2, "description": "A aplicação é batch, mas possui entrada de dados e impressão remota."}, "3": {"value": 3, "description": "A aplicação possui coleta de dados on-line, front-end de teleprocessamento para um processamento batch ou sistema de consulta."}, "4": {"value": 4, "description": "A aplicação é mais que um front-end, mas suporta apenas um tipo de protocolo de comunicação."}, "5": {"value": 5, "description": "A aplicação é mais que um front-end, e suporta mais que um tipo de protocolo de comunicação."}}', FALSE);
