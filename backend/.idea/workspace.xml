@@ -4,40 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/itera.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/itera/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/IteraApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/ServletInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/controller/AuthenticationController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/controller/FoodController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/food/Food.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/food/FoodRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/food/FoodRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/food/FoodResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/AuthenticationDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/LoginResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/RegisterDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/domain/user/UserRole.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/infra/security/SecurityConfigurations.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/infra/security/SecurityFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/infra/security/TokenService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/java/com/example/itera/services/AuthorizationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/resources/db/migration/V1__create-tables-teste.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/main/resources/db/migration/dump.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/itera/src/test/java/com/example/itera/IteraApplicationTests.java" beforeDir="false" />
+    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="chore: workspace.xml">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/nonFunctionalRequirement/NonFunctionalRequirementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/nonFunctionalRequirement/NonFunctionalRequirementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/nonFunctionalRequirementProject/NonFunctionalRequirementProjectController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/project/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/project/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/nonFunctionalRequirement/NonFunctionalRequirement.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/nonFunctionalRequirement/NonFunctionalRequirement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirement/NonFunctionalRequirementRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirement/NonFunctionalRequirementRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirement/NonFunctionalRequirementResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirement/NonFunctionalRequirementResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/infra/security/SecurityConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/infra/security/SecurityConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/repository/nonFunctionalRequirement/NonFunctionalRequirementRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/repository/nonFunctionalRequirement/NonFunctionalRequirementRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/resources/db/migration/V1__create__database.sql" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/resources/db/migration/V1__create__database.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,21 +30,47 @@
       <list>
         <option value="Interface" />
         <option value="Enum" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;MarskyH&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="3c29ae7f-a4ef-4d4d-9278-771c4828a6cb" />
+        <option name="url" value="https://github.com/MarskyH/Itera.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="jdkForImporter" value="21" />
+        <option name="workspaceImportForciblyTurnedOn" value="true" />
+      </MavenImportingSettings>
+    </option>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2cKlelgO1DeQfz8O3NgUzYyDtZD" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -75,17 +79,22 @@
   "keyToString": {
     "Application.CardapioApplication.executor": "Run",
     "Application.IteraApplication.executor": "Run",
+    "JUnit.UserRepositoryTest.executor": "Run",
+    "Maven. [install].executor": "Run",
     "Maven.cardapio [package].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "feat-cadastro-projeto",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio",
-    "last_opened_file_path": "C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera",
+    "last_opened_file_path": "C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirementProject",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "advanced.settings"
+    "settings.editor.selected.configurable": "terminal"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -94,8 +103,58 @@
       <recent name="com.example.cardapio.food" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\Fernanda Kipper\Aplicação Cárdapio\cardapio\cardapio\src\main\resources\db\migration" />
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\dto\nonFunctionalRequirementProject" />
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\repository" />
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\dto" />
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\domain" />
+      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\controller" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.example.itera.repository.teamMember" />
+      <recent name="com.example.itera.repository.user" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.itera.controller.nonFunctionalRequirementProject" />
+      <recent name="com.example.itera.repository.nonFunctionalRequirementProject" />
+      <recent name="com.example.itera.controller.exposureDegree" />
+      <recent name="com.example.itera.repository.exposureDegree" />
+      <recent name="com.example.itera.repository.riskActionType" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.IteraApplication">
+    <configuration name="IteraApplication" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../../../../../Program Files/Java/jdk-21" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="com.example.itera.IteraApplication" />
+      <module name="itera" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/itera" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="itera" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.itera.repository.user.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.itera.repository.user" />
+      <option name="MAIN_CLASS_NAME" value="com.example.itera.repository.user.UserRepositoryTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserRepositoryTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -113,6 +172,83 @@
       <option name="presentableId" value="Default" />
       <updated>1707868251022</updated>
     </task>
+    <task id="LOCAL-00001" summary="feat: tratamento de erros das rotas">
+      <option name="closed" value="true" />
+      <created>1711203589168</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1711203589168</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: riskActionType e exposureDegree">
+      <option name="closed" value="true" />
+      <created>1711213610112</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1711213610112</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix: rota post de role">
+      <option name="closed" value="true" />
+      <created>1711241693975</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1711241693975</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix: rota post de role">
+      <option name="closed" value="true" />
+      <created>1711241761164</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1711241761164</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: inicio dos testes unitários">
+      <option name="closed" value="true" />
+      <created>1711299652655</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1711299652656</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix: exposureDegree para Degree">
+      <option name="closed" value="true" />
+      <created>1711301471109</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1711301471109</updated>
+    </task>
+    <task id="LOCAL-00007" summary="chore: workspace.xml">
+      <option name="closed" value="true" />
+      <created>1711411994123</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1711411994123</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: tratamento de erros das rotas" />
+    <MESSAGE value="feat: riskActionType e exposureDegree" />
+    <MESSAGE value="fix: rota post de role" />
+    <MESSAGE value="feat: inicio dos testes unitários" />
+    <MESSAGE value="fix: exposureDegree para Degree" />
+    <MESSAGE value="chore: workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: workspace.xml" />
   </component>
 </project>

@@ -1,10 +1,9 @@
 package com.example.itera.domain.user;
 
+
+import com.example.itera.dto.user.RegisterDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +14,7 @@ import java.util.List;
 @Table(name = "users")
 @Entity(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -22,26 +22,35 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String nome;
+    private String name;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "username")
     private String login;
     private String password;
+    @Column(name = "user_role")
+    private UserRole userRole;
 
-    @Column(name = "horasdedicada")
-    private Integer horasDedicada;
-    private UserRole role;
-
-    public User(String nome, String login, String password, Integer horasDedicada, UserRole role) {
-        this.nome = nome;
+    public User(String name, String email, String login, String password, UserRole userRole) {
+        this.name = name;
         this.login = login;
+        this.email = email;
         this.password = password;
-        this.horasDedicada = horasDedicada;
-        this.role = role;
+        this.userRole = userRole;
+    }
+
+    public User(RegisterDTO data){
+        this.name = data.name();
+        this.login = data.login();
+        this.email = data.email();
+        this.password = data.password();
+        this.userRole = data.userRole();
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.userRole == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

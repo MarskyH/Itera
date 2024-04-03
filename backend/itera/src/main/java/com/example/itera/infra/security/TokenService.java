@@ -21,10 +21,10 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("itera-api")
-                    .withClaim("login", user.getLogin())
-                    .withClaim("nome", user.getNome())
-                    .withClaim("horasDedicada", user.getHorasDedicada())
-                    .withClaim("role", user.getRole().toString())
+                    .withSubject(user.getUsername())
+                    .withClaim("username", user.getUsername())
+                    .withClaim("name", user.getName())
+                    .withClaim("role", user.getUserRole().toString())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;
@@ -42,7 +42,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         }catch (JWTVerificationException exception){
-            return "";
+            return null;
         }
     }
 

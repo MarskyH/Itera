@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="itera" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cardapio" target="21" />
+      <module name="itera" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

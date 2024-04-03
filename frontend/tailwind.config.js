@@ -74,6 +74,27 @@ export default {
         lavenderIndigo: {
           900: "#8B59E9",
         },
+        russianViolet: {
+          900: "#4A165C"
+        },
+        whiteSmoke: {
+          900: "#F3F3F3"
+        },
+        davysGray: {
+          900: "#484848"
+        },
+        platinum: {
+          900: "#E3E3E3"
+        },
+        naplesYellow: {
+          900: "#FFDE68"
+        },
+        blueCrayola: {
+          900: "#5E81FF"
+        },
+        lightRed: {
+          900: "#F97E7E"
+        }
       },
     },
     plugins: [],
