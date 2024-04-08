@@ -100,6 +100,9 @@ public class ProjectController {
             User userData = userRepository.findByNome(username);
             Project projectData = new Project(data);
             projectData.setCreatedBy(userData.getId());
+            projectData.setCreationDate(new Timestamp(new Date().getTime()));
+            projectData.setModificationDate(new Timestamp(new Date().getTime()));
+            projectData.setLastAccessDate(new Timestamp(new Date().getTime()));
             projectRepository.save(projectData);
             response.put("id", projectData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -146,6 +149,7 @@ public class ProjectController {
             if(data.clientName() != null){
                 project.setClientName(data.clientName());
             }
+            project.setModificationDate(new Timestamp(new Date().getTime()));
             projectRepository.save(project);
             response.put("data_id:", project.getId());
             response.put("message", ResponseType.SUCCESS_UPDATE.getMessage());
