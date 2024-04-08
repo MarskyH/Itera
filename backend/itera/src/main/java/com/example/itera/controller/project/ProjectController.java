@@ -113,6 +113,17 @@ public class ProjectController {
         }
     }
 
+    /**
+     * Endpoint responsável por atualizar um projeto.
+     *
+     * @param data estrutura de dados contendo as informações que se deseja atulizar o projeto
+     * @return ResponseEntity confirmando a transação e retornando o id do projeto atualizado.
+     * @author Marcus Loureiro
+     * @see ProjectRequestDTO
+     * @see ResponseEntity
+     * @since 08/04/2024
+     * */
+
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> updateProject(@PathVariable String id, @RequestBody ProjectRequestDTO data) {
@@ -273,6 +284,16 @@ public class ProjectController {
         return requirementRepository.findByProject(id).stream().toList();
     }
 
+    /**
+     * Endpoint responsável por retornar o projeto com todos os seus dados associados dado o id do projeto.
+     *
+     * @param id Identificador único do projeto.
+     * @return ProjectWithJoinResponseDTO
+     * @author Marcus Loureiro
+     * @see  ProjectWithJoinResponseDTO
+     * @since 08/04/2024
+     */
+
     @GetMapping("/{id}/withJoins")
     @ResponseStatus(code = HttpStatus.OK)
     public ProjectWithJoinResponseDTO getProjectWithJoin(@PathVariable String id) throws ResourceNotFoundException{
@@ -285,6 +306,15 @@ public class ProjectController {
         return new ProjectWithJoinResponseDTO(new ProjectResponseDTO(project), roles, teamMembers, risks, requirements, nonFunctionalRequirementProject);
     }
 
+    /**
+     * Endpoint responsável por retornar a lista de projetos usuário pelo seu id.
+     *
+     * @param id Identificador único do usuário.
+     * @return List<ProjectResponseDTO>
+     * @author Marcus Loureiro
+     * @see  ProjectResponseDTO
+     * @since 08/04/2024
+     */
     @GetMapping("/project/recent/user/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public ProjectWithJoinResponseDTO getRecentProjects(@PathVariable String id) throws ResourceNotFoundException{
@@ -293,7 +323,15 @@ public class ProjectController {
 
     }
 
-
+    /**
+     * Endpoint responsável por deletar projetos e consequentemente todos os dados associados ao seu id.
+     *
+     * @param id Identificador único do projeto.
+     * @return HTTPStatus.ok
+     * @author Marcus Loureiro
+     * @see  Project
+     * @since 08/04/2024
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {
