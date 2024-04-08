@@ -250,6 +250,14 @@ public class ProjectController {
         return new ProjectWithJoinResponseDTO(new ProjectResponseDTO(project), roles, teamMembers, risks, requirements, nonFunctionalRequirementProject);
     }
 
+    @GetMapping("/project/recent/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ProjectWithJoinResponseDTO getRecentProjects(@PathVariable String id) throws ResourceNotFoundException{
+        List<ProjectResponseDTO> projects = projectRepository.recentProjects(id);
+        return projects.stream().toList();
+
+    }
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
