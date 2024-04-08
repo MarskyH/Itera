@@ -9,17 +9,17 @@ import com.example.itera.dto. risk.RiskResponseDTO;
 
 import java.util.List;
 
-public record ProjectWithJoinResponseDTO(ProjectResponseDTO projectResponseDTO,
-                                         List<RoleResponseDTO> listaRole, List<TeamMember> listaUsersTeam, List<RiskResponseDTO> listaRisks,
-                                         List<RequirementResponseDTO> listaRequirements,
-                                         List<NonFunctionalRequirementProjectResponseDTO> listaRequirementsNaoFuncionais) {
-    public ProjectWithJoinResponseDTO(ProjectResponseDTO projectResponseDTO, List<RoleResponseDTO> listaRole, List<TeamMember> listaUsersTeam, List<RiskResponseDTO> listaRisks, List<RequirementResponseDTO> listaRequirements, List<NonFunctionalRequirementProjectResponseDTO> listaRequirementsNaoFuncionais){
+public record ProjectWithJoinResponseDTO(ProjectResponseDTO project,
+                                         List<RoleResponseDTO> roles, List<TeamMember> members, List<RiskResponseDTO> risks,
+                                         List<RequirementResponseDTO> functionalRequirements,
+                                         List<NonFunctionalRequirementProjectResponseDTO> nonFunctionalRequirements) {
+    public ProjectWithJoinResponseDTO(ProjectResponseDTO project, List<RoleResponseDTO> roles, List<TeamMember> members, List<RiskResponseDTO> risks, List<RequirementResponseDTO> functionalRequirements, List<NonFunctionalRequirementProjectResponseDTO> nonFunctionalRequirements){
 
-        this.projectResponseDTO = projectResponseDTO;
-        this.listaRole = listaRole;
-        this.listaUsersTeam = listaUsersTeam;
-        this.listaRisks = listaRisks;
-        this.listaRequirements = listaRequirements;
-        this.listaRequirementsNaoFuncionais = listaRequirementsNaoFuncionais;
+        this.project = project;
+        this.roles = roles;
+        this.members = members;
+        this.risks = risks;
+        this.functionalRequirements = functionalRequirements;
+        this.nonFunctionalRequirements = nonFunctionalRequirements;
     }
 }
