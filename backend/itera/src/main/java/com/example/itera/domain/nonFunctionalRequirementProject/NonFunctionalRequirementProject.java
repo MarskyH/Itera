@@ -27,6 +27,7 @@ public class NonFunctionalRequirementProject {
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;

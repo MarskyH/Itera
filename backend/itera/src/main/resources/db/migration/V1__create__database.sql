@@ -10,13 +10,16 @@ CREATE TABLE public.activity (
 
 -- Project Table (Tabela de Projetos)
 CREATE TABLE public.project (
-    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do projeto
-    name VARCHAR(50) UNIQUE NOT NULL, -- Nome único do projeto
-    deadline INTEGER NOT NULL, -- Prazo do projeto em dias
-    iteration_time INTEGER NOT NULL, -- Tempo de iteração do projeto em dias
-    work_hours INTEGER NOT NULL, -- Horas de trabalho do projeto por dia
-    client_name VARCHAR(50) NOT NULL, -- Nome do cliente
-    created_by VARCHAR(100) NOT NULL -- Criado por (usuário responsável)
+    id TEXT PRIMARY KEY NOT NULL, -- Unique project identifier
+    name VARCHAR(50) UNIQUE NOT NULL, -- Unique project name
+    deadline INTEGER NOT NULL, -- Project deadline in days
+    iteration_time INTEGER NOT NULL, -- Project iteration time in days
+    work_hours INTEGER NOT NULL, -- Project work hours per day
+    client_name VARCHAR(50) NOT NULL, -- Client name
+    created_by VARCHAR(100) NOT NULL, -- Created by (responsible user)
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation date and time
+    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Modification date and time
+    last_access_date TIMESTAMP -- Last access date and time
 );
 
 -- Team Table (Tabela de Membros de Equipe)

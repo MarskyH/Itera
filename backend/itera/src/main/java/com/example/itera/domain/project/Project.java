@@ -1,11 +1,9 @@
 package com.example.itera.domain.project;
 
-
 import com.example.itera.dto.project.ProjectRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "project")
@@ -24,6 +22,9 @@ public class Project {
     private Integer workHours;
     private String clientName;
     private String createdBy;
+    private Timestamp creationDate;
+    private Timestamp modificationDate;
+    private Timestamp lastAccessDate;
 
     public Project(ProjectRequestDTO data){
         this.name = data.name();

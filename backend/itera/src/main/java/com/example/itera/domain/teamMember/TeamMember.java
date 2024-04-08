@@ -42,6 +42,7 @@ public class TeamMember {
     private Role role;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;

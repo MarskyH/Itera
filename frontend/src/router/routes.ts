@@ -17,7 +17,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
@@ -44,7 +44,39 @@ export default [
               title: 'Meus Projetos',
               icon: 'folder-open',
               sideViewComponent: RecentProjects
-            }
+            },
+            children: [
+              {
+                path: 'selectedProject',
+                name: 'project',
+                component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
+              },
+              {
+                path: ':projectId/habilidades-e-competencias',
+                name: 'roles',
+                component: async () => await import('src/views/NewProject/components/RolesStep.vue')
+              },
+              {
+                path: ':projectId/equipe',
+                name: 'team',
+                component: async () => await import('src/views/NewProject/components/TeamStep.vue')
+              },
+              {
+                path: ':projectId/riscos',
+                name: 'risks',
+                component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
+              },
+              {
+                path: ':projectId/requisitos-funcionais',
+                name: 'functional-requirements',
+                component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
+              },
+              {
+                path: ':projectId/requisitos-nao-funcionais',
+                name: 'non-functional-requirements',
+                component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
+              }
+            ]
           },
           {
             path: '/projeto',
