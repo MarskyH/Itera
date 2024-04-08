@@ -7,6 +7,7 @@ import com.example.itera.domain.role.Role;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
+import com.example.itera.dto.role.RoleRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
@@ -109,6 +110,40 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> updateProject(@PathVariable String id, @RequestBody ProjectRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Project project = projectRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+            if(data.name() != null){
+                project.setName(data.name());
+            }
+            if(data.deadline() != null){
+                project.setDeadline(data.deadline());
+            }
+            if(data.iterationTime() != null){
+                project.setIterationTime(data.iterationTime());
+            }
+            if(data.workHours() != null){
+                project.setWorkHours(data.workHours());
+            }
+            if(data.clientName() != null){
+                project.setClientName(data.clientName());
+            }
+            projectRepository.save(project);
+            response.put("data_id:", project.getId());
+            response.put("message", ResponseType.SUCCESS_UPDATE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
