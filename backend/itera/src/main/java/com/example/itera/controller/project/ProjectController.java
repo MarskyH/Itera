@@ -317,7 +317,7 @@ public class ProjectController {
      */
     @GetMapping("/project/recent/user/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public ProjectWithJoinResponseDTO getRecentProjects(@PathVariable String id) throws ResourceNotFoundException{
+    public List<ProjectResponseDTO> getRecentProjects(@PathVariable String id) throws ResourceNotFoundException{
         List<ProjectResponseDTO> projects = projectRepository.recentProjects(id);
         return projects.stream().toList();
 

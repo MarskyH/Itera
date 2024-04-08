@@ -9,6 +9,7 @@ CREATE TABLE public.activity (
 );
 
 -- Project Table (Tabela de Projetos)
+-- Project Table (Tabela de Projetos)
 CREATE TABLE public.project (
     id TEXT PRIMARY KEY NOT NULL, -- Unique project identifier
     name VARCHAR(50) UNIQUE NOT NULL, -- Unique project name
@@ -18,9 +19,22 @@ CREATE TABLE public.project (
     client_name VARCHAR(50) NOT NULL, -- Client name
     created_by VARCHAR(100) NOT NULL, -- Created by (responsible user)
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation date and time
-    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Modification date and time
-    last_access_date TIMESTAMP -- Last access date and time
+    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Modification date and time
+    last_access_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP-- Last access date and time
 );
+
+-- Trigger to update modification_date
+CREATE OR REPLACE FUNCTION update_modification_date()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.modification_date = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_modification_date_trigger
+BEFORE UPDATE ON public.project
+FOR EACH ROW EXECUTE FUNCTION update_modification_date();
 
 -- Team Table (Tabela de Membros de Equipe)
 CREATE TABLE public.team_member (

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface NonFunctionalRequirementProjectRepository extends JpaRepository<NonFunctionalRequirementProject, String>{
 
-   @Query("SELECT r.weights FROM NonFunctionalRequirementProject r WHERE r.id = :id")
+   @Query("SELECT n FROM NonFunctionalRequirementProject n WHERE n.project.id = :id")
     List<NonFunctionalRequirementProjectResponseDTO> findByProject(@Param("id") String id);
 
 }

@@ -17,7 +17,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: false
+      requiresAuth: true
     },
     children: [
       {
