@@ -2,14 +2,19 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useProjectStore } from "src/stores/ProjectStore";
 import { onMounted, ref } from "vue";
+import LocalStorage from 'src/services/localStorage'
 
 const $projectStore = useProjectStore()
 
 const myProjects = ref<any[]>([])
 
+const storage = new LocalStorage();
+
+let userId = storage.getLoggedUser()?.id || ''
+
 
 onMounted(async () => {
-  await $projectStore.fetchProjects().then(() => {
+  await $projectStore.fetchProjectsByUser(userId).then(() => {
     myProjects.value = $projectStore.projects
   })
 })

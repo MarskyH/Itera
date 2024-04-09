@@ -70,6 +70,27 @@ export const useProjectStore = defineStore('Project', {
       }
     },
 
+    async fetchProjectsByUser(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `project/user/${id}`
+      })
+
+      if (response?.status === 200) {
+        this.projects = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            name: elem.name,
+            deadline: elem.deadline,
+            workHours: elem.workHours,
+            iterationTime: elem.iterationTime,
+            clientName: elem.clientName,
+            createdBy: elem.createdBy
+          }
+        })
+      }
+    },
+
     async createProject(projectData: Project) {
       const projectCreateData: ProjectOnCreate = {
         name: projectData.name,
@@ -91,46 +112,14 @@ export const useProjectStore = defineStore('Project', {
         }
     },
 
-    /*
+    
     async deleteProject(id: string) {
       const response = await Api.request({
         method: 'delete',
-        route: '/projeto/' + id.toString()
+        route: `project/${id}`
       })
 
       return response?.status === 200
     },
-
-    async fetchProjectByName(name: string) {
-      const response = await Api.request({
-        method: 'get',
-        route: '/projeto',
-        params: { name }
-      })
-
-      if (response?.status === 200) {
-        this.project = {
-          id: response.data?.id,
-          name: response.data?.name,
-          deadline: response.data?.deadline,
-          workHours: response.data?.workHours,
-          iterationTime: response.data?.iterationTime,
-          clientName: response.data?.clientName,
-          createdBy: response.data?.createdBy
-        };
-      }
-    },
-
-    getProjectById(id: string) {
-      const fetchedProject = this.projects.find(element => element.id === id)
-
-      if (fetchedProject) {
-        this.project = fetchedProject
-      } else {
-        // Lógica para lidar com a situação em que o projeto não foi encontrado
-        this.project = {...projectDefault}
-      }
-    }
-    */
   }
 })

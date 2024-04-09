@@ -22,6 +22,7 @@ export namespace API {
 
 export namespace models {
   export interface UserData {
+    id: string
     iss: string
     sub: string
     username: string
