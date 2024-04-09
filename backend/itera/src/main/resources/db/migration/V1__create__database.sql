@@ -126,11 +126,13 @@ CREATE TABLE public.priority (
 
 ALTER TABLE public.role
 ADD CONSTRAINT FK_role_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.requirement
 ADD CONSTRAINT FK_requirement_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_risk
@@ -142,7 +144,8 @@ FOREIGN KEY (project_id) REFERENCES project(id);
 
 ALTER TABLE public.risk
 ADD CONSTRAINT FK_risk_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_user_team_member
@@ -154,11 +157,13 @@ FOREIGN KEY (role_id) REFERENCES role(id);
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_project_team_member
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_project_nonfunctionalrequirementproject
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_nonfunctionalrequirement_nonfunctionalrequirementproject
