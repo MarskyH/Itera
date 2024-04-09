@@ -197,6 +197,7 @@ public class ProjectController {
         Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
         // Atualiza lastAccessDate para a data e hora atual
         project.setLastAccessDate(new Timestamp(new Date().getTime()));
+        projectRepository.save(project);
         return new ProjectResponseDTO(project);
     }
 
@@ -319,10 +320,10 @@ public class ProjectController {
      * @see  ProjectResponseDTO
      * @since 08/04/2024
      */
-    @GetMapping("/project/recent/user/{id}")
+    @GetMapping("/recent/user/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<ProjectResponseDTO> getRecentProjects(@PathVariable String id) throws ResourceNotFoundException{
-        List<ProjectResponseDTO> projects = projectRepository.recentProjects(id);
+    public List<ProjectResponseDTO> getRecentProjects(@PathVariable String id){
+        List<ProjectResponseDTO> projects = projectRepository.findRecentProjects(id);
         return projects.stream().toList();
 
     }
