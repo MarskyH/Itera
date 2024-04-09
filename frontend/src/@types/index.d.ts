@@ -107,6 +107,15 @@ export namespace models {
     iterationTime: number
   }
 
+  export interface ProjectOnView {
+    name: string
+    clientName: string
+    deadline: number
+    workHours: number
+    iterationTime: number
+    roles: Role[]
+  }
+
   export interface Role {
     id?: string
     function: string

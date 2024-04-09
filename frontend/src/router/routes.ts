@@ -1,5 +1,6 @@
 
 import RecentProjects from 'src/components/RecentProjects.vue'
+import ProjectDetails from 'src/views/Project/components/ProjectDetails.vue'
 
 export default [
   {
@@ -44,81 +45,93 @@ export default [
               title: 'Meus Projetos',
               icon: 'folder-open',
               sideViewComponent: RecentProjects
-            },
-            children: [
-              {
-                path: 'selectedProject',
-                name: 'project',
-                component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
-              },
-              {
-                path: ':projectId/habilidades-e-competencias',
-                name: 'roles',
-                component: async () => await import('src/views/NewProject/components/RolesStep.vue')
-              },
-              {
-                path: ':projectId/equipe',
-                name: 'team',
-                component: async () => await import('src/views/NewProject/components/TeamStep.vue')
-              },
-              {
-                path: ':projectId/riscos',
-                name: 'risks',
-                component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
-              },
-              {
-                path: ':projectId/requisitos-funcionais',
-                name: 'functional-requirements',
-                component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
-              },
-              {
-                path: ':projectId/requisitos-nao-funcionais',
-                name: 'non-functional-requirements',
-                component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
-              }
-            ]
+            }
           },
           {
             path: '/projeto',
             name: 'project',
-            component: async () => await import('src/views/NewProject/NewProjectView.vue'),
-            redirect: { name: 'new-project' },
-            meta: {
-              title: 'Novo Projeto',
-              icon: 'folder-plus',
-              sideViewComponent: RecentProjects
-            },
             children: [
+              {
+                path: ':projectId',
+                name: 'project-info',
+                component: async () => await import('src/views/Project/ProjectView.vue'),
+                redirect: () => { return { name: 'view-roles' } },
+                meta: {
+                  title: 'Projeto',
+                  icon: 'folder-open',
+                  sideViewComponent: ProjectDetails
+                },
+                children: [
+                  {
+                    path: 'habilidades-e-competencias',
+                    name: 'view-roles',
+                    component: async () => await import('src/views/NewProject/components/RolesStep.vue')
+                  },
+                  {
+                    path: 'equipe',
+                    name: 'view-team',
+                    component: async () => await import('src/views/NewProject/components/TeamStep.vue')
+                  },
+                  {
+                    path: 'riscos',
+                    name: 'view-risks',
+                    component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
+                  },
+                  {
+                    path: 'requisitos-funcionais',
+                    name: 'view-functional-requirements',
+                    component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
+                  },
+                  {
+                    path: 'requisitos-nao-funcionais',
+                    name: 'view-non-functional-requirements',
+                    component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
+                  }
+                ]
+              },
               {
                 path: 'novo',
                 name: 'new-project',
-                component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
+                redirect: { name: 'general' },
+                component: async () => await import('src/views/NewProject/NewProjectView.vue'),
+                meta: {
+                  title: 'Novo Projeto',
+                  icon: 'folder-plus',
+                  sideViewComponent: RecentProjects
+                },
+                children: [
+                  {
+                    path: '',
+                    name: 'general',
+                    component: async () => await import('src/views/NewProject/components/GeneralStep.vue')
+                  },
+                  {
+                    path: ':projectId/habilidades-e-competencias',
+                    name: 'roles',
+                    component: async () => await import('src/views/NewProject/components/RolesStep.vue')
+                  },
+                  {
+                    path: ':projectId/equipe',
+                    name: 'team',
+                    component: async () => await import('src/views/NewProject/components/TeamStep.vue')
+                  },
+                  {
+                    path: ':projectId/riscos',
+                    name: 'risks',
+                    component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
+                  },
+                  {
+                    path: ':projectId/requisitos-funcionais',
+                    name: 'functional-requirements',
+                    component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
+                  },
+                  {
+                    path: ':projectId/requisitos-nao-funcionais',
+                    name: 'non-functional-requirements',
+                    component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
+                  }
+                ]
               },
-              {
-                path: ':projectId/habilidades-e-competencias',
-                name: 'roles',
-                component: async () => await import('src/views/NewProject/components/RolesStep.vue')
-              },
-              {
-                path: ':projectId/equipe',
-                name: 'team',
-                component: async () => await import('src/views/NewProject/components/TeamStep.vue')
-              },
-              {
-                path: ':projectId/riscos',
-                name: 'risks',
-                component: async () => await import('src/views/NewProject/components/RisksStep.vue'),
-              },
-              {
-                path: ':projectId/requisitos-funcionais',
-                name: 'functional-requirements',
-                component: async () => await import('src/views/NewProject/components/FunctionalRequirementsStep.vue'),
-              },
-              {
-                path: ':projectId/requisitos-nao-funcionais',
-                name: 'non-functional-requirements',
-                component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
-              }
             ]
           },
         ]

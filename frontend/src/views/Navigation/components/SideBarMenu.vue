@@ -29,7 +29,7 @@ const menuButtons = [
   {
     icon: "folder-open",
     title: "Meus projetos",
-    link: ""
+    link: "my-projects"
   },
   {
     icon: "folder-plus",
