@@ -67,6 +67,16 @@ export const useRoleStore = defineStore('Role', {
 
       return response?.status === 200
     },
+
+    async updateRole(id: string, roleData: Role) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/role/${id}`,
+        body: roleData
+      })
+
+      return response?.status === 200
+    },
   
     /*
 

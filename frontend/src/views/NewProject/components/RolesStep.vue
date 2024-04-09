@@ -13,7 +13,7 @@ import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useRoute } from "vue-router";
 
-interface Role extends models.Role {}
+interface Role extends models.Role { }
 
 defineEmits(['sideViewContentChange'])
 
@@ -87,23 +87,23 @@ async function setRoles() {
 onMounted(() => setRoles())
 
 async function createRole(roleFormValues: RoleForm) {
-  const projectId : string = String($route.params.projectId)
-  
+  const projectId: string = String($route.params.projectId)
+
   await $roleStore.createRole(projectId, roleFormValues)
     .then((responseStatus: any) => {
-      if(responseStatus === 200) {
+      if (responseStatus === 200) {
         setRoles()
       } else {
         alert('Falha ao criar papel!')
       }
     }
-  )
+    )
 }
 
 function onSubmit(values: any) {
-  let roleFormValues: RoleForm = {...values}
+  let roleFormValues: RoleForm = { ...values }
 
-  if(!onEditRecord.value) {
+  if (!onEditRecord.value) {
     createRole(roleFormValues)
   } else {
     updateRole(roleFormValues)
@@ -130,7 +130,7 @@ function editRole(roleId: string | undefined) {
   let role: Role | undefined = roles.value.find(r => r.id === roleId)
 
   if (role) {
-    let editRoleFormValues: RoleForm = {...role}
+    let editRoleFormValues: RoleForm = { ...role }
     roleForm.value?.setValues(editRoleFormValues)
   }
 
@@ -142,13 +142,15 @@ function updateRole(values: RoleForm) {
   let roleIndex = null
 
   roles.value.forEach((role: Role, index) => {
-    if(role.id === onEditRecord.value) {
+    if (role.id === onEditRecord.value) {
+      console.log("achou")
       roleToEdit = role
       roleIndex = index
     }
-  }) 
+  })
 
-  if (roleToEdit && roleIndex) {
+  if (roleToEdit && String(roleIndex)) {
+    $roleStore.updateRole(onEditRecord.value || '', values)
     roleToEdit = { ...values }
 
     roles.value[roleIndex] = roleToEdit
@@ -158,15 +160,8 @@ function updateRole(values: RoleForm) {
 </script>
 
 <template>
-  <div
-    v-if="roles.length === 0"
-    class="flex flex-col w-full h-full items-center justify-center gap-8"
-  >
-    <img
-      :src="ilustracao"
-      alt="Ilustração Novo Projeto"
-      class="shrink-0 w-40 h-40"
-    >
+  <div v-if="roles.length === 0" class="flex flex-col w-full h-full items-center justify-center gap-8">
+    <img :src="ilustracao" alt="Ilustração Novo Projeto" class="shrink-0 w-40 h-40">
 
     <span class=" w-1/2 text-center text-stone-500 dark:text-stone-400">
       Adicione os papéis da equipe do projeto para dividir as habilidades e competências
@@ -174,12 +169,8 @@ function updateRole(values: RoleForm) {
 
     <button
       class="flex items-center bg-gradient-to-br from-40% from-lavenderIndigo-900 to-tropicalIndigo-900 p-4 gap-4 rounded-md"
-      @click="() => isActionModalOpen = true"
-    >
-      <FontAwesomeIcon
-        icon="fa-solid fa-clipboard-user"
-        class="text-white"
-      />
+      @click="() => isActionModalOpen = true">
+      <FontAwesomeIcon icon="fa-solid fa-clipboard-user" class="text-white" />
 
       <span class="font-semibold text-white">
         Adicionar papel
@@ -187,41 +178,26 @@ function updateRole(values: RoleForm) {
     </button>
   </div>
 
-  <div
-    v-else
-    class="flex flex-col gap-5"
-  >
+  <div v-else class="flex flex-col gap-5">
     <div class="flex gap-5 rounded justify-between items-center text-sm">
       <div class="flex items-center gap-2 px-2 text-base">
-        <FontAwesomeIcon
-          icon="fa-solid fa-clipboard-user"
-        />
-        
+        <FontAwesomeIcon icon="fa-solid fa-clipboard-user" />
+
         <span class="font-semibold px-2">Papéis do projeto</span>
       </div>
 
-      <button
-        class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
-        @click="setNewRoleForm()"
-      >
-        <FontAwesomeIcon
-          icon="fa-solid fa-plus"
-        />
-        
+      <button class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
+        @click="setNewRoleForm()">
+        <FontAwesomeIcon icon="fa-solid fa-plus" />
+
         <span class="font-semibold">Adicionar</span>
       </button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
-      <ActionGridItem
-        v-for="role in roles"
-        :key="role.id"
-        icon="clipboard-user"
-        :title="role.function"
-        @edit="editRole(role.id)"
-        @remove="removeRole(role.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', role) }"
-      >
+      <ActionGridItem v-for="role in roles" :key="role.id" icon="clipboard-user" :title="role.function"
+        @edit="editRole(role.id)" @remove="removeRole(role.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', role) }">
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
             Habilidades
@@ -247,51 +223,26 @@ function updateRole(values: RoleForm) {
     <div class="flex gap-5 justify-center">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'new-project' })"
-      >
-        <FontAwesomeIcon
-          icon="fa-solid fa-angle-left"
-          class="text-neutral-500 dark:text-white text-xs"
-        />
+        @click="$router.push({ name: 'new-project' })">
+        <FontAwesomeIcon icon="fa-solid fa-angle-left" class="text-neutral-500 dark:text-white text-xs" />
 
         <span class="font-semibold">Voltar</span>
       </button>
-      
-      <button
-        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'team' })"
-      >
+
+      <button class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+        @click="$router.push({ name: 'team' })">
         <span class="font-semibold">Avançar</span>
 
-        <FontAwesomeIcon
-          icon="fa-solid fa-angle-right"
-          class="text-neutral-500 dark:text-white text-xs"
-        />
+        <FontAwesomeIcon icon="fa-solid fa-angle-right" class="text-neutral-500 dark:text-white text-xs" />
       </button>
     </div>
   </div>
 
-  <Form
-    ref="roleForm"
-    :validation-schema="schema"
-    @submit="onSubmit"
-  >
-    <ActionModal
-      v-model="isActionModalOpen"
-      :title="actionModalTitle"
-      icon="clipboard-user"
-    >
-      <div
-        class="flex flex-col w-full gap-5 px-8 py-4"
-      >
-        <InputField
-          v-for="inputField in inputFields"
-          :key="inputField.name"
-          :label="inputField.label"
-          :name="inputField.name"
-          :placeholder="inputField.placeholder"
-          :required="inputField.required"
-        />
+  <Form ref="roleForm" :validation-schema="schema" @submit="onSubmit">
+    <ActionModal v-model="isActionModalOpen" :title="actionModalTitle" icon="clipboard-user">
+      <div class="flex flex-col w-full gap-5 px-8 py-4">
+        <InputField v-for="inputField in inputFields" :key="inputField.name" :label="inputField.label"
+          :name="inputField.name" :placeholder="inputField.placeholder" :required="inputField.required" />
       </div>
     </ActionModal>
   </Form>
