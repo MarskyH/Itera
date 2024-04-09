@@ -3,6 +3,9 @@
 import { RouterView } from 'vue-router'
 import PageHeader from 'src/views/Navigation/components/PageHeader.vue';
 import SideBarMenu from 'src/views/Navigation/components/SideBarMenu.vue';
+import { ref } from 'vue';
+
+const sideViewContent = ref<any | undefined>(undefined)
 
 </script>
 
@@ -19,12 +22,15 @@ import SideBarMenu from 'src/views/Navigation/components/SideBarMenu.vue';
       />
 
       <div class="flex flex-col w-full h-full p-3 rounded-md bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90%">
-        <RouterView />
+        <RouterView @side-view-content-change="(value: any) => sideViewContent = value" />
       </div>
     </div>
 
     <div class="flex flex-col lg:shrink-0 h-full w-full lg:w-[320px] rounded-md p-3 bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90%">
-      <component :is="$route.meta.sideViewComponent" />
+      <component
+        :is="$route.meta.sideViewComponent"
+        :content="sideViewContent"
+      />
     </div>
   </div>
 </template>

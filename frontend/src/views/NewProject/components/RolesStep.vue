@@ -15,6 +15,8 @@ import { useRoute } from "vue-router";
 
 interface Role extends models.Role {}
 
+defineEmits(['sideViewContentChange'])
+
 const $route = useRoute()
 const $roleStore = useRoleStore()
 
@@ -217,6 +219,7 @@ function updateRole(values: RoleForm) {
         :title="role.function"
         @edit="editRole(role.id)"
         @remove="removeRole(role.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', role) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
