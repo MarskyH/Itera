@@ -188,6 +188,7 @@ function setNewFunctionalRequirementForm() {
 }
 
 function removeFunctionalRequirement(requirementId: string | undefined) {
+  $functionalRequirementStore.deleteFunctionalRequiriment(requirementId || '')
   functionalRequirements.value = functionalRequirements.value
     .filter((requirement: FunctionalRequirement) => requirement.id !== requirementId)
 }

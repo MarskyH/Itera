@@ -100,11 +100,11 @@ export const useRiskStore = defineStore('Risk', {
       return (response?.status) !== undefined ? response.status : 500
     },
 
-    /*
+    
     async deleteRisk(id: string) {
       const response = await Api.request({
         method: 'delete',
-        route: '/risk/' + id
+        route: `/risk/${id}`
       })
     
       if (response?.status === 200) {
@@ -112,6 +112,6 @@ export const useRiskStore = defineStore('Risk', {
       } else {
         return false
       }
-    },*/
+    },
   }
 })

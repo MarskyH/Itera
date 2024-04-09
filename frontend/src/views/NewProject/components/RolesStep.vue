@@ -119,6 +119,7 @@ function setNewRoleForm() {
 }
 
 function removeRole(roleId: string | undefined) {
+  $roleStore.deleteRole(roleId || '')
   roles.value = roles.value.filter(role => role.id !== roleId)
 }
 

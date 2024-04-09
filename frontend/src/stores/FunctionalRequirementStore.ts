@@ -66,6 +66,15 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
       })
 
       return response?.status || 500
-    }
+    },
+
+    async deleteFunctionalRequiriment(id: string) {
+      const response = await Api.request({
+        method: 'delete',
+        route: `/requirement/${id}`
+      })
+
+      return response?.status === 200
+    },
   }
 })

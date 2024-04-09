@@ -89,5 +89,14 @@ export const useTeamMemberStore = defineStore('TeamMember', {
 
       return (response?.status) ? response.status : 500
     },
+
+    async deleteTeamMember(id: string) {
+      const response = await Api.request({
+        method: 'delete',
+        route: `/teamMember/${id}`
+      })
+
+      return response?.status === 200
+    },
   }
 })

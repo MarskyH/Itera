@@ -197,6 +197,7 @@ function setNewRiskForm() {
 }
 
 function removeRisk(riskId: string | undefined) {
+  $riskStore.deleteRisk(riskId || '')
   risks.value = risks.value.filter((risk: Risk) => risk.id !== riskId)
 }
 

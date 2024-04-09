@@ -214,6 +214,7 @@ function setNewTeamMemberForm() {
 }
 
 function removeTeamMember(memberId: string | undefined) {
+  $teamMemberStore.deleteTeamMember(memberId || '')
   teamMembers.value = teamMembers.value.filter((member: TeamMember) => member.id !== memberId)
 }
 
