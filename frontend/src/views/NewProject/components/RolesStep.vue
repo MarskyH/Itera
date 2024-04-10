@@ -139,7 +139,7 @@ function editRole(roleId: string | undefined) {
 
 function updateRole(values: RoleForm) {
   let roleToEdit: Role | undefined = undefined
-  let roleIndex = null
+  let roleIndex = 0
 
   roles.value.forEach((role: Role, index) => {
     if (role.id === onEditRecord.value) {

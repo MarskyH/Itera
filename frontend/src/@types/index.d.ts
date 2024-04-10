@@ -135,7 +135,7 @@ export namespace models {
     id?: string
     hourlyRate: number
     dedicatedHours: number
-    user: UserMemberModel
+    user: UserModel
     role: Role
     project: Project
   }

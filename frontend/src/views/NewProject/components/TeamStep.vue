@@ -18,6 +18,7 @@ import { useRoute } from "vue-router";
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
+interface UserMemberModel extends models.UserMemberModel{}
 
 const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
@@ -220,7 +221,6 @@ function removeTeamMember(memberId: string | undefined) {
 
 
 function editTeamMember(memberId: string | undefined) {
-  /*
   onEditRecord.value = memberId ? memberId : null
   actionModalTitle.value = 'Editar integrante'
 
@@ -229,8 +229,8 @@ function editTeamMember(memberId: string | undefined) {
   if (member) {
     let editTeamMemberValues: TeamMemberForm = {
       ...member,
-      roleId: member.role.id || '',
-      userId: member.user.id || ''
+      role: member.role.id || '',
+      user: member.user.id || ''
     }
 
     teamMemberForm.value.setValues(editTeamMemberValues)
@@ -240,7 +240,7 @@ function editTeamMember(memberId: string | undefined) {
     })
 
     if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
+      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.role)
       
       if (selectedOption) {
         selectedOption.selected = true
@@ -252,7 +252,7 @@ function editTeamMember(memberId: string | undefined) {
     })
 
     if(userField) {
-      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
+      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.user)
       
       if (selectedOption) {
         selectedOption.selected = true
@@ -261,13 +261,13 @@ function editTeamMember(memberId: string | undefined) {
   }
 
   isActionModalOpen.value = true
-  */
+
 }
 
 function updateTeamMember(values: TeamMemberForm) {
-  /*
+  
   let teamMemberToEdit: TeamMember | undefined = undefined
-  let teamMemberIndex = null
+  let teamMemberIndex = 0
 
   teamMembers.value.forEach((member: TeamMember, index) => {
     if(member.id === onEditRecord.value) {
@@ -276,17 +276,31 @@ function updateTeamMember(values: TeamMemberForm) {
     }
   }) 
 
-  if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
-    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
+  if (teamMemberToEdit && String(teamMemberIndex)) {
+    $teamMemberStore.updateTeamMember()
+    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.role)
+    let teamMemberUser: UserModel | undefined = users.value.find((user: UserModel) => user.id === values.user)
     teamMemberToEdit = { 
       ...values,
-      roleId: teamMemberRole?.id || "",
-      userId: teamMemberUser?.id || ""
-    }
-
+      role: teamMemberRole || 
+            {    
+              id: '',
+              function: '',
+              skill: '',
+              competency: ''
+            },
+      user: teamMemberUser || 
+            {
+              id: '',
+              name: '',
+              email: '',
+              login: '',
+              password: '',
+              userRole: '',
+            } 
+      }
     teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }*/
+  }
 }
 
 </script>
