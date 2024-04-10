@@ -2,13 +2,14 @@
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
+    @keypress.enter.exact.prevent.stop
     :validation-schema="schema"
   >
     <main
       class="py-8 flex items-center justify-center min-h-screen"
       :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}"
     >
-      <ModeToggleButton class="absolute top-8 right-8" />
+      <ModeToggleButton2 class="absolute top-8 right-8" />
 
       <div class="flex flex-col items-center w-[800px] h-[500px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
         <img
@@ -73,13 +74,13 @@ import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
-import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
 import { useLoginStore } from 'src/stores/LoginStore'
 import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
+import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
 
 
 interface UserLogin extends models.LoginModel { }
