@@ -19,15 +19,6 @@ const riskDefault: Risk = {
   exposureDegree: '',
   description: '',
   type: '',
-  project: {
-    id: '',
-    name: '',
-    clientName: '',
-    deadline: 0,
-    workHours: 0,
-    iterationTime: 0,
-    createdBy: '',
-  }
 }
 
 export const useRiskStore = defineStore('Risk', {
@@ -36,8 +27,9 @@ export const useRiskStore = defineStore('Risk', {
     risks: []
   }),
 
+  
   actions: {
-    async fetchRisk(id: string) {
+   /* async fetchRisk(id: string) {
       const response = await Api.request({
         method: 'get',
         route: '/risk/' + id,
@@ -52,10 +44,10 @@ export const useRiskStore = defineStore('Risk', {
           exposureDegree: response.data?.exposureDegree,
           description: response.data?.description,
           type: response.data?.type,
-          project: response.data?.project
+          project_id: response.data?.project
         }
       }
-    },
+    },*/
 
     async fetchRisks(projectId: string) {
       const response = await Api.request({
@@ -98,6 +90,16 @@ export const useRiskStore = defineStore('Risk', {
       })
 
       return (response?.status) !== undefined ? response.status : 500
+    },
+
+    async updateRisk(id: string, riskData: Risk) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/risk/${id}`,
+        body: riskData
+      })
+
+      return response?.status === 200
     },
 
     

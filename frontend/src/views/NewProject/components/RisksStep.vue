@@ -203,73 +203,38 @@ function removeRisk(riskId: string | undefined) {
 
 
 function editRisk(riskId: string | undefined) {
-  /*
-  onEditRecord.value = memberId ? memberId : null
-  actionModalTitle.value = 'Editar integrante'
+  onEditRecord.value = riskId  ? riskId : null
+  actionModalTitle.value = 'Editar risco'
 
-  let member: TeamMember | undefined = teamMembers.value.find((member: TeamMember) => member.id === memberId)
-  
-  if (member) {
-    let editTeamMemberValues: TeamMemberForm = {
-      ...member,
-      roleId: member.role.id || '',
-      userId: member.user.id || ''
-    }
+  let risk: Risk | undefined = risks.value.find(r => r.id === riskId)
 
-    teamMemberForm.value.setValues(editTeamMemberValues)
-
-    let roleField = inputFields.find((field: any) => {
-      field.name === 'role'
-    })
-
-    if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
-
-    let userField = inputFields.find((field: any) => {
-      field.name === 'user'
-    })
-
-    if(userField) {
-      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
+  if(risk) {
+    let editRiskFormValues: RiskForm = {...risk}
+    riskForm.value?.setValues(editRiskFormValues)
   }
+  
 
   isActionModalOpen.value = true
-  */
+
 }
 
 function updateRisk(values: RiskForm) {
-  /*
-  let teamMemberToEdit: TeamMember | undefined = undefined
-  let teamMemberIndex = null
+  let riskToEdit: Risk | undefined = undefined
+  let riskIndex = 0
 
-  teamMembers.value.forEach((member: TeamMember, index) => {
-    if(member.id === onEditRecord.value) {
-      teamMemberToEdit = member
-      teamMemberIndex = index
+  risks.value.forEach((risk: Risk, index) => {
+    if(risk.id === onEditRecord.value){
+      riskToEdit = risk
+      riskIndex = index
     }
-  }) 
+  })
 
-  if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
-    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
-    teamMemberToEdit = { 
-      ...values,
-      roleId: teamMemberRole?.id || "",
-      userId: teamMemberUser?.id || ""
-    }
+  if(riskToEdit && String(riskIndex)){
+    $riskStore.updateRisk(onEditRecord.value || '', values)
+    riskToEdit = { ...values }
 
-    teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }*/
+    risks.value[riskIndex] = riskToEdit
+  }
 }
 
 </script>

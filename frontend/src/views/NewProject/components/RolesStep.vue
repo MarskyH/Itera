@@ -143,7 +143,6 @@ function updateRole(values: RoleForm) {
 
   roles.value.forEach((role: Role, index) => {
     if (role.id === onEditRecord.value) {
-      console.log("achou")
       roleToEdit = role
       roleIndex = index
     }

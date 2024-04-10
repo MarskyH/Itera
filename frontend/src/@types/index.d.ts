@@ -177,7 +177,6 @@ export namespace models {
     exposureDegree: string
     description: string
     type: string
-    project: Project
   }
 
   export interface Degree {
