@@ -2,7 +2,6 @@
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
-    @keypress.enter.exact.prevent.stop
     :validation-schema="schema"
   >
     <main

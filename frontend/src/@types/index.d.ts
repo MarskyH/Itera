@@ -209,7 +209,6 @@ export namespace models {
     sizeRequirement: number
   }
 
-  
   export interface FunctionalRequirementOnCreate {
     title: string
     details: string
@@ -273,6 +272,7 @@ export interface RiskForm {
 }
 
 export interface FunctionalRequirementForm {
+  id: string
   title: string
   details: string
   complexity: string
