@@ -27,15 +27,6 @@ const teamMemberDefault: TeamMember = {
     function: '',
     skill: '',
     competency: '',
-  },
-  project: {
-    id: '',
-    name: '',
-    clientName: '',
-    deadline: 0,
-    workHours: 0,
-    iterationTime: 0,
-    createdBy: '',
   }
 }
 
@@ -60,7 +51,6 @@ export const useTeamMemberStore = defineStore('TeamMember', {
             dedicatedHours: elem.dedicatedHours,
             user: elem.user,
             role: elem.role,
-            project: elem.project
           }
         })
       }

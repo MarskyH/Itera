@@ -137,7 +137,6 @@ export namespace models {
     dedicatedHours: number
     user: UserModel
     role: Role
-    project: Project
   }
 
   export interface TeamMemberOnIndex {
@@ -272,7 +271,6 @@ export interface RiskForm {
 }
 
 export interface FunctionalRequirementForm {
-  id: string
   title: string
   details: string
   complexity: string

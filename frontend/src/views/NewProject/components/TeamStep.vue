@@ -265,7 +265,7 @@ function editTeamMember(memberId: string | undefined) {
 }
 
 function updateTeamMember(values: TeamMemberForm) {
-  
+  const projectId: string = String($route.params.projectId)
   let teamMemberToEdit: TeamMember | undefined = undefined
   let teamMemberIndex = 0
 
@@ -277,10 +277,10 @@ function updateTeamMember(values: TeamMemberForm) {
   }) 
 
   if (teamMemberToEdit && String(teamMemberIndex)) {
-    //$teamMemberStore.updateTeamMember()
+    $teamMemberStore.updateTeamMember(onEditRecord.value || '', values, projectId)
     let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.role)
     let teamMemberUser: UserModel | undefined = users.value.find((user: UserModel) => user.id === values.user)
-   /* teamMemberToEdit = { 
+   teamMemberToEdit = { 
       ...values,
       role: teamMemberRole || 
             {    
@@ -299,7 +299,7 @@ function updateTeamMember(values: TeamMemberForm) {
               userRole: '',
             } 
       }
-    teamMembers.value[teamMemberIndex] = teamMemberToEdit*/
+    teamMembers.value[teamMemberIndex] = teamMemberToEdit
   }
 }
 
