@@ -47,6 +47,7 @@ onMounted(async () => {
 
   for (const requirement of nonFunctionalRequirements.value) {
     const options = await setNonFunctionalRequirementsWeights(requirement.id || "");
+    console.log(options)
 
     inputFields.value.push({
       name: requirement.id || 'name',
