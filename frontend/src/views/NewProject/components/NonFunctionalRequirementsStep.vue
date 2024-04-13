@@ -10,12 +10,14 @@ import { useNonFunctionalRequirementStore } from "src/stores/NonFunctionalRequir
 import { useRoute, useRouter } from "vue-router";
 
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
+interface NonFunctionalRequirementProject extends models.NonFunctionalRequirementProject { }
 interface NonFunctionalRequirementsWeights extends models.NonFunctionalRequirementWeights { }
 
 const $route = useRoute()
 const $router = useRouter()
 const $nonFunctionalRequirementStore = useNonFunctionalRequirementStore()
 const nonFunctionalRequirements = ref<NonFunctionalRequirement[]>([])
+const nonFunctionalRequirementsProject = ref<NonFunctionalRequirementProject[]>([])
 const inputFields = ref<InputFieldProps[]>([])
 const weights = ref<NonFunctionalRequirementsWeights[]>([])
 
@@ -36,6 +38,12 @@ async function setNonFunctionalRequirements() {
   nonFunctionalRequirements.value = $nonFunctionalRequirementStore.nonFunctionalRequirements;
 }
 
+async function setNonFunctionalRequirementsProject() {
+  const projectId = String($route.params.projectId)
+  await $nonFunctionalRequirementStore.fetchNonFunctionalRequirementsProject(projectId);
+  nonFunctionalRequirementsProject.value = $nonFunctionalRequirementStore.nonFunctionalRequirementsProejct;
+}
+
 async function setNonFunctionalRequirementsWeights(nonFunctionalRequirementId: string) {
   await $nonFunctionalRequirementStore.fetchNonFunctionalRequirementWeights(nonFunctionalRequirementId);
   weights.value = $nonFunctionalRequirementStore.weights;
@@ -44,16 +52,21 @@ async function setNonFunctionalRequirementsWeights(nonFunctionalRequirementId: s
 
 onMounted(async () => {
   await setNonFunctionalRequirements();
+  await setNonFunctionalRequirementsProject();
 
   for (const requirement of nonFunctionalRequirements.value) {
     const options = await setNonFunctionalRequirementsWeights(requirement.id || "");
-    console.log(options)
-
+    let valueSelect: string = ""
+    if(nonFunctionalRequirementsProject.value){
+      let value = String(nonFunctionalRequirementsProject.value.find(req => req.nonfunctionalrequirementId === requirement.id)?.weight)
+      valueSelect = (options.find(option=> option.value === value)?.name) || ""
+    }
     inputFields.value.push({
       name: requirement.id || 'name',
       label: requirement.title,
       placeholder: "Selecione o grau de importância",
       type: "select",
+      value: valueSelect,
       required: true,
       options: options,
       hoverInfo: requirement.description,
@@ -75,7 +88,7 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
   if (responseStatus === 200) {
     await setNonFunctionalRequirements();
     alert('Configuração do projeto concluída!');
-    $router.push({name: 'my-projects'})
+    $router.push({ name: 'my-projects' })
   } else {
     //alert('Falha ao cadastrar requisito não funcional!');
   }
@@ -101,47 +114,26 @@ function onSubmit(values: any) {
     <span class="font-semibold px-2">Requisitos Não Funcionais</span>
   </div>
 
-  <Form
-    ref="nonFunctionalRequirementForm"
-    :validation-schema="schema"
-    @submit="(values:any) => onSubmit(values)"
-    class="flex flex-col gap-10 p-5 items-center"
-  >
+  <Form ref="nonFunctionalRequirementForm" :validation-schema="schema" @submit="(values: any) => onSubmit(values)"
+    class="flex flex-col gap-10 p-5 items-center">
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <InputField
-        v-for="inputField in inputFields"
-        :key="inputField.name"
-        :label="inputField.label"
-        :name="inputField.name"
-        :placeholder="inputField.placeholder"
-        :type="inputField.type"
-        :required="inputField.required"
-        :options="inputField.options"
-        :hover-info="inputField.hoverInfo"
-      />
+      <InputField v-for="inputField in inputFields" :key="inputField.name" :label="inputField.label"
+        :name="inputField.name" :placeholder="inputField.placeholder" :type="inputField.type"
+        :required="inputField.required" :options="inputField.options" :hover-info="inputField.hoverInfo" :value="inputField.value" />
     </div>
 
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })"
-      >
-        <FontAwesomeIcon
-          icon="fa-solid fa-angle-left"
-          class="text-neutral-500 dark:text-white text-xs"
-        />
+        @click="$router.push({ name: 'home' })">
+        <FontAwesomeIcon icon="fa-solid fa-angle-left" class="text-neutral-500 dark:text-white text-xs" />
         <span class="font-semibold">Voltar</span>
       </button>
 
-      <button
-        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-        type="submit"
-      >
+      <button class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+        type="submit">
         <span class="font-semibold">Avançar</span>
-        <FontAwesomeIcon
-          icon="fa-solid fa-angle-right"
-          class="text-neutral-500 dark:text-white text-xs"
-        />
+        <FontAwesomeIcon icon="fa-solid fa-angle-right" class="text-neutral-500 dark:text-white text-xs" />
       </button>
     </div>
   </Form>
