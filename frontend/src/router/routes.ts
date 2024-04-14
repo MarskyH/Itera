@@ -1,6 +1,6 @@
 
 import RecentProjects from 'src/components/RecentProjects.vue'
-import ProjectDetails from 'src/views/Project/components/ProjectDetails.vue'
+import DetailsView from 'src/views/Project/components/DetailsView.vue'
 
 export default [
   {
@@ -59,7 +59,7 @@ export default [
                 meta: {
                   title: 'Projeto',
                   icon: 'folder-open',
-                  sideViewComponent: ProjectDetails
+                  sideViewComponent: DetailsView
                 },
                 children: [
                   {

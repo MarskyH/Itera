@@ -2,33 +2,28 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { models } from "src/@types";
-import { useProjectStore } from "src/stores/ProjectStore";
+import { useRoleStore } from "src/stores/RoleStore";
 
-interface ProjectOnView extends models.ProjectOnView {}
+interface Role extends models.Role {}
 
-const projectDefault = {
+const props = defineProps<{
+  id: string
+}>()
+
+const roleDefault: Role = {
   id: "",
-  name: "",
-  deadline: 0,
-  workHours: 0,
-  iterationTime: 0,
-  clientName: "",
-  createdBy: "",
-  roles: []
+  function: "",
+  skill: "",
+  competency: "",
 }
 
-const $projectStore = useProjectStore()
+const $roleStore = useRoleStore()
 
-const $route = useRoute()
-
-const project = ref<ProjectOnView>({...projectDefault})
+const role = ref<Role>({...roleDefault})
 
 onMounted(async () => {
-  await $projectStore.fetchProject(String($route.params.projectId)).then(async () => {
-    project.value = { 
-      ...project.value,
-      ...$projectStore.project,
-    }
+  await $roleStore.fetchRole(props.id).then(async () => {
+    role.value = $roleStore.role
   })
 })
 </script>
@@ -37,11 +32,11 @@ onMounted(async () => {
   <div class="flex flex-col gap-4">
     <div class="flex gap-3 items-center">
       <FontAwesomeIcon
-        icon="fa-solid fa-circle-info"
+        icon="fa-solid fa-clipboard-user"
         class="text-stone-500 dark:text-stone-400"
       />
 
-      <span class="font-bold">Detalhes do projeto</span>
+      <span class="font-bold">Detalhes do papel</span>
     </div>
 
     <div class="flex flex-col text-xs p-1 gap-4">
@@ -52,9 +47,9 @@ onMounted(async () => {
         />
 
         <div class="flex flex-col gap-1">
-          <span class="font-semibold text-sm">Nome</span>
+          <span class="font-semibold text-sm">Função</span>
 
-          <span>{{ project.name }}</span>
+          <span> {{ role.function }} </span>
         </div>
       </div>
 
@@ -65,9 +60,9 @@ onMounted(async () => {
         />
 
         <div class="flex flex-col gap-1">
-          <span class="font-semibold text-sm">Cliente</span>
+          <span class="font-semibold text-sm">Habilidades</span>
 
-          <span>{{ project.clientName }}</span>
+          <span>{{ role.skill }}</span>
         </div>
       </div>
           
@@ -80,33 +75,7 @@ onMounted(async () => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold">Prazo</span>
 
-          <span>{{ project.deadline }}</span>
-        </div>
-      </div>
-
-      <div class="flex gap-4">
-        <FontAwesomeIcon
-          icon="fa-solid fa-hourglass-half"
-          class="text-neutral-400 w-4"
-        />
-
-        <div class="flex flex-col gap-1">
-          <span class="font-semibold">Tempo de iteração</span>
-
-          <span>{{ project.iterationTime }}</span>
-        </div>
-      </div>
-          
-      <div class="flex items-baseline gap-4">
-        <FontAwesomeIcon
-          icon="fa-solid fa-business-time"
-          class="text-neutral-400 w-4"
-        />
-
-        <div class="flex flex-col gap-1">
-          <span class="font-semibold">Carga horária</span>
-
-          <span>{{ project.workHours }}</span>
+          <span>{{ role.competency }}</span>
         </div>
       </div>
     </div>

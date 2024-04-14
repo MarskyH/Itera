@@ -5,6 +5,7 @@ import { models } from "src/@types";
 import { useProjectStore } from "src/stores/ProjectStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import SectionsBreadcrumbs from "./components/SectionsBreadcrumbs.vue";
+import ProjectDetails from "./components/ProjectDetails.vue";
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Role extends models.Role {}
@@ -36,13 +37,7 @@ onMounted(async () => {
       ...$projectStore.project,
     }
 
-    $emits('sideViewContentChange', {
-      name: project.value.name,
-      deadline: project.value.deadline,
-      workHours: project.value.workHours,
-      iterationTime: project.value.iterationTime,
-      clientName: project.value.clientName
-    })
+    $emits('sideViewContentChange', { component: ProjectDetails, id: $route.params.projectId || '' })
     
     await $roleStore.fetchRoles(String($route.params.projectId)).then(async () => {
       project.value.roles = $roleStore.roles

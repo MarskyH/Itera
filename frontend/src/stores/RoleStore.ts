@@ -41,6 +41,22 @@ export const useRoleStore = defineStore('Role', {
       }
     },
 
+    async fetchRole(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `role/${id}`,
+      })
+
+      if (response?.status === 200) {
+        this.role = {
+          id: response.data.id,
+          function: response.data.function,
+          skill: response.data.skill,
+          competency: response.data.competency,
+        }
+      }
+    },
+
     async createRole(projectId: string, roleData: Role) {
       const roleCreateData: RoleOnCreate = {
         function: roleData.function,

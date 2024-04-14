@@ -9,6 +9,7 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import RoleDetails from "src/views/Project/components/RoleDetails.vue";
 import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useRoute } from "vue-router";
@@ -219,7 +220,7 @@ function updateRole(values: RoleForm) {
         :title="role.function"
         @edit="editRole(role.id)"
         @remove="removeRole(role.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', role) }"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RoleDetails, id: role.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
