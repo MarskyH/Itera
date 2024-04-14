@@ -74,15 +74,27 @@ export const useRoleStore = defineStore('Role', {
       return (response?.status) ? response.status : 500
     },
 
-    /*
-    async deleteRole(id: number) {
+    
+    async deleteRole(id: string) {
       const response = await Api.request({
         method: 'delete',
-        route: '/papel/' + id.toString()
+        route: `/role/${id}`
       })
 
       return response?.status === 200
     },
+
+    async updateRole(id: string, roleData: Role) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/role/${id}`,
+        body: roleData
+      })
+
+      return response?.status === 200
+    },
+  
+    /*
 
     getRoleById(id: number) {
       const fetchedRole = this.roles.find(element => element.id === id)

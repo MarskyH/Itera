@@ -5,9 +5,12 @@ import { NonFunctionalRequirementForm, type models } from 'src/@types'
 interface NonFunctionalRequirementOnCreate extends models.NonFunctionalRequirementOnCreate { }
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
 interface NonFunctionalRequirementWeights extends models.NonFunctionalRequirementWeights { }
+interface NonFunctionalRequirementProject extends models.NonFunctionalRequirementProject { }
+
 
 interface State {
   nonFunctionalRequirement: NonFunctionalRequirement
+  nonFunctionalRequirementsProejct: NonFunctionalRequirementProject[]
   nonFunctionalRequirements: NonFunctionalRequirement[]
   weights: NonFunctionalRequirementWeights[]
 }
@@ -26,6 +29,7 @@ const nonFunctionalRequirementDefault: NonFunctionalRequirement = {
 export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequirement', {
   state: (): State => ({
     nonFunctionalRequirement: { ...nonFunctionalRequirementDefault },
+    nonFunctionalRequirementsProejct : [],
     nonFunctionalRequirements: [],
     weights: []
   }),
@@ -44,6 +48,23 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
           weights: response.data?.weights,
           multiple: response.data?.multiple
         }
+      }
+    },
+
+    async fetchNonFunctionalRequirementsProject(projectId: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `project/${projectId}/nonFunctionalRequirementsProject`,
+      })
+      if (response?.status === 200) {
+        this.nonFunctionalRequirementsProejct = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            projectId: elem.project_id,
+            nonfunctionalrequirementId: elem.nonfunctionalrequirement_id,
+            weight: elem.weight,
+          }
+        })
       }
     },
 

@@ -21,27 +21,12 @@ const teamMemberDefault: TeamMember = {
     login: '',
     password: '',
     userRole: '',
-    enabled: false,
-    authorities: [],
-    username: '',
-    credentialsNonExpired: false,
-    accountNonExpired: false,
-    accountNonLocked: false,
   },
   role: {
     id: '',
     function: '',
     skill: '',
     competency: '',
-  },
-  project: {
-    id: '',
-    name: '',
-    clientName: '',
-    deadline: 0,
-    workHours: 0,
-    iterationTime: 0,
-    createdBy: '',
   }
 }
 
@@ -66,7 +51,6 @@ export const useTeamMemberStore = defineStore('TeamMember', {
             dedicatedHours: elem.dedicatedHours,
             user: elem.user,
             role: elem.role,
-            project: elem.project
           }
         })
       }
@@ -88,6 +72,33 @@ export const useTeamMemberStore = defineStore('TeamMember', {
       })
 
       return (response?.status) ? response.status : 500
+    },
+
+    async updateTeamMember(teamMemberId: string, teamMemberFormData: TeamMemberForm, projectId: string) {
+      const teamMemberCreateData: TeamMemberOnCreate = {
+        hourlyRate: teamMemberFormData.hourlyRate,
+        dedicatedHours: teamMemberFormData.dedicatedHours,
+        user_id: teamMemberFormData.user,
+        role_id: teamMemberFormData.role,
+        project_id: projectId
+      }
+
+      const response = await Api.request({
+        method: 'put',
+        route: `teamMember/${teamMemberId}`,
+        body: teamMemberCreateData
+      })
+
+      return (response?.status) ? response.status : 500
+    },
+
+    async deleteTeamMember(id: string) {
+      const response = await Api.request({
+        method: 'delete',
+        route: `/teamMember/${id}`
+      })
+
+      return response?.status === 200
     },
   }
 })

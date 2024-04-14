@@ -135,9 +135,8 @@ export namespace models {
     id?: string
     hourlyRate: number
     dedicatedHours: number
-    user: UserMemberModel
+    user: UserModel
     role: Role
-    project: Project
   }
 
   export interface TeamMemberOnIndex {
@@ -177,7 +176,6 @@ export namespace models {
     exposureDegree: string
     description: string
     type: string
-    project: Project
   }
 
   export interface Degree {
@@ -227,6 +225,12 @@ export namespace models {
     weights: NonFunctionalRequirementWeights
     multiple: boolean
   }
+  export interface NonFunctionalRequirementProject {
+    id?: string
+    projectId: string
+    nonfunctionalrequirementId: string
+    weight: number
+  }
 
   export interface NonFunctionalRequirementOnCreate {
     project_id: string
@@ -273,7 +277,6 @@ export interface RiskForm {
 }
 
 export interface FunctionalRequirementForm {
-  id: string
   title: string
   details: string
   complexity: string

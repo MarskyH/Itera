@@ -279,7 +279,7 @@ public class ProjectController {
      * @param id Identificador único do projeto.
      * @return Lista contendo os requisitos no formato RequirementResponseDTO associados ao projeto.
      * @author Marcus Loureiro
-     * @see  NonFunctionalRequirementResponseDTO
+     * @see  RequirementResponseDTO
      * @since 19/03/2024
      */
 
@@ -288,6 +288,23 @@ public class ProjectController {
     public List<RequirementResponseDTO> getRequirementProject(@PathVariable String id){
         return requirementRepository.findByProject(id).stream().toList();
     }
+
+
+    /**
+     * Endpoint responsável por retornar uma lista de requisitos não funcionais associados a um projeto específico.
+     *
+     * @param id Identificador único do projeto.
+     * @return Lista contendo os requisitos não funcionais no formato NonFunctionalRequirementProjectResponseDTO associados ao projeto.
+     * @author Marcus Loureiro
+     * @see  NonFunctionalRequirementProjectResponseDTO
+     * @since 19/03/2024
+     */
+    @GetMapping("/{id}/nonFunctionalRequirementsProject")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<NonFunctionalRequirementProjectResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
+        return nonFunctionalRequirementProjectRepository.findByProject(id).stream().toList();
+    }
+
 
     /**
      * Endpoint responsável por retornar o projeto com todos os seus dados associados dado o id do projeto.

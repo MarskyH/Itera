@@ -149,11 +149,13 @@ ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_user_team_member
-FOREIGN KEY (user_id) REFERENCES users(id);
+FOREIGN KEY (user_id) REFERENCES users(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_role_team_member
-FOREIGN KEY (role_id) REFERENCES role(id);
+FOREIGN KEY (role_id) REFERENCES role(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_project_team_member
