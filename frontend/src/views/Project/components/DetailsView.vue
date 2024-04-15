@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 defineProps<{
-  content: {
+  content?: {
     component: any
     id: string
   }
@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <component
-    :is="content.component"
-    :id="content.id"
+    :is="content?.component"
+    :id="content?.id"
   />
 </template>

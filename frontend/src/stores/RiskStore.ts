@@ -27,27 +27,8 @@ export const useRiskStore = defineStore('Risk', {
     risks: []
   }),
 
-  
+
   actions: {
-   /* async fetchRisk(id: string) {
-      const response = await Api.request({
-        method: 'get',
-        route: '/risk/' + id,
-      })
-      if (response?.status === 200) {
-        this.risk = {
-          id: response.data?.id,
-          title: response.data?.title,
-          effect: response.data?.effect,
-          probability: response.data?.probability,
-          impact: response.data?.impact,
-          exposureDegree: response.data?.exposureDegree,
-          description: response.data?.description,
-          type: response.data?.type,
-          project_id: response.data?.project
-        }
-      }
-    },*/
 
     async fetchRisks(projectId: string) {
       const response = await Api.request({
@@ -68,6 +49,25 @@ export const useRiskStore = defineStore('Risk', {
             project: elem.project
           }
         })
+      }
+    },
+
+    async fetchRisk(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `risk/${id}`,
+      })
+      if (response?.status === 200) {
+        this.risk = {
+          id: response.data?.id,
+          title: response.data?.title,
+          effect: response.data?.effect,
+          probability: response.data?.probability,
+          impact: response.data?.impact,
+          exposureDegree: response.data?.exposureDegree,
+          description: response.data?.description,
+          type: response.data?.type,
+        }
       }
     },
 
@@ -102,13 +102,13 @@ export const useRiskStore = defineStore('Risk', {
       return response?.status === 200
     },
 
-    
+
     async deleteRisk(id: string) {
       const response = await Api.request({
         method: 'delete',
         route: `/risk/${id}`
       })
-    
+
       if (response?.status === 200) {
         return true
       } else {

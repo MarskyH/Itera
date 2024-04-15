@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
 import { models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 
@@ -22,10 +21,19 @@ const $roleStore = useRoleStore()
 const role = ref<Role>({...roleDefault})
 
 onMounted(async () => {
-  await $roleStore.fetchRole(props.id).then(async () => {
-    role.value = $roleStore.role
-  })
+  if ($roleStore.role.id !== "") {
+    role.value = {...$roleStore.role}
+  } else {
+    await $roleStore.fetchRole(props.id).then(async () => {
+      role.value = $roleStore.role
+    })
+  }
 })
+
+$roleStore.$subscribe(() => {
+  role.value = {...$roleStore.role}
+})
+
 </script>
 
 <template>
@@ -78,30 +86,6 @@ onMounted(async () => {
           <span>{{ role.competency }}</span>
         </div>
       </div>
-    </div>
-    
-    <div class="flex justify-end gap-5">
-      <button
-        class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-blueCrayola-900 dark:text-naplesYellow-900 hover:bg-blueCrayola-900/25 hover:dark:bg-naplesYellow-900/25 text-sm gap-2 text"
-        @click="()=> $emit('edit')"
-      >
-        <FontAwesomeIcon
-          icon="fa-solid fa-pen"
-        />
-
-        <span class="font-semibold">Editar</span>
-      </button>
-
-      <button
-        class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25 text-sm gap-2 text"
-        @click="()=> $emit('remove')"
-      >
-        <FontAwesomeIcon
-          icon="fa-solid fa-trash"
-        />
-
-        <span class="font-semibold">Excluir projeto</span>
-      </button>
     </div>
   </div>
 </template>

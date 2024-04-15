@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+defineProps<{
+  content?: any
+}>()
+
 </script>
 
 <template>

@@ -9,6 +9,7 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import TeamMemberDetails from "src/views/Project/components/TeamMemberDetails.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
@@ -18,7 +19,8 @@ import { useRoute } from "vue-router";
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
-interface UserMemberModel extends models.UserMemberModel{}
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
@@ -280,7 +282,7 @@ function updateTeamMember(values: TeamMemberForm) {
     $teamMemberStore.updateTeamMember(onEditRecord.value || '', values, projectId)
     let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.role)
     let teamMemberUser: UserModel | undefined = users.value.find((user: UserModel) => user.id === values.user)
-   teamMemberToEdit = { 
+    teamMemberToEdit = { 
       ...values,
       role: teamMemberRole || 
             {    
@@ -299,6 +301,9 @@ function updateTeamMember(values: TeamMemberForm) {
               userRole: '',
             } 
       }
+    
+    $teamMemberStore.$state.teamMember = {...teamMemberToEdit, id: onEditRecord.value || ''}
+
     teamMembers.value[teamMemberIndex] = teamMemberToEdit
   }
 }
@@ -368,6 +373,7 @@ function updateTeamMember(values: TeamMemberForm) {
         :title="member.user.name"
         @edit="editTeamMember(member.id)"
         @remove="removeTeamMember(member.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: TeamMemberDetails, id: member.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

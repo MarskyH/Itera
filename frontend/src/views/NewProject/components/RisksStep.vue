@@ -10,6 +10,7 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import RiskDetails from "src/views/Project/components/RiskDetails.vue";
 import { InputFieldProps, RiskForm, models } from "src/@types";
 import { useRiskStore } from "src/stores/RiskStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
@@ -19,6 +20,8 @@ import { useRoute } from "vue-router";
 interface Risk extends models.Risk { }
 interface Degree extends models.Degree { }
 interface RiskActionType extends models.RiskActionType { }
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $riskStore = useRiskStore()
@@ -231,6 +234,7 @@ function updateRisk(values: RiskForm) {
 
   if(riskToEdit && String(riskIndex)){
     $riskStore.updateRisk(onEditRecord.value || '', values)
+    $riskStore.$state.risk = {...values, id: onEditRecord.value || ''}
     riskToEdit = { ...values }
 
     risks.value[riskIndex] = riskToEdit
@@ -298,6 +302,7 @@ function updateRisk(values: RiskForm) {
         :title="risk.title"
         @edit="editRisk(risk.id)"
         @remove="removeRisk(risk.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RiskDetails, id: risk.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
