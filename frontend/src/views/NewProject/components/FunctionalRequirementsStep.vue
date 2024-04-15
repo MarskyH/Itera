@@ -8,11 +8,13 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import FunctionalRequirementDetails from "src/views/Project/components/FunctionalRequirementDetails.vue";
 import { InputFieldProps, FunctionalRequirementForm, models } from "src/@types";
 import { useRoute } from "vue-router";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
+ 
 
 interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
@@ -287,6 +289,7 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
         :title="requirement.title"
         @edit="editFunctionalRequirement(requirement.id)"
         @remove="removeFunctionalRequirement(requirement.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: FunctionalRequirementDetails, id: requirement.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
