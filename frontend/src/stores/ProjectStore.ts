@@ -140,7 +140,7 @@ export const useProjectStore = defineStore('Project', {
         body: projectData
       })
 
-      return response?.status === 200
+      return response?.status || 500
     },
 
     
