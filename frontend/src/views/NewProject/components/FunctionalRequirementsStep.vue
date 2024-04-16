@@ -20,6 +20,8 @@ interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
 interface Priority extends models.Priority {}
 
+defineEmits(['sideViewContentChange'])
+
 const $route = useRoute()
 const $functionalRequirementStore = useFunctionalRequirementStore()
 const $degreeStore = useDegreeStore()
@@ -224,6 +226,8 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
 
   if(requirementToEdit && String(requirementIndex)){
     $functionalRequirementStore.updateFunctionalRequirement(onEditRecord.value || '', values)
+    $functionalRequirementStore.$state.functionalRequirement = {...values, id: onEditRecord.value || ''}
+
     requirementToEdit = { ...values }
 
     functionalRequirements.value[requirementIndex] = requirementToEdit

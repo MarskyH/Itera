@@ -21,6 +21,8 @@ const nonFunctionalRequirementsProject = ref<NonFunctionalRequirementProject[]>(
 const inputFields = ref<InputFieldProps[]>([])
 const weights = ref<NonFunctionalRequirementsWeights[]>([])
 
+const onEdit = ref<boolean>(false)
+
 yup.setLocale(yupErrorMessages);
 
 const setWeightOptions = (weights: { value: number; description: string }[]) => {
@@ -56,17 +58,19 @@ onMounted(async () => {
 
   for (const requirement of nonFunctionalRequirements.value) {
     const options = await setNonFunctionalRequirementsWeights(requirement.id || "");
-    let valueSelect: string = ""
+    let value: string = ""
+
     if(nonFunctionalRequirementsProject.value){
-      let value = String(nonFunctionalRequirementsProject.value.find(req => req.nonfunctionalrequirementId === requirement.id)?.weight)
-      valueSelect = (options.find(option=> option.value === value)?.name) || ""
+      value = String(nonFunctionalRequirementsProject.value
+        .find(req => req.nonfunctionalrequirementId === requirement.id)?.weight)
     }
+
     inputFields.value.push({
       name: requirement.id || 'name',
       label: requirement.title,
       placeholder: "Selecione o grau de importância",
       type: "select",
-      value: valueSelect,
+      value,
       required: true,
       options: options,
       hoverInfo: requirement.description,
@@ -94,47 +98,122 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
   }
 }
 
+function updateNonFunctionalRequirement(nonFunctionalRequirementsFormValues: NonFunctionalRequirementForm[]) {
+  
+}
+
 function onSubmit(values: any) {
   let nonFunctionalRequirementFormValuesList: NonFunctionalRequirementForm[] = [];
-
+  
   nonFunctionalRequirements.value.forEach((requirement: NonFunctionalRequirement) => {
     nonFunctionalRequirementFormValuesList.push({
       id: requirement.id || 'name',
       weight: values[requirement.id || 'rfn1']
     });
   })
-
-  createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
+  
+  if(onEdit.value) {
+    console.log('editar')
+  } else {
+    createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
+  }
 }
 </script>
 
 <template>
-  <div class="flex w-full justify-start items-center gap-2 px-2 text-base">
-    <FontAwesomeIcon icon="fa-solid fa-gears" />
-    <span class="font-semibold px-2">Requisitos Não Funcionais</span>
-  </div>
+  <Form
+    ref="nonFunctionalRequirementForm"
+    :validation-schema="schema"
+    @submit="(values: any) => onSubmit(values)"
+  >
+    <div class="flex w-full justify-between items-center gap-2 px-2 text-base">
+      <div class="flex gap-2 items-center">
+        <FontAwesomeIcon icon="fa-solid fa-gears" />
+  
+        <span class="font-semibold px-2">Requisitos Não Funcionais</span>
+      </div>
 
-  <Form ref="nonFunctionalRequirementForm" :validation-schema="schema" @submit="(values: any) => onSubmit(values)"
-    class="flex flex-col gap-10 p-5 items-center">
-    <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <InputField v-for="inputField in inputFields" :key="inputField.name" :label="inputField.label"
-        :name="inputField.name" :placeholder="inputField.placeholder" :type="inputField.type"
-        :required="inputField.required" :options="inputField.options" :hover-info="inputField.hoverInfo" :value="inputField.value" />
+      <div
+        v-if="$route.name !== 'non-functional-requirements'" 
+        class="flex gap-5"
+      >
+        <button
+          v-show="!onEdit"
+          class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-blueCrayola-900 dark:text-naplesYellow-900 hover:bg-blueCrayola-900/25 hover:dark:bg-naplesYellow-900/25 text-sm gap-2 text"
+          @click="()=> onEdit = true"
+        >
+          <FontAwesomeIcon
+            icon="fa-solid fa-pen"
+          />
+
+          <span class="font-semibold">Editar</span>
+        </button>
+
+        <button
+          v-show="onEdit"
+          class="flex items-center rounded px-3 py-2 text-white bg-stone-400 dark:bg-stone-600 text-sm gap-2 text"
+          @click="()=> onEdit = false"
+        >
+          <span class="font-semibold">Cancelar</span>
+        </button>
+
+        <button
+          v-show="onEdit"
+          class="flex items-center rounded px-3 py-2 text-white bg-lavenderIndigo-900 text-sm gap-2 text"
+          type="submit"
+        >
+          <FontAwesomeIcon
+            icon="fa-solid fa-check"
+          />
+
+          <span class="font-semibold">Salvar</span>
+        </button>
+      </div>
     </div>
 
-    <div class="flex gap-5">
-      <button
-        class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })">
-        <FontAwesomeIcon icon="fa-solid fa-angle-left" class="text-neutral-500 dark:text-white text-xs" />
-        <span class="font-semibold">Voltar</span>
-      </button>
+    <div class="flex flex-col gap-10 p-5 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
+        <InputField
+          v-for="inputField in inputFields"
+          :key="inputField.name"
+          :label="inputField.label"
+          :name="inputField.name"
+          :placeholder="inputField.placeholder"
+          :type="inputField.type"
+          :required="inputField.required"
+          :disabled="!onEdit && $route.name !== 'non-functional-requirements'"
+          :options="inputField.options"
+          :hover-info="inputField.hoverInfo"
+          :value="inputField.value"
+        />
+      </div>
 
-      <button class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-        type="submit">
-        <span class="font-semibold">Avançar</span>
-        <FontAwesomeIcon icon="fa-solid fa-angle-right" class="text-neutral-500 dark:text-white text-xs" />
-      </button>
+      <div
+        v-if="$route.name === 'non-functional-requirements'"
+        class="flex gap-5"
+      >
+        <button
+          class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
+          @click="$router.push({ name: 'home' })"
+        >
+          <FontAwesomeIcon
+            icon="fa-solid fa-angle-left"
+            class="text-neutral-500 dark:text-white text-xs"
+          />
+          <span class="font-semibold">Voltar</span>
+        </button>
+
+        <button
+          class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+          type="submit"
+        >
+          <span class="font-semibold">Avançar</span>
+          <FontAwesomeIcon
+            icon="fa-solid fa-angle-right"
+            class="text-neutral-500 dark:text-white text-xs"
+          />
+        </button>
+      </div>
     </div>
   </Form>
 </template>
