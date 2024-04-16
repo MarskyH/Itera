@@ -112,6 +112,16 @@ export const useProjectStore = defineStore('Project', {
         }
     },
 
+    async updateProject(id: string, projectData: Project) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/project/${id}`,
+        body: projectData
+      })
+
+      return response?.status === 200
+    },
+
     
     async deleteProject(id: string) {
       const response = await Api.request({

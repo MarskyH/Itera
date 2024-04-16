@@ -113,6 +113,18 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
       }
     },
 
+    
+    async updateProject(id: string, weightValue: number) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/nonFunctionalRequirementProject/${id}`,
+        body: {weight: weightValue}
+      })
+
+      return response?.status === 200
+    },
+
+
 
     async createNonFunctionalRequirements(nonFunctionalRequirementFormDataList: NonFunctionalRequirementForm[], projectId: string) {
       const nonFunctionalRequirementOnCreateDataList: NonFunctionalRequirementOnCreate[] = nonFunctionalRequirementFormDataList.map(form => ({
