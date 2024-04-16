@@ -6,7 +6,7 @@ interface NonFunctionalRequirementOnCreate extends models.NonFunctionalRequireme
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
 interface NonFunctionalRequirementWeights extends models.NonFunctionalRequirementWeights { }
 interface NonFunctionalRequirementProject extends models.NonFunctionalRequirementProject { }
-
+interface NonFunctionalRequirementProjectOnUpdate extends models.NonFunctionalRequirementProjectOnUpdate { }
 
 interface State {
   nonFunctionalRequirement: NonFunctionalRequirement
@@ -114,17 +114,15 @@ export const useNonFunctionalRequirementStore = defineStore('NonFunctionalRequir
     },
 
     
-    async updateProject(id: string, weightValue: number) {
+    async updateProject(nonFunctionalRequirementProjectList: NonFunctionalRequirementProjectOnUpdate[]) {
       const response = await Api.request({
         method: 'put',
-        route: `/nonFunctionalRequirementProject/${id}`,
-        body: {weight: weightValue}
+        route: `/nonFunctionalRequirementProject`,
+        body: nonFunctionalRequirementProjectList
       })
 
-      return response?.status === 200
+      return response?.status || 500
     },
-
-
 
     async createNonFunctionalRequirements(nonFunctionalRequirementFormDataList: NonFunctionalRequirementForm[], projectId: string) {
       const nonFunctionalRequirementOnCreateDataList: NonFunctionalRequirementOnCreate[] = nonFunctionalRequirementFormDataList.map(form => ({

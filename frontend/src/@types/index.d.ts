@@ -235,7 +235,12 @@ export namespace models {
   export interface NonFunctionalRequirementOnCreate {
     project_id: string
     nonfunctionalrequirement_id: string
-    weight: value
+    weight: number
+  }
+
+  export interface NonFunctionalRequirementProjectOnUpdate {
+    id: string
+    weight: number
   }
 }
 

@@ -11,6 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
 interface NonFunctionalRequirementProject extends models.NonFunctionalRequirementProject { }
+interface NonFunctionalRequirementProjectOnUpdate extends models.NonFunctionalRequirementProjectOnUpdate { }
 interface NonFunctionalRequirementsWeights extends models.NonFunctionalRequirementWeights { }
 
 const $route = useRoute()
@@ -98,8 +99,30 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
   }
 }
 
-function updateNonFunctionalRequirement(nonFunctionalRequirementsFormValues: NonFunctionalRequirementForm[]) {
-  
+async function updateNonFunctionalRequirement(nonFunctionalRequirementsFormValues: NonFunctionalRequirementForm[]) {
+  var nonFunctionalRequirementProjectList: NonFunctionalRequirementProjectOnUpdate[] = []
+  nonFunctionalRequirementsFormValues.forEach((rnfFormValue) => {
+    nonFunctionalRequirementsProject.value.forEach((rnf) => {
+      if (rnfFormValue.id == rnf.nonfunctionalrequirementId) {
+        nonFunctionalRequirementProjectList.push({
+          id: rnf?.id || '',
+          weight: rnfFormValue?.weight || 0
+        })
+        
+        console.log('achou', rnfFormValue.id,  rnf.nonfunctionalrequirementId, rnf.id, rnfFormValue.weight)
+      } 
+      //rnfFormValue.id == rnf.nonfunctionalrequirementId
+    })
+
+    console.log(nonFunctionalRequirementProjectList)
+  })
+
+  const responseStatus = await $nonFunctionalRequirementStore.updateProject(nonFunctionalRequirementProjectList)
+  if (responseStatus === 200) {
+    onEdit.value = false
+  } else {
+    //alert('Falha ao editar requisito não funcional!');
+  }
 }
 
 function onSubmit(values: any) {
@@ -111,9 +134,9 @@ function onSubmit(values: any) {
       weight: values[requirement.id || 'rfn1']
     });
   })
-  
+
   if(onEdit.value) {
-    console.log('editar')
+    updateNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
   } else {
     createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
   }
@@ -140,7 +163,8 @@ function onSubmit(values: any) {
         <button
           v-show="!onEdit"
           class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-blueCrayola-900 dark:text-naplesYellow-900 hover:bg-blueCrayola-900/25 hover:dark:bg-naplesYellow-900/25 text-sm gap-2 text"
-          @click="()=> onEdit = true"
+          type="button"
+          @click="() => onEdit = true"
         >
           <FontAwesomeIcon
             icon="fa-solid fa-pen"
@@ -151,6 +175,7 @@ function onSubmit(values: any) {
 
         <button
           v-show="onEdit"
+          type="button"
           class="flex items-center rounded px-3 py-2 text-white bg-stone-400 dark:bg-stone-600 text-sm gap-2 text"
           @click="()=> onEdit = false"
         >
