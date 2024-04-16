@@ -91,6 +91,27 @@ export const useProjectStore = defineStore('Project', {
       }
     },
 
+    async fetchProjectsRecentByUser(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `/project/recent/user/${id}`
+      })
+
+      if (response?.status === 200) {
+        this.projects = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            name: elem.name,
+            deadline: elem.deadline,
+            workHours: elem.workHours,
+            iterationTime: elem.iterationTime,
+            clientName: elem.clientName,
+            createdBy: elem.createdBy
+          }
+        })
+      }
+    },
+
     async createProject(projectData: Project) {
       const projectCreateData: ProjectOnCreate = {
         name: projectData.name,
@@ -110,6 +131,16 @@ export const useProjectStore = defineStore('Project', {
         status: response?.status ? response?.status : 500,
         data: response?.data ? response?.data : undefined
         }
+    },
+
+    async updateProject(id: string, projectData: Project) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/project/${id}`,
+        body: projectData
+      })
+
+      return response?.status === 200
     },
 
     
