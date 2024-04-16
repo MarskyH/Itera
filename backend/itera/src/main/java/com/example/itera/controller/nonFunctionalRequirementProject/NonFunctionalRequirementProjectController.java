@@ -119,25 +119,26 @@ public class NonFunctionalRequirementProjectController {
     /**
      * Endpoint responsável por atualizar um requisito existente, identificado pelo seu ‘ID’.
      *
-     * @param id   Identificador único do requisito a ser atualizado.
-     * @param data Objeto contendo os dados do requisito a serem atualizados.
+     * @param requestData Objeto contendo os dados do requisito a serem atualizados.
      * @return Resposta HTTP indicando o sucesso da operação ou informações sobre o erro ocorrido.
      * @throws EntityNotFoundException Exceção lançada caso o requisito não seja encontrado.
      * @author Marcus Loureiro
      * @since 23/03/2024
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateRequirement(@PathVariable String id, @RequestBody NonFunctionalRequirementProjectRequestDTO data) {
+    @PutMapping
+    public ResponseEntity<?> updateMultipleRequirements(@RequestBody List<NonFunctionalRequirementProjectRequestDTO> requestData) {
         Map<String, String> response = new HashMap<>();
         try {
-            NonFunctionalRequirementProject nonFunctionalRequirementProject = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+            for (NonFunctionalRequirementProjectRequestDTO data : requestData) {
+                NonFunctionalRequirementProject nonFunctionalRequirementProject = repository.findById(data.id()).orElseThrow(EntityNotFoundException::new);
 
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.weight() != null) {
-                nonFunctionalRequirementProject.setWeight(data.weight());
+                // Atualizar apenas os campos fornecidos pelo utilizador
+                if (data.weight() != null) {
+                    nonFunctionalRequirementProject.setWeight(data.weight());
+                }
+                repository.save(nonFunctionalRequirementProject);
+                response.put("data_id:", nonFunctionalRequirementProject.getId());
             }
-            repository.save(nonFunctionalRequirementProject);
-            response.put("data_id:", nonFunctionalRequirementProject.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (EntityNotFoundException ex) {
@@ -147,7 +148,6 @@ public class NonFunctionalRequirementProjectController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRequirement(@PathVariable String id) {
