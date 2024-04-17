@@ -19,15 +19,6 @@ const riskDefault: Risk = {
   exposureDegree: '',
   description: '',
   type: '',
-  project: {
-    id: '',
-    name: '',
-    clientName: '',
-    deadline: 0,
-    workHours: 0,
-    iterationTime: 0,
-    createdBy: '',
-  }
 }
 
 export const useRiskStore = defineStore('Risk', {
@@ -36,26 +27,8 @@ export const useRiskStore = defineStore('Risk', {
     risks: []
   }),
 
+
   actions: {
-    async fetchRisk(id: string) {
-      const response = await Api.request({
-        method: 'get',
-        route: '/risk/' + id,
-      })
-      if (response?.status === 200) {
-        this.risk = {
-          id: response.data?.id,
-          title: response.data?.title,
-          effect: response.data?.effect,
-          probability: response.data?.probability,
-          impact: response.data?.impact,
-          exposureDegree: response.data?.exposureDegree,
-          description: response.data?.description,
-          type: response.data?.type,
-          project: response.data?.project
-        }
-      }
-    },
 
     async fetchRisks(projectId: string) {
       const response = await Api.request({
@@ -76,6 +49,25 @@ export const useRiskStore = defineStore('Risk', {
             project: elem.project
           }
         })
+      }
+    },
+
+    async fetchRisk(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `risk/${id}`,
+      })
+      if (response?.status === 200) {
+        this.risk = {
+          id: response.data?.id,
+          title: response.data?.title,
+          effect: response.data?.effect,
+          probability: response.data?.probability,
+          impact: response.data?.impact,
+          exposureDegree: response.data?.exposureDegree,
+          description: response.data?.description,
+          type: response.data?.type,
+        }
       }
     },
 
@@ -100,18 +92,28 @@ export const useRiskStore = defineStore('Risk', {
       return (response?.status) !== undefined ? response.status : 500
     },
 
-    /*
+    async updateRisk(id: string, riskData: Risk) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/risk/${id}`,
+        body: riskData
+      })
+
+      return response?.status === 200
+    },
+
+
     async deleteRisk(id: string) {
       const response = await Api.request({
         method: 'delete',
-        route: '/risk/' + id
+        route: `/risk/${id}`
       })
-    
+
       if (response?.status === 200) {
         return true
       } else {
         return false
       }
-    },*/
+    },
   }
 })

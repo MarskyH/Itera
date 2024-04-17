@@ -22,6 +22,7 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("itera-api")
                     .withSubject(user.getUsername())
+                    .withClaim("id", user.getId())
                     .withClaim("username", user.getUsername())
                     .withClaim("name", user.getName())
                     .withClaim("role", user.getUserRole().toString())

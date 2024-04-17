@@ -9,6 +9,7 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import TeamMemberDetails from "src/views/Project/components/TeamMemberDetails.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
@@ -18,6 +19,8 @@ import { useRoute } from "vue-router";
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
@@ -214,12 +217,12 @@ function setNewTeamMemberForm() {
 }
 
 function removeTeamMember(memberId: string | undefined) {
+  $teamMemberStore.deleteTeamMember(memberId || '')
   teamMembers.value = teamMembers.value.filter((member: TeamMember) => member.id !== memberId)
 }
 
 
 function editTeamMember(memberId: string | undefined) {
-  /*
   onEditRecord.value = memberId ? memberId : null
   actionModalTitle.value = 'Editar integrante'
 
@@ -228,8 +231,8 @@ function editTeamMember(memberId: string | undefined) {
   if (member) {
     let editTeamMemberValues: TeamMemberForm = {
       ...member,
-      roleId: member.role.id || '',
-      userId: member.user.id || ''
+      role: member.role.id || '',
+      user: member.user.id || ''
     }
 
     teamMemberForm.value.setValues(editTeamMemberValues)
@@ -239,7 +242,7 @@ function editTeamMember(memberId: string | undefined) {
     })
 
     if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
+      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.role)
       
       if (selectedOption) {
         selectedOption.selected = true
@@ -251,7 +254,7 @@ function editTeamMember(memberId: string | undefined) {
     })
 
     if(userField) {
-      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
+      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.user)
       
       if (selectedOption) {
         selectedOption.selected = true
@@ -260,13 +263,13 @@ function editTeamMember(memberId: string | undefined) {
   }
 
   isActionModalOpen.value = true
-  */
+
 }
 
 function updateTeamMember(values: TeamMemberForm) {
-  /*
+  const projectId: string = String($route.params.projectId)
   let teamMemberToEdit: TeamMember | undefined = undefined
-  let teamMemberIndex = null
+  let teamMemberIndex = 0
 
   teamMembers.value.forEach((member: TeamMember, index) => {
     if(member.id === onEditRecord.value) {
@@ -275,17 +278,34 @@ function updateTeamMember(values: TeamMemberForm) {
     }
   }) 
 
-  if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
-    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
+  if (teamMemberToEdit && String(teamMemberIndex)) {
+    $teamMemberStore.updateTeamMember(onEditRecord.value || '', values, projectId)
+    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.role)
+    let teamMemberUser: UserModel | undefined = users.value.find((user: UserModel) => user.id === values.user)
     teamMemberToEdit = { 
       ...values,
-      roleId: teamMemberRole?.id || "",
-      userId: teamMemberUser?.id || ""
-    }
+      role: teamMemberRole || 
+            {    
+              id: '',
+              function: '',
+              skill: '',
+              competency: ''
+            },
+      user: teamMemberUser || 
+            {
+              id: '',
+              name: '',
+              email: '',
+              login: '',
+              password: '',
+              userRole: '',
+            } 
+      }
+    
+    $teamMemberStore.$state.teamMember = {...teamMemberToEdit, id: onEditRecord.value || ''}
 
     teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }*/
+  }
 }
 
 </script>
@@ -353,6 +373,7 @@ function updateTeamMember(values: TeamMemberForm) {
         :title="member.user.name"
         @edit="editTeamMember(member.id)"
         @remove="removeTeamMember(member.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: TeamMemberDetails, id: member.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

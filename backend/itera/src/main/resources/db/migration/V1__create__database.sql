@@ -9,15 +9,32 @@ CREATE TABLE public.activity (
 );
 
 -- Project Table (Tabela de Projetos)
+-- Project Table (Tabela de Projetos)
 CREATE TABLE public.project (
-    id TEXT PRIMARY KEY NOT NULL, -- Identificador único do projeto
-    name VARCHAR(50) UNIQUE NOT NULL, -- Nome único do projeto
-    deadline INTEGER NOT NULL, -- Prazo do projeto em dias
-    iteration_time INTEGER NOT NULL, -- Tempo de iteração do projeto em dias
-    work_hours INTEGER NOT NULL, -- Horas de trabalho do projeto por dia
-    client_name VARCHAR(50) NOT NULL, -- Nome do cliente
-    created_by VARCHAR(100) NOT NULL -- Criado por (usuário responsável)
+    id TEXT PRIMARY KEY NOT NULL, -- Unique project identifier
+    name VARCHAR(50) UNIQUE NOT NULL, -- Unique project name
+    deadline INTEGER NOT NULL, -- Project deadline in days
+    iteration_time INTEGER NOT NULL, -- Project iteration time in days
+    work_hours INTEGER NOT NULL, -- Project work hours per day
+    client_name VARCHAR(50) NOT NULL, -- Client name
+    created_by VARCHAR(100) NOT NULL, -- Created by (responsible user)
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation date and time
+    modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Modification date and time
+    last_access_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP-- Last access date and time
 );
+
+-- Trigger to update modification_date
+CREATE OR REPLACE FUNCTION update_modification_date()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.modification_date = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_modification_date_trigger
+BEFORE UPDATE ON public.project
+FOR EACH ROW EXECUTE FUNCTION update_modification_date();
 
 -- Team Table (Tabela de Membros de Equipe)
 CREATE TABLE public.team_member (
@@ -109,11 +126,13 @@ CREATE TABLE public.priority (
 
 ALTER TABLE public.role
 ADD CONSTRAINT FK_role_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.requirement
 ADD CONSTRAINT FK_requirement_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_risk
@@ -125,23 +144,28 @@ FOREIGN KEY (project_id) REFERENCES project(id);
 
 ALTER TABLE public.risk
 ADD CONSTRAINT FK_risk_project
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_user_team_member
-FOREIGN KEY (user_id) REFERENCES users(id);
+FOREIGN KEY (user_id) REFERENCES users(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_role_team_member
-FOREIGN KEY (role_id) REFERENCES role(id);
+FOREIGN KEY (role_id) REFERENCES role(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.team_member
 ADD CONSTRAINT FK_project_team_member
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_project_nonfunctionalrequirementproject
-FOREIGN KEY (project_id) REFERENCES project(id);
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_nonfunctionalrequirement_nonfunctionalrequirementproject

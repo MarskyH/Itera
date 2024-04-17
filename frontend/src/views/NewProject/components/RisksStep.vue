@@ -10,6 +10,7 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import RiskDetails from "src/views/Project/components/RiskDetails.vue";
 import { InputFieldProps, RiskForm, models } from "src/@types";
 import { useRiskStore } from "src/stores/RiskStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
@@ -19,6 +20,8 @@ import { useRoute } from "vue-router";
 interface Risk extends models.Risk { }
 interface Degree extends models.Degree { }
 interface RiskActionType extends models.RiskActionType { }
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $riskStore = useRiskStore()
@@ -197,78 +200,45 @@ function setNewRiskForm() {
 }
 
 function removeRisk(riskId: string | undefined) {
+  $riskStore.deleteRisk(riskId || '')
   risks.value = risks.value.filter((risk: Risk) => risk.id !== riskId)
 }
 
 
 function editRisk(riskId: string | undefined) {
-  /*
-  onEditRecord.value = memberId ? memberId : null
-  actionModalTitle.value = 'Editar integrante'
+  onEditRecord.value = riskId  ? riskId : null
+  actionModalTitle.value = 'Editar risco'
 
-  let member: TeamMember | undefined = teamMembers.value.find((member: TeamMember) => member.id === memberId)
-  
-  if (member) {
-    let editTeamMemberValues: TeamMemberForm = {
-      ...member,
-      roleId: member.role.id || '',
-      userId: member.user.id || ''
-    }
+  let risk: Risk | undefined = risks.value.find(r => r.id === riskId)
 
-    teamMemberForm.value.setValues(editTeamMemberValues)
-
-    let roleField = inputFields.find((field: any) => {
-      field.name === 'role'
-    })
-
-    if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
-
-    let userField = inputFields.find((field: any) => {
-      field.name === 'user'
-    })
-
-    if(userField) {
-      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
+  if(risk) {
+    let editRiskFormValues: RiskForm = {...risk}
+    riskForm.value?.setValues(editRiskFormValues)
   }
+  
 
   isActionModalOpen.value = true
-  */
+
 }
 
 function updateRisk(values: RiskForm) {
-  /*
-  let teamMemberToEdit: TeamMember | undefined = undefined
-  let teamMemberIndex = null
+  let riskToEdit: Risk | undefined = undefined
+  let riskIndex = 0
 
-  teamMembers.value.forEach((member: TeamMember, index) => {
-    if(member.id === onEditRecord.value) {
-      teamMemberToEdit = member
-      teamMemberIndex = index
+  risks.value.forEach((risk: Risk, index) => {
+    if(risk.id === onEditRecord.value){
+      riskToEdit = risk
+      riskIndex = index
     }
-  }) 
+  })
 
-  if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
-    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
-    teamMemberToEdit = { 
-      ...values,
-      roleId: teamMemberRole?.id || "",
-      userId: teamMemberUser?.id || ""
-    }
+  if(riskToEdit && String(riskIndex)){
+    $riskStore.updateRisk(onEditRecord.value || '', values)
+    $riskStore.$state.risk = {...values, id: onEditRecord.value || ''}
+    riskToEdit = { ...values }
 
-    teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }*/
+    risks.value[riskIndex] = riskToEdit
+  }
 }
 
 </script>
@@ -332,6 +302,7 @@ function updateRisk(values: RiskForm) {
         :title="risk.title"
         @edit="editRisk(risk.id)"
         @remove="removeRisk(risk.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RiskDetails, id: risk.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

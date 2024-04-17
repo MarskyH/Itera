@@ -8,15 +8,19 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import FunctionalRequirementDetails from "src/views/Project/components/FunctionalRequirementDetails.vue";
 import { InputFieldProps, FunctionalRequirementForm, models } from "src/@types";
 import { useRoute } from "vue-router";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
+ 
 
 interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
 interface Priority extends models.Priority {}
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $functionalRequirementStore = useFunctionalRequirementStore()
@@ -188,79 +192,46 @@ function setNewFunctionalRequirementForm() {
 }
 
 function removeFunctionalRequirement(requirementId: string | undefined) {
+  $functionalRequirementStore.deleteFunctionalRequiriment(requirementId || '')
   functionalRequirements.value = functionalRequirements.value
     .filter((requirement: FunctionalRequirement) => requirement.id !== requirementId)
 }
 
 
 function editFunctionalRequirement(requirementId: string | undefined) {
-  /*
-  onEditRecord.value = memberId ? memberId : null
-  actionModalTitle.value = 'Editar integrante'
+  onEditRecord.value = requirementId  ? requirementId : null
+  actionModalTitle.value = 'Editar Requisito Funcional'
 
-  let member: TeamMember | undefined = teamMembers.value.find((member: TeamMember) => member.id === memberId)
-  
-  if (member) {
-    let editTeamMemberValues: TeamMemberForm = {
-      ...member,
-      roleId: member.role.id || '',
-      userId: member.user.id || ''
-    }
+  let requirement: FunctionalRequirement | undefined = functionalRequirements.value.find(r => r.id === requirementId)
 
-    teamMemberForm.value.setValues(editTeamMemberValues)
-
-    let roleField = inputFields.find((field: any) => {
-      field.name === 'role'
-    })
-
-    if(roleField) {
-      let selectedOption = roleField?.options?.find(option => option.value === editTeamMemberValues.roleId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
-
-    let userField = inputFields.find((field: any) => {
-      field.name === 'user'
-    })
-
-    if(userField) {
-      let selectedOption = userField?.options?.find(option => option.value === editTeamMemberValues.userId)
-      
-      if (selectedOption) {
-        selectedOption.selected = true
-      }
-    }
+  if(requirement) {
+    let editRequirementFormValues: FunctionalRequirementForm = {...requirement}
+    functionalRequirementForm.value?.setValues(editRequirementFormValues)
   }
+  
 
   isActionModalOpen.value = true
-  */
 }
 
 function updateFunctionalRequirement(values: FunctionalRequirementForm) {
-  /*
-  let teamMemberToEdit: TeamMember | undefined = undefined
-  let teamMemberIndex = null
+  let requirementToEdit: FunctionalRequirement | undefined = undefined
+  let requirementIndex = 0
 
-  teamMembers.value.forEach((member: TeamMember, index) => {
-    if(member.id === onEditRecord.value) {
-      teamMemberToEdit = member
-      teamMemberIndex = index
+  functionalRequirements.value.forEach((requirement: FunctionalRequirement, index) => {
+    if(requirement.id === onEditRecord.value){
+      requirementToEdit = requirement
+      requirementIndex = index
     }
-  }) 
+  })
 
-  if (teamMemberToEdit && teamMemberIndex) {
-    let teamMemberRole: Role | undefined = roles.value.find((role: Role) => role.id === values.roleId)
-    let teamMemberUser: UserMemberModel | undefined = users.value.find((user: UserMemberModel) => user.id === values.userId)
-    teamMemberToEdit = { 
-      ...values,
-      roleId: teamMemberRole?.id || "",
-      userId: teamMemberUser?.id || ""
-    }
+  if(requirementToEdit && String(requirementIndex)){
+    $functionalRequirementStore.updateFunctionalRequirement(onEditRecord.value || '', values)
+    $functionalRequirementStore.$state.functionalRequirement = {...values, id: onEditRecord.value || ''}
 
-    teamMembers.value[teamMemberIndex] = teamMemberToEdit
-  }*/
+    requirementToEdit = { ...values }
+
+    functionalRequirements.value[requirementIndex] = requirementToEdit
+  }
 }
 
 </script>
@@ -322,6 +293,7 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
         :title="requirement.title"
         @edit="editFunctionalRequirement(requirement.id)"
         @remove="removeFunctionalRequirement(requirement.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: FunctionalRequirementDetails, id: requirement.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
@@ -358,7 +330,7 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
     <div class="flex gap-5 justify-center">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'risks' })"
+        @click="$router.push({ name: 'requirements' })"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-angle-left"

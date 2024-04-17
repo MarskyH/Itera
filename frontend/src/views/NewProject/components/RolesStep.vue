@@ -9,11 +9,14 @@ import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
+import RoleDetails from "src/views/Project/components/RoleDetails.vue";
 import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useRoute } from "vue-router";
 
-interface Role extends models.Role {}
+interface Role extends models.Role { }
+
+defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $roleStore = useRoleStore()
@@ -85,23 +88,23 @@ async function setRoles() {
 onMounted(() => setRoles())
 
 async function createRole(roleFormValues: RoleForm) {
-  const projectId : string = String($route.params.projectId)
-  
+  const projectId: string = String($route.params.projectId)
+
   await $roleStore.createRole(projectId, roleFormValues)
     .then((responseStatus: any) => {
-      if(responseStatus === 200) {
+      if (responseStatus === 200) {
         setRoles()
       } else {
         alert('Falha ao criar papel!')
       }
     }
-  )
+    )
 }
 
 function onSubmit(values: any) {
-  let roleFormValues: RoleForm = {...values}
+  let roleFormValues: RoleForm = { ...values }
 
-  if(!onEditRecord.value) {
+  if (!onEditRecord.value) {
     createRole(roleFormValues)
   } else {
     updateRole(roleFormValues)
@@ -117,6 +120,7 @@ function setNewRoleForm() {
 }
 
 function removeRole(roleId: string | undefined) {
+  $roleStore.deleteRole(roleId || '')
   roles.value = roles.value.filter(role => role.id !== roleId)
 }
 
@@ -127,7 +131,7 @@ function editRole(roleId: string | undefined) {
   let role: Role | undefined = roles.value.find(r => r.id === roleId)
 
   if (role) {
-    let editRoleFormValues: RoleForm = {...role}
+    let editRoleFormValues: RoleForm = { ...role }
     roleForm.value?.setValues(editRoleFormValues)
   }
 
@@ -136,16 +140,18 @@ function editRole(roleId: string | undefined) {
 
 function updateRole(values: RoleForm) {
   let roleToEdit: Role | undefined = undefined
-  let roleIndex = null
+  let roleIndex = 0
 
   roles.value.forEach((role: Role, index) => {
-    if(role.id === onEditRecord.value) {
+    if (role.id === onEditRecord.value) {
       roleToEdit = role
       roleIndex = index
     }
-  }) 
+  })
 
-  if (roleToEdit && roleIndex) {
+  if (roleToEdit && String(roleIndex)) {
+    $roleStore.updateRole(onEditRecord.value || '', values)
+    $roleStore.$state.role = {...values, id: onEditRecord.value || ''}
     roleToEdit = { ...values }
 
     roles.value[roleIndex] = roleToEdit
@@ -190,10 +196,8 @@ function updateRole(values: RoleForm) {
   >
     <div class="flex gap-5 rounded justify-between items-center text-sm">
       <div class="flex items-center gap-2 px-2 text-base">
-        <FontAwesomeIcon
-          icon="fa-solid fa-clipboard-user"
-        />
-        
+        <FontAwesomeIcon icon="fa-solid fa-clipboard-user" />
+
         <span class="font-semibold px-2">Papéis do projeto</span>
       </div>
 
@@ -201,10 +205,8 @@ function updateRole(values: RoleForm) {
         class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
         @click="setNewRoleForm()"
       >
-        <FontAwesomeIcon
-          icon="fa-solid fa-plus"
-        />
-        
+        <FontAwesomeIcon icon="fa-solid fa-plus" />
+
         <span class="font-semibold">Adicionar</span>
       </button>
     </div>
@@ -217,6 +219,7 @@ function updateRole(values: RoleForm) {
         :title="role.function"
         @edit="editRole(role.id)"
         @remove="removeRole(role.id)"
+        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RoleDetails, id: role.id }) }"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
@@ -252,7 +255,7 @@ function updateRole(values: RoleForm) {
 
         <span class="font-semibold">Voltar</span>
       </button>
-      
+
       <button
         class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
         @click="$router.push({ name: 'team' })"
@@ -277,9 +280,7 @@ function updateRole(values: RoleForm) {
       :title="actionModalTitle"
       icon="clipboard-user"
     >
-      <div
-        class="flex flex-col w-full gap-5 px-8 py-4"
-      >
+      <div class="flex flex-col w-full gap-5 px-8 py-4">
         <InputField
           v-for="inputField in inputFields"
           :key="inputField.name"

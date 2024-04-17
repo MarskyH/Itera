@@ -44,7 +44,26 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
             effort: elem.effort,
             sizeRequirement: elem.sizeRequirement
           }
+
         })
+      }
+    },
+
+    async fetchFunctionalRequirement(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `requirement/${id}`,
+      })
+      if (response?.status === 200) {
+        this.functionalRequirement = {
+          id: response.data?.id,
+          title: response.data?.title,
+          details: response.data?.details,
+          complexity: response.data?.complexity,
+          priority: response.data?.priority,
+          effort: response.data?.effort,
+          sizeRequirement: response.data?.sizeRequirement
+        }
       }
     },
 
@@ -66,6 +85,26 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
       })
 
       return response?.status || 500
-    }
+    },
+
+    
+    async updateFunctionalRequirement(id: string, functionalRequirementData: FunctionalRequirement) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/requirement/${id}`,
+        body: functionalRequirementData
+      })
+
+      return response?.status === 200
+    },
+
+    async deleteFunctionalRequiriment(id: string) {
+      const response = await Api.request({
+        method: 'delete',
+        route: `/requirement/${id}`
+      })
+
+      return response?.status === 200
+    },
   }
 })

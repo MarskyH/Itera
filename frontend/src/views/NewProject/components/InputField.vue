@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { Field, ErrorMessage } from 'vee-validate'
 import { ref } from 'vue';
+import { formatTime } from 'cleave-zen';
 
   defineEmits(['change'])
 

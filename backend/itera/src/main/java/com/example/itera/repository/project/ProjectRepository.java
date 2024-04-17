@@ -16,6 +16,9 @@ public interface ProjectRepository extends JpaRepository<Project, String>{
     @Query("SELECT p FROM Project p WHERE p.createdBy = :id")
     List<ProjectResponseDTO> findByCreatedBy(@Param("id") String id);
 
+    @Query("SELECT p FROM Project p WHERE p.createdBy = :id ORDER BY p.lastAccessDate DESC")
+    List<ProjectResponseDTO> findRecentProjects(@Param("id") String id);
+
 }
 
 

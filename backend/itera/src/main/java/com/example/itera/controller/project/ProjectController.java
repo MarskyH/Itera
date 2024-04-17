@@ -1,5 +1,13 @@
 package com.example.itera.controller.project;
 
+import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
+import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
+import com.example.itera.domain.risk.Risk;
+import com.example.itera.domain.role.Role;
+import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
+import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
+import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
+import com.example.itera.dto.role.RoleRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
@@ -14,6 +22,7 @@ import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.infra.security.TokenService;
+import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRepository;
 import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
@@ -29,10 +38,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
 * Responsável por fornecer um endpoint para criar um novo projeto.
@@ -66,7 +74,7 @@ public class ProjectController {
     RequirementRepository requirementRepository;
 
     @Autowired
-    NonFunctionalRequirementRepository nonFunctionalRequirementRepository;
+    NonFunctionalRequirementProjectRepository nonFunctionalRequirementProjectRepository;
 
     @Autowired
     TokenService tokenService;
@@ -92,6 +100,9 @@ public class ProjectController {
             User userData = userRepository.findByNome(username);
             Project projectData = new Project(data);
             projectData.setCreatedBy(userData.getId());
+            projectData.setCreationDate(new Timestamp(new Date().getTime()));
+            projectData.setModificationDate(new Timestamp(new Date().getTime()));
+            projectData.setLastAccessDate(new Timestamp(new Date().getTime()));
             projectRepository.save(projectData);
             response.put("id", projectData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -102,6 +113,52 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+        }
+    }
+
+    /**
+     * Endpoint responsável por atualizar um projeto.
+     *
+     * @param data estrutura de dados contendo as informações que se deseja atulizar o projeto
+     * @return ResponseEntity confirmando a transação e retornando o id do projeto atualizado.
+     * @author Marcus Loureiro
+     * @see ProjectRequestDTO
+     * @see ResponseEntity
+     * @since 08/04/2024
+     * */
+
+    @PutMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> updateProject(@PathVariable String id, @RequestBody ProjectRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Project project = projectRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+            if(data.name() != null){
+                project.setName(data.name());
+            }
+            if(data.deadline() != null){
+                project.setDeadline(data.deadline());
+            }
+            if(data.iterationTime() != null){
+                project.setIterationTime(data.iterationTime());
+            }
+            if(data.workHours() != null){
+                project.setWorkHours(data.workHours());
+            }
+            if(data.clientName() != null){
+                project.setClientName(data.clientName());
+            }
+            project.setModificationDate(new Timestamp(new Date().getTime()));
+            projectRepository.save(project);
+            response.put("data_id:", project.getId());
+            response.put("message", ResponseType.SUCCESS_UPDATE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -138,6 +195,9 @@ public class ProjectController {
     @ResponseStatus(code = HttpStatus.OK)
     public ProjectResponseDTO getProjectById(@PathVariable String id) throws ResourceNotFoundException {
         Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        // Atualiza lastAccessDate para a data e hora atual
+        project.setLastAccessDate(new Timestamp(new Date().getTime()));
+        projectRepository.save(project);
         return new ProjectResponseDTO(project);
     }
 
@@ -219,7 +279,7 @@ public class ProjectController {
      * @param id Identificador único do projeto.
      * @return Lista contendo os requisitos no formato RequirementResponseDTO associados ao projeto.
      * @author Marcus Loureiro
-     * @see  NonFunctionalRequirementResponseDTO
+     * @see  RequirementResponseDTO
      * @since 19/03/2024
      */
 
@@ -229,27 +289,79 @@ public class ProjectController {
         return requirementRepository.findByProject(id).stream().toList();
     }
 
+
     /**
      * Endpoint responsável por retornar uma lista de requisitos não funcionais associados a um projeto específico.
      *
      * @param id Identificador único do projeto.
-     * @return Lista contendo os requisitos não funcionais no formato NonFunctionalRequirementResponseDTO associados ao projeto.
+     * @return Lista contendo os requisitos não funcionais no formato NonFunctionalRequirementProjectResponseDTO associados ao projeto.
      * @author Marcus Loureiro
+     * @see  NonFunctionalRequirementProjectResponseDTO
      * @since 19/03/2024
      */
-
-   /* @GetMapping("{id}/nonFunctionalRequirements")
+    @GetMapping("/{id}/nonFunctionalRequirementsProject")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<NonFunctionalRequirementResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
-        return nonFunctionalRequirementRepository.findByProject(id).stream().toList();
+    public List<NonFunctionalRequirementProjectResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
+        return nonFunctionalRequirementProjectRepository.findByProject(id).stream().toList();
+    }
 
-    }*/
 
+    /**
+     * Endpoint responsável por retornar o projeto com todos os seus dados associados dado o id do projeto.
+     *
+     * @param id Identificador único do projeto.
+     * @return ProjectWithJoinResponseDTO
+     * @author Marcus Loureiro
+     * @see  ProjectWithJoinResponseDTO
+     * @since 08/04/2024
+     */
+
+    @GetMapping("/{id}/withJoins")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ProjectWithJoinResponseDTO getProjectWithJoin(@PathVariable String id) throws ResourceNotFoundException{
+        Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        List<RoleResponseDTO> roles = roleRepository.findByProject(id);
+        List<TeamMember> teamMembers = teamMemberRepository.findAllByProjectId(id);
+        List<RiskResponseDTO> risks = riskRepository.findByProject(id);
+        List<RequirementResponseDTO> requirements = requirementRepository.findByProject(id);
+        List<NonFunctionalRequirementProjectResponseDTO> nonFunctionalRequirementProject = nonFunctionalRequirementProjectRepository.findByProject(id);
+        return new ProjectWithJoinResponseDTO(new ProjectResponseDTO(project), roles, teamMembers, risks, requirements, nonFunctionalRequirementProject);
+    }
+
+    /**
+     * Endpoint responsável por retornar a lista de projetos usuário pelo seu id.
+     *
+     * @param id Identificador único do usuário.
+     * @return List<ProjectResponseDTO>
+     * @author Marcus Loureiro
+     * @see  ProjectResponseDTO
+     * @since 08/04/2024
+     */
+    @GetMapping("/recent/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ProjectResponseDTO> getRecentProjects(@PathVariable String id){
+        List<ProjectResponseDTO> projects = projectRepository.findRecentProjects(id);
+        return projects.stream().toList();
+
+    }
+
+    /**
+     * Endpoint responsável por deletar projetos e consequentemente todos os dados associados ao seu id.
+     *
+     * @param id Identificador único do projeto.
+     * @return HTTPStatus.ok
+     * @author Marcus Loureiro
+     * @see  Project
+     * @since 08/04/2024
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {
         try {
-            projectRepository.delete(projectRepository.getReferenceById(id));
+            Project project = projectRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + id));
+
+            projectRepository.delete(project);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();

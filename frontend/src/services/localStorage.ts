@@ -71,7 +71,7 @@ export default class LocalStorage {
     result.name = this.capitalize(result.name)
     result.username = this.capitalize(result.username)
     result.role = this.capitalize(result.role)
-
+  
     return result
   }
 

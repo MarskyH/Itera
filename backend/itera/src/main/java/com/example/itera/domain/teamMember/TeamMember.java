@@ -33,15 +33,18 @@ public class TeamMember {
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User user;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Role role;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
