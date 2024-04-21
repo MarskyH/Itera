@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tasktype")
+@Table(name = "task_type")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -9,7 +9,6 @@ CREATE TABLE public.activity (
 );
 
 -- Project Table (Tabela de Projetos)
--- Project Table (Tabela de Projetos)
 CREATE TABLE public.project (
     id TEXT PRIMARY KEY NOT NULL, -- Unique project identifier
     name VARCHAR(50) UNIQUE NOT NULL, -- Unique project name
@@ -23,18 +22,6 @@ CREATE TABLE public.project (
     last_access_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP-- Last access date and time
 );
 
--- Trigger to update modification_date
-CREATE OR REPLACE FUNCTION update_modification_date()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.modification_date = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_modification_date_trigger
-BEFORE UPDATE ON public.project
-FOR EACH ROW EXECUTE FUNCTION update_modification_date();
 
 -- Team Table (Tabela de Membros de Equipe)
 CREATE TABLE public.team_member (
@@ -126,8 +113,42 @@ CREATE TABLE public.task_type (
     name VARCHAR(100) NOT NULL -- Nome da prioridade
 );
 
--- Foreign Keys (Chaves Estrangeiras)
+-- Criar a tabela 'iteration'
+CREATE TABLE iteration (
+    id TEXT PRIMARY KEY,
+    number INTEGER,
+    startDate TIMESTAMP,
+    endDate TIMESTAMP,
+    project_id TEXT NOT NULL
+);
 
+CREATE TABLE task (
+    id TEXT PRIMARY KEY,
+    title VARCHAR(255),
+    priority VARCHAR(255),
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    task_type TEXT,
+    iteration_id TEXT
+);
+
+CREATE TABLE task_requirement (
+    id TEXT PRIMARY KEY,
+    details VARCHAR(255),
+    complexity VARCHAR(255),
+    effort VARCHAR(255),
+    size TIMESTAMP,
+    task_id TEXT
+);
+
+CREATE TABLE assignee (
+    id TEXT PRIMARY KEY,
+    task_step VARCHAR(255),
+    user_id TEXT,
+    iteration_id TEXT
+);
+
+-- Foreign Keys (Chaves Estrangeiras)
 
 ALTER TABLE public.role
 ADD CONSTRAINT FK_role_project
@@ -175,6 +196,33 @@ ON DELETE CASCADE;
 ALTER TABLE public.nonfunctionalrequirementproject
 ADD CONSTRAINT FK_nonfunctionalrequirement_nonfunctionalrequirementproject
 FOREIGN KEY (nonfunctionalrequirement_id) REFERENCES nonfunctionalrequirement(id);
+
+-- Adicionando chave estrangeira para task_requirement
+ALTER TABLE task_requirement
+ADD CONSTRAINT fk_task_requirement_task
+FOREIGN KEY (task_id) REFERENCES task(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_iteration
+FOREIGN KEY (iteration_id) REFERENCES iteration(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para assignee
+ALTER TABLE assignee
+ADD CONSTRAINT fk_assignee_user
+FOREIGN KEY (user_id) REFERENCES users(id)
+ON DELETE CASCADE,
+ADD CONSTRAINT fk_assignee_iteration
+FOREIGN KEY (iteration_id) REFERENCES iteration(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para iteration
+ALTER TABLE iteration
+ADD CONSTRAINT fk_iteration_project
+FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
 
 -- Data Insertion (Inserção de Dados)
 INSERT INTO users (id, name, email, username, password, user_role)

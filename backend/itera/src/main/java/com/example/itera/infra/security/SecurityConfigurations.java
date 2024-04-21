@@ -91,6 +91,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/user/team").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/riskActionType").hasRole("USER")
                         .requestMatchers(HttpMethod.GET,  "/degree").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/tasktype").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
