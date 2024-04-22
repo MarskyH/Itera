@@ -137,7 +137,7 @@ CREATE TABLE task_requirement (
     details VARCHAR(255),
     complexity VARCHAR(255),
     effort VARCHAR(255),
-    size TIMESTAMP,
+    size_task VARCHAR(255),
     task_id TEXT
 );
 
