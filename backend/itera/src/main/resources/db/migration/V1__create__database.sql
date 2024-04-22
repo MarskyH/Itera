@@ -145,7 +145,7 @@ CREATE TABLE assignee (
     id TEXT PRIMARY KEY,
     task_step VARCHAR(255),
     user_id TEXT,
-    iteration_id TEXT
+    task_id TEXT
 );
 
 -- Foreign Keys (Chaves Estrangeiras)
@@ -215,7 +215,7 @@ ADD CONSTRAINT fk_assignee_user
 FOREIGN KEY (user_id) REFERENCES users(id)
 ON DELETE CASCADE,
 ADD CONSTRAINT fk_assignee_iteration
-FOREIGN KEY (iteration_id) REFERENCES iteration(id)
+FOREIGN KEY (task_id) REFERENCES task(id)
 ON DELETE CASCADE;
 
 -- Adicionando chave estrangeira para iteration

@@ -2,9 +2,11 @@ package com.example.itera.domain.Assignee;
 
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.project.Project;
+import com.example.itera.domain.task.Task;
 import com.example.itera.domain.task.TaskStep;
 import com.example.itera.domain.taskType.TaskType;
 import com.example.itera.domain.user.User;
+import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -33,8 +35,16 @@ public class Assignee {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "iteration_id", nullable = false)
+    @JoinColumn(name = "task_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Iteration iteration;
+    private Task task;
+
+
+
+    public Assignee(TaskStep taskStep, User user, Task task){
+        this.taskStep = taskStep;
+        this.user = user;
+        this.task = task;
+    }
 }
