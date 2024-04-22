@@ -7,6 +7,7 @@ interface ProjectOnCreate extends models.ProjectOnCreate { }
 interface State {
   project: Project
   projects: Project[]
+  recentProjects: Project[]
 }
 
 const projectDefault = {
@@ -22,7 +23,8 @@ const projectDefault = {
 export const useProjectStore = defineStore('Project', {
   state: (): State => ({
     project: { ...projectDefault },
-    projects: []
+    projects: [],
+    recentProjects: []
   }),
 
   actions: {
@@ -91,14 +93,14 @@ export const useProjectStore = defineStore('Project', {
       }
     },
 
-    async fetchProjectsRecentByUser(id: string) {
+    async fetchRecentProjectsByUser(id: string) {
       const response = await Api.request({
         method: 'get',
         route: `/project/recent/user/${id}`
       })
 
       if (response?.status === 200) {
-        this.projects = response.data?.map((elem: any) => {
+        this.recentProjects = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             name: elem.name,
