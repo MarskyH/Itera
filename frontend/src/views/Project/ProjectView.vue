@@ -45,6 +45,10 @@ onMounted(async () => {
   })
 })
 
+$projectStore.$subscribe(() => {
+  project.value = {...$projectStore.project, roles: []}
+})
+
 </script>
 
 <template>

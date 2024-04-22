@@ -150,7 +150,7 @@ export const useProjectStore = defineStore('Project', {
         route: `project/${id}`
       })
 
-      return response?.status === 200
+      return response?.status || 500
     },
   }
 })

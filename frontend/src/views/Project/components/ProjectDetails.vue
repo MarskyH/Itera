@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Form } from 'vee-validate'
 import * as yup from 'yup'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
@@ -28,10 +28,12 @@ const projectDefault = {
 const $projectStore = useProjectStore()
 
 const $route = useRoute()
+const $router = useRouter()
 
 const project = ref<ProjectOnView>({...projectDefault})
 
 const onEdit = ref<boolean>(false)
+const onDelete = ref<boolean>(false)
 const formOnLoad = ref<boolean>(true)
 
 yup.setLocale(yupErrorMessages);
@@ -46,13 +48,31 @@ async function updateProject(projectOnCreateData: Project) {
 
   await $projectStore.updateProject(projectId ,projectOnCreateData)
     .then((response: any) => {
-      console.log(response)
       if(response === 200) {
         $projectStore.$state.project = {...projectOnCreateData, id: projectId}
         onEdit.value = false
       }
     }
   )
+}
+
+async function deleteProject() {
+  if (onDelete.value) {
+    const projectId: string = String($route.params.projectId) || ''
+    
+    await $projectStore.deleteProject(projectId)
+      .then((response) => {
+         console.log(response)
+
+        if(response === 204 || response === 200) {
+          $router.push({ name: 'my-projects' })
+        }
+      })
+
+  } else {
+    onDelete.value = true
+  }
+
 }
 
 onMounted(async () => {
@@ -209,14 +229,15 @@ $projectStore.$subscribe(() => {
       </button>
 
       <button
-        class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25 text-sm gap-2 text"
-        @click="()=> $emit('remove')"
+        class="flex items-center rounded px-3 py-2 text-sm gap-2 text"
+        :class="[onDelete ? 'bg-lightRed-900 text-white' : 'bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25']"
+        @click="()=> deleteProject()"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-trash"
         />
 
-        <span class="font-semibold">Excluir projeto</span>
+        <span class="font-semibold">{{ onDelete ? 'Confirmar' : 'Excluir projeto' }}</span>
       </button>
     </div>
   </div>
