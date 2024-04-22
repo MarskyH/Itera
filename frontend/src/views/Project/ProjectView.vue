@@ -53,12 +53,25 @@ $projectStore.$subscribe(() => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <div class="flex items-center p-2 gap-5">
-      <FontAwesomeIcon
-        icon="fa-solid fa-folder"
-      />
+    <div class="flex items-center justify-between p-2 gap-5">
+      <div class="flex items-center gap-5">
+        <FontAwesomeIcon
+          icon="fa-solid fa-folder"
+        />
 
-      <span>{{ project.name }}</span>
+        <span>{{ project.name }}</span>
+      </div>
+
+      <button
+        class="flex items-center gap-2 text-sm text-lavenderIndigo-900 dark:text-tropicalIndigo-900"  
+        @click="() => $emits('sideViewContentChange', { component: ProjectDetails, id: $route.params.projectId || '' })"
+      >
+        <FontAwesomeIcon
+          icon="fa-solid fa-circle-info"
+        />
+
+        Ver detalhes
+      </button>
     </div>
 
     <SectionsBreadcrumbs />
