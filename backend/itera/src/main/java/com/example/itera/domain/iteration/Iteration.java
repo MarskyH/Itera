@@ -30,4 +30,10 @@ public class Iteration {
     @JsonIgnore
     private Project project;
 
+    public Iteration(Integer number, Timestamp startDate, Timestamp endDate, Project projectData) {
+        this.number = number;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.project = projectData;
+    }
 }

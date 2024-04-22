@@ -1,5 +1,6 @@
 package com.example.itera.controller.project;
 
+import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
 import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
 import com.example.itera.domain.risk.Risk;
@@ -22,6 +23,7 @@ import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.infra.security.TokenService;
+import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRepository;
 import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.project.ProjectRepository;
@@ -77,6 +79,9 @@ public class ProjectController {
     NonFunctionalRequirementProjectRepository nonFunctionalRequirementProjectRepository;
 
     @Autowired
+    IterationRepository iterationRepository;
+
+    @Autowired
     TokenService tokenService;
 
 
@@ -116,6 +121,48 @@ public class ProjectController {
         }
     }
 
+    @PostMapping("/{id}/createIterations")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> createIterations(@PathVariable String id){
+        Map<String, String> response = new HashMap<>();
+        try {
+            Project projectData = projectRepository.findById(id).orElseThrow();
+
+            // Obtendo informações do projeto
+            Integer deadline = projectData.getDeadline();
+            Integer iterationTime = projectData.getIterationTime();
+
+            // Calculando o número de iterações com base no prazo e no tempo de iteração
+            Integer counterIteration = deadline / iterationTime;
+
+            // Obtendo a data atual
+            Timestamp currentDate = new Timestamp(new Date().getTime());
+
+            // Definindo a data inicial como a data atual
+            Timestamp startDate = currentDate;
+
+            for (int i = 1; i <= counterIteration; i++) {
+                // Calculando a data final como a data inicial + o tempo de iteração
+                Timestamp endDate = new Timestamp(startDate.getTime() + (iterationTime * 24 * 60 * 60 * 1000));
+
+                // Criando e salvando a iteração com as datas calculadas
+                Iteration iterationData = new Iteration(i, startDate, endDate, projectData);
+                iterationRepository.save(iterationData);
+
+                // Atualizando a data inicial para a próxima iteração
+                startDate = new Timestamp(endDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+            }
+
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+        }
+    }
     /**
      * Endpoint responsável por atualizar um projeto.
      *

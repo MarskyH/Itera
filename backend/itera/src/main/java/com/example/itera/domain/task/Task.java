@@ -20,8 +20,8 @@ import java.sql.Timestamp;
 @EqualsAndHashCode(of = "id")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private String title;
     private String priority;
     private Timestamp startDate;
