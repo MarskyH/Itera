@@ -22,7 +22,9 @@ public class Iteration {
     private String id;
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer number;
+    @Column(name = "startdate")
     private Timestamp startDate;
+    @Column(name = "enddate")
     private Timestamp endDate;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
