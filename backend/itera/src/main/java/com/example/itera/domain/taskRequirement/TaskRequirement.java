@@ -5,7 +5,7 @@ import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "taskrequirement")
+@Table(name = "task_requirement")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +22,12 @@ public class TaskRequirement {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    public TaskRequirement(String details, String complexity, String sizeTask, String effort, Task task) {
+        this.details = details;
+        this.complexity = complexity;
+        this.sizeTask = sizeTask;
+        this.effort = effort;
+        this.task = task;
+    }
 }

@@ -28,12 +28,26 @@ public class Task {
     private Timestamp endDate;
     @Column(name = "task_type")
     private String taskType;
-    @OneToOne(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_requirement_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private TaskRequirement taskRequirement;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Iteration iteration;
+
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
+        this.title = title;
+        this.priority = priority;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.taskType = taskType;
+        this.taskRequirement = taskRequirementData;
+        this.iteration = iterationData;
+    }
+
 
 }

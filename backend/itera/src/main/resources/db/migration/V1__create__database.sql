@@ -129,6 +129,7 @@ CREATE TABLE task (
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     task_type TEXT,
+    task_requirement_id TEXT,
     iteration_id TEXT
 );
 
@@ -207,6 +208,12 @@ ON DELETE CASCADE;
 ALTER TABLE task
 ADD CONSTRAINT fk_task_iteration
 FOREIGN KEY (iteration_id) REFERENCES iteration(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_task_requirement
+FOREIGN KEY (task_requirement_id) REFERENCES task_requirement(id)
 ON DELETE CASCADE;
 
 -- Adicionando chave estrangeira para assignee

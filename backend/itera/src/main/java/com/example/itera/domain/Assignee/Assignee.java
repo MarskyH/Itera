@@ -14,6 +14,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "assignee")
 @Getter
@@ -47,4 +49,6 @@ public class Assignee {
         this.user = user;
         this.task = task;
     }
+
+
 }
