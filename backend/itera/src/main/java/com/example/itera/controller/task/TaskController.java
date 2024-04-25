@@ -8,6 +8,7 @@ import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
+import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
 import com.example.itera.dto.task.TaskRequestDTO;
 import com.example.itera.dto.task.TaskResponseDTO;
 import com.example.itera.dto.task.TaskTaskRequirementRequestDTO;
@@ -47,6 +48,9 @@ public class TaskController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AssigneeRepository assigneeRepository;
 
     @Autowired
     TaskRepository taskRepository;
@@ -100,23 +104,29 @@ public class TaskController {
                     dataTask.startDate(),
                     dataTask.endDate(),
                     data.task().taskType(),
-                    null, // Deixe a associação com TaskRequirement como null por enquanto
+                    null,
                     iterationData
             );
-            taskRepository.save(taskData); // Salve a Task primeiro
+            taskRepository.save(taskData);
 
             TaskRequirement taskRequirementData = new TaskRequirement(
                     dataTaskRequirement.details(),
                     dataTaskRequirement.complexity(),
                     dataTaskRequirement.sizeTask(),
                     dataTaskRequirement.effort(),
-                    taskData // Associe o TaskRequirement à Task salva
+                    taskData
             );
-            taskRequirementRepository.save(taskRequirementData); // Agora você pode salvar o TaskRequirement
+            taskRequirementRepository.save(taskRequirementData);
 
             taskData.setTaskRequirement(taskRequirementData);
             taskRepository.save(taskData);
 
+            for (AssigneeRequestDTO assignee : data.assignee()) {
+                User userData = userRepository.findById(assignee.user_id()).orElseThrow();
+                Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                assigneeRepository.save(assigneeData);
+                response.put("Assignee_id", assigneeData.getId());
+            }
             response.put("task_id", taskData.getId());
             response.put("taskRequirement_id", taskRequirementData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
