@@ -20,7 +20,7 @@ interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
 
-defineEmits(['sideViewContentChange'])
+const $emit = defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
@@ -308,6 +308,11 @@ function updateTeamMember(values: TeamMemberForm) {
   }
 }
 
+async function viewTeamMemberOnSide(memberId: string) {
+  $emit('sideViewContentChange', { component: TeamMemberDetails })
+  await $teamMemberStore.fetchTeamMember(memberId)
+}
+
 </script>
 
 <template>
@@ -373,7 +378,7 @@ function updateTeamMember(values: TeamMemberForm) {
         :title="member.user.name"
         @edit="editTeamMember(member.id)"
         @remove="removeTeamMember(member.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', { component: TeamMemberDetails, id: member.id }) }"
+        @side-view-content-change="() => viewTeamMemberOnSide(member.id || '')"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

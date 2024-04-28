@@ -21,7 +21,7 @@ interface Risk extends models.Risk { }
 interface Degree extends models.Degree { }
 interface RiskActionType extends models.RiskActionType { }
 
-defineEmits(['sideViewContentChange'])
+const $emit = defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $riskStore = useRiskStore()
@@ -241,6 +241,11 @@ function updateRisk(values: RiskForm) {
   }
 }
 
+async function viewRiskOnSide(riskId: string) {
+  $emit('sideViewContentChange', { component: RiskDetails })
+  await $riskStore.fetchRisk(riskId)
+}
+
 </script>
 
 <template>
@@ -302,7 +307,7 @@ function updateRisk(values: RiskForm) {
         :title="risk.title"
         @edit="editRisk(risk.id)"
         @remove="removeRisk(risk.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RiskDetails, id: risk.id }) }"
+        @side-view-content-change="() => viewRiskOnSide(risk.id || '')"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

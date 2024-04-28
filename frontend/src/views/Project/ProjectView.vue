@@ -37,7 +37,7 @@ onMounted(async () => {
       ...$projectStore.project,
     }
 
-    $emits('sideViewContentChange', { component: ProjectDetails, id: $route.params.projectId || '' })
+    $emits('sideViewContentChange', { component: ProjectDetails })
     
     await $roleStore.fetchRoles(String($route.params.projectId)).then(async () => {
       project.value.roles = $roleStore.roles

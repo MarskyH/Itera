@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { models } from "src/@types";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 
 interface FunctionalRequirement extends models.FunctionalRequirement {}
-
-const props = defineProps<{
-  id: string
-}>()
 
 const functionalRequirementDefault: FunctionalRequirement = {
   id: '',
@@ -22,16 +18,6 @@ const functionalRequirementDefault: FunctionalRequirement = {
 const $functionalRequirementStore = useFunctionalRequirementStore()
 
 const functionalRequirement = ref<FunctionalRequirement>({...functionalRequirementDefault})
-
-onMounted(async () => {
-  if ($functionalRequirementStore.functionalRequirement.id !== "") {
-    functionalRequirement.value = {...$functionalRequirementStore.functionalRequirement}
-  } else {
-    await $functionalRequirementStore.fetchFunctionalRequirement(props.id).then(async () => {
-      functionalRequirement.value = $functionalRequirementStore.functionalRequirement
-    })
-  }
-})
 
 $functionalRequirementStore.$subscribe(() => {
   functionalRequirement.value = {...$functionalRequirementStore.functionalRequirement}

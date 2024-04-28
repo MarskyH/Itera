@@ -16,7 +16,7 @@ import { useRoute } from "vue-router";
 
 interface Role extends models.Role { }
 
-defineEmits(['sideViewContentChange'])
+const $emit = defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $roleStore = useRoleStore()
@@ -158,6 +158,11 @@ function updateRole(values: RoleForm) {
   }
 }
 
+async function viewRoleOnSide(roleId: string) {
+  $emit('sideViewContentChange', { component: RoleDetails })
+  await $roleStore.fetchRole(roleId)
+}
+
 </script>
 
 <template>
@@ -219,7 +224,7 @@ function updateRole(values: RoleForm) {
         :title="role.function"
         @edit="editRole(role.id)"
         @remove="removeRole(role.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', { component: RoleDetails, id: role.id }) }"
+        @side-view-content-change="() => viewRoleOnSide(role.id || '')"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">

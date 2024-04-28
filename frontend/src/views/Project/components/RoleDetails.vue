@@ -5,10 +5,6 @@ import { useRoleStore } from "src/stores/RoleStore";
 
 interface Role extends models.Role {}
 
-const props = defineProps<{
-  id: string
-}>()
-
 const roleDefault: Role = {
   id: "",
   function: "",
@@ -19,16 +15,6 @@ const roleDefault: Role = {
 const $roleStore = useRoleStore()
 
 const role = ref<Role>({...roleDefault})
-
-onMounted(async () => {
-  if ($roleStore.role.id !== "") {
-    role.value = {...$roleStore.role}
-  } else {
-    await $roleStore.fetchRole(props.id).then(async () => {
-      role.value = $roleStore.role
-    })
-  }
-})
 
 $roleStore.$subscribe(() => {
   role.value = {...$roleStore.role}

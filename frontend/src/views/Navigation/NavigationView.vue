@@ -3,9 +3,9 @@
 import { RouterView } from 'vue-router'
 import PageHeader from 'src/views/Navigation/components/PageHeader.vue';
 import SideBarMenu from 'src/views/Navigation/components/SideBarMenu.vue';
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
-const sideViewContent = ref<any | undefined>(undefined)
+const sideViewContent = shallowRef<any | undefined>(undefined)
 
 </script>
 
