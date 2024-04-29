@@ -65,6 +65,7 @@ import { formatTime } from 'cleave-zen';
       <button
         class="ml-1"
         v-show="hoverInfo"
+        type="button"
         @click="() => infoTooltipVisible = true"
       >
         <FontAwesomeIcon
@@ -98,13 +99,12 @@ import { formatTime } from 'cleave-zen';
       :name="name"
       class="text-xs text-red-500 dark:text-red-400"
     />
-
     
     <div
       v-show="infoTooltipVisible"
     >
       <div
-        class="inset-0 fixed top-0 left-0 bg-black/75 flex items-center justify-center"
+        class="inset-0 fixed top-0 left-0 bg-black/75 flex items-center justify-center z-10"
       >
         <div 
           class="flex flex-col md:w-2/4 sm:w-10/12 max-w-2xl bg-white dark:bg-eerieBlackLight-900 rounded-md m-4 p-4 gap-4"
@@ -121,13 +121,14 @@ import { formatTime } from 'cleave-zen';
               </span>
             </div>
 
-            <div
+            <button
               @click="() => infoTooltipVisible = false"
+              type="button"
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-xmark"
               />
-            </div>
+            </button>
           </div>
         
           <span class="text-sm whitespace-break-spaces">
