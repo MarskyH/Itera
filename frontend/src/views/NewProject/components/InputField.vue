@@ -49,13 +49,9 @@ const props = defineProps({
   }
 })
 
-const { value } = useField(() => props.name, { initialValue: props.value });
+const { value } = useField(() => props.name, undefined, { initialValue: props.value });
 
 const infoTooltipVisible = ref<boolean>(false)
-
-onMounted(() => {
-  console.log(value.value)
-})
 
 </script>
 

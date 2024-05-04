@@ -45,8 +45,6 @@ const maskedInputs: any = {
   time: TimeInput
 }
 
-console.log(props)
-
 </script>
 
 <template>

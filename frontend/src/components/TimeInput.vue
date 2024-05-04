@@ -42,14 +42,7 @@ const props = defineProps({
   }
 })
 
-const { value } = useField(() => props.name, { initialValue: props.value });
-
-const maskConfig = { 
-  prefix: 'R$ ', 
-  precision: 2, 
-  thousands: '.', 
-  decimal: ',' 
-}
+const { value } = useField(() => props.name, undefined, { initialValue: props.value });
 
 </script>
 
