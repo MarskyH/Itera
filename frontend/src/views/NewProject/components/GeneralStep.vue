@@ -6,6 +6,7 @@ import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import { InputFieldProps, models } from 'src/@types';
 import { useProjectStore } from 'src/stores/ProjectStore';
+import MaskedInput from 'src/components/MaskedInput.vue';
 
 interface Project extends models.Project {}
 
@@ -64,9 +65,10 @@ const inputFields: InputFieldProps[] = [
   {
     name: "workHours",
     label: "Carga Horária Diária",
-    placeholder: "Digite a carga horária diária do projeto",
+    placeholder: "00:00",
     required: true,
-    validation: yup.number().required().min(1)
+    mask: "time",
+    validation: yup.string().required()
   },
   {
     name: "iterationTime",
@@ -90,15 +92,20 @@ const schema = yup.object(formValidations);
     class="flex flex-col gap-10 p-5 items-center"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <InputField
+      <div 
         v-for="inputField in inputFields"
         :key="inputField.name"
-        :label="inputField.label"
-        :name="inputField.name"
-        :placeholder="inputField.placeholder"
-        :type="inputField.type"
-        :required="inputField.required"
-      />
+      >
+        <MaskedInput
+          v-if="inputField.mask"
+          v-bind="inputField"
+        />
+
+        <InputField
+          v-else
+          v-bind="inputField"
+        />
+      </div>
     </div>
 
     <div class="flex gap-5">

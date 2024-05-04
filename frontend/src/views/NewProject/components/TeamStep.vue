@@ -10,6 +10,7 @@ import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import TeamMemberDetails from "src/views/Project/components/TeamMemberDetails.vue";
+import MaskedInput from "src/components/MaskedInput.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
@@ -148,21 +149,23 @@ onMounted(async () => {
             type: "select",
             required: true,
             options: userOptions.value,
-            validation: yup.string().required().min(3)
+            validation: yup.string().required()
           },
           {
             name: "hourlyRate",
             label: "Valor hora-homem",
             placeholder: "R$ 0,00",
             required: true,
+            mask: "currency",
             validation: yup.number().required().min(1)
           },
           {
             name: "dedicatedHours",
             label: "Horas dedicadas",
-            placeholder: "0",
+            placeholder: "00:00",
             required: true,
-            validation: yup.number().required().min(1)
+            mask: "time",
+            validation: yup.string().required()
           },
           {
             name: "role",
@@ -396,7 +399,7 @@ async function viewTeamMemberOnSide(memberId: string) {
           </span>
 
           <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ member.hourlyRate }}
+            R$ {{ String(member.hourlyRate).replace('.',',') }}
           </span>
         </div>
 
@@ -412,7 +415,10 @@ async function viewTeamMemberOnSide(memberId: string) {
       </ActionGridItem>
     </div>
 
-    <div class="flex gap-5 justify-center">
+    <div
+      v-show="$route.name === 'team'"
+      class="flex gap-5 justify-center"
+    >
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
         @click="$router.push({ name: 'roles' })"
@@ -453,16 +459,20 @@ async function viewTeamMemberOnSide(memberId: string) {
       <div
         class="flex flex-col w-full gap-5 px-8 py-4"
       >
-        <InputField
+        <div 
           v-for="inputField in inputFields"
           :key="inputField.name"
-          :label="inputField.label"
-          :name="inputField.name"
-          :placeholder="inputField.placeholder"
-          :type="inputField.type"
-          :required="inputField.required"
-          :options="inputField.options"
-        />
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
       </div>
     </ActionModal>
   </Form>

@@ -10,6 +10,7 @@ import { useProjectStore } from "src/stores/ProjectStore";
 
 import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
+import MaskedInput from "src/components/MaskedInput.vue";
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Project extends models.Project {}
@@ -81,7 +82,7 @@ onMounted(async () => {
       ...project.value,
       ...$projectStore.project,
     }
-
+    
     inputFields = [  
       {
         name: "name",
@@ -110,10 +111,11 @@ onMounted(async () => {
       {
         name: "workHours",
         label: "Carga Horária Diária",
-        placeholder: "Digite a carga horária diária do projeto",
+        placeholder: "00:00",
         required: true,
+        mask: "time",
         value: String(project.value.workHours),
-        validation: yup.number().required().min(1)
+        validation: yup.string().required()
       },
       {
         name: "iterationTime",
@@ -127,8 +129,9 @@ onMounted(async () => {
 
     inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
     schema =  yup.object(formValidations);
-
+    
     formOnLoad.value = false
+
   })
 })
 
@@ -244,7 +247,6 @@ $projectStore.$subscribe(() => {
 
   <Form
     v-if="!formOnLoad"    
-    ref="roleForm"
     :validation-schema="schema"
     @submit="(values: any) => updateProject(values)"
   >
@@ -254,15 +256,20 @@ $projectStore.$subscribe(() => {
       icon="folder"
     >
       <div class="flex flex-col w-full gap-5 px-8 py-4">
-        <InputField
+        <div 
           v-for="inputField in inputFields"
           :key="inputField.name"
-          :label="inputField.label"
-          :name="inputField.name"
-          :value="inputField.value"
-          :placeholder="inputField.placeholder"
-          :required="inputField.required"
-        />
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
       </div>
     </ActionModal>
   </Form>

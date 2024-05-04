@@ -69,7 +69,7 @@ $teamMemberStore.$subscribe(() => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold text-sm">Valor hora-homem</span>
 
-          <span>{{ teamMember.hourlyRate }}</span>
+          <span>R$ {{ String(teamMember.hourlyRate).replace('.',',') }}</span>
         </div>
       </div>
           

@@ -331,7 +331,10 @@ async function viewRiskOnSide(riskId: string) {
       </ActionGridItem>
     </div>
 
-    <div class="flex gap-5 justify-center">
+    <div 
+      v-show="$route.name === 'risks'"
+      class="flex gap-5 justify-center"
+    >
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
         @click="$router.push({ name: 'team' })"

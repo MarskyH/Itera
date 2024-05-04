@@ -1,54 +1,63 @@
 <script setup lang="ts">
-  import { Field, ErrorMessage } from 'vee-validate'
-import { ref } from 'vue';
-import { formatTime } from 'cleave-zen';
+import { ErrorMessage } from 'vee-validate'
+import { onMounted, ref } from 'vue';
 
-  defineEmits(['change'])
+import { useField } from 'vee-validate';
 
-  defineProps({
-    label: {
-      type: String,
-      default: 'label'
-    },
-    name: {
-      type: String,
-      default: 'name'
-    },
-    placeholder: {
-      type: String,
-      default: 'placeholder'
-    },
-    type: {
-      type: String,
-      default: 'input',
-      required: false
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    value: {
-      type: String,
-      default: ''
-    },
-    options: {
-      type: Array<{ value: string; name: string; selected: boolean }>,
-      default: [],
-      required: false
-    },
-    hoverInfo: {
-      type: String,
-      default: undefined,
-      required: false
-    }
-  })
-  
-  const infoTooltipVisible = ref<boolean>(false)
-  </script>
+defineEmits(['change'])
+
+const props = defineProps({
+  label: {
+    type: String,
+    default: 'label'
+  },
+  name: {
+    type: String,
+    default: 'name'
+  },
+  placeholder: {
+    type: String,
+    default: 'placeholder'
+  },
+  type: {
+    type: String,
+    default: 'input',
+    required: false
+  },
+  required: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  value: {
+    type: String,
+    default: '',
+    required: false
+  },
+  options: {
+    type: Array<{ value: string; name: string; selected: boolean }>,
+    default: [],
+    required: false
+  },
+  hoverInfo: {
+    type: String,
+    default: undefined,
+    required: false
+  }
+})
+
+const { value } = useField(() => props.name, { initialValue: props.value });
+
+const infoTooltipVisible = ref<boolean>(false)
+
+onMounted(() => {
+  console.log(value.value)
+})
+
+</script>
 
 <template>
   <div class="flex flex-col gap-1">
@@ -75,13 +84,24 @@ import { formatTime } from 'cleave-zen';
       
     </span>
 
-    <Field
-      :name="name"
+    <input
+      v-if="options.length === 0"
+      v-model="value"
       :validate-on-input="true"
-      :placeholder="placeholder"
       :as="type"
-      :value="value"
       :disabled="disabled"
+      :placeholder="placeholder"
+      class="text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+      @change="() => $emit('change')"
+    />
+
+    <select
+      v-else
+      v-model="value"
+      :validate-on-input="true"
+      :as="type"
+      :disabled="disabled"
+      :placeholder="placeholder"
       class="text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
       @change="() => $emit('change')"
     >
@@ -93,7 +113,7 @@ import { formatTime } from 'cleave-zen';
       >
         {{ option.name }}
       </option>
-    </Field>
+    </select>
 
     <ErrorMessage
       :name="name"
