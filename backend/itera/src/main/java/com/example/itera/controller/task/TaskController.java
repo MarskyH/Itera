@@ -9,7 +9,6 @@ import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
-import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.task.*;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementRequestDTO;
@@ -51,6 +50,9 @@ public class TaskController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AssigneeRepository assigneeRepository;
 
     @Autowired
     TaskRepository taskRepository;
@@ -127,6 +129,13 @@ public class TaskController {
             taskData.setTaskRequirement(taskRequirementData);
             taskRepository.save(taskData);
 
+            for (AssigneeRequestDTO assignee : data.assignees()) {
+                User userData = userRepository.findById(assignee.user_id()).orElseThrow();
+                Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                assigneeRepository.save(assigneeData);
+                response.put("Assignee_id", assigneeData.getId());
+            }
+
             response.put("task_id", taskData.getId());
             response.put("taskRequirement_id", taskRequirementData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -173,6 +182,13 @@ public class TaskController {
             taskData.setTaskImprovement(taskImprovementData);
             taskRepository.save(taskData);
 
+            for (AssigneeRequestDTO assignee : data.assignees()) {
+                User userData = userRepository.findById(assignee.user_id()).orElseThrow();
+                Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                assigneeRepository.save(assigneeData);
+                response.put("Assignee_id", assigneeData.getId());
+            }
+
             response.put("task_id", taskData.getId());
             response.put("taskImprovement_id", taskImprovementData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -218,6 +234,13 @@ public class TaskController {
 
             taskData.setTaskBug(taskBugData);
             taskRepository.save(taskData);
+
+            for (AssigneeRequestDTO assignee : data.assignees()) {
+                User userData = userRepository.findById(assignee.user_id()).orElseThrow();
+                Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                assigneeRepository.save(assigneeData);
+                response.put("Assignee_id", assigneeData.getId());
+            }
 
             response.put("task_id", taskData.getId());
             response.put("taskBug_id", taskBugData.getId());

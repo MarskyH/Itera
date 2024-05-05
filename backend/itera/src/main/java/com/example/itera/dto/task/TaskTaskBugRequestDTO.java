@@ -1,9 +1,12 @@
 package com.example.itera.dto.task;
 
 
+import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
 
+import java.util.List;
 
-public record TaskTaskBugRequestDTO(TaskRequestDTO task, TaskBugRequestDTO taskBug) {
+
+public record TaskTaskBugRequestDTO(TaskRequestDTO task, TaskBugRequestDTO taskBug, List<AssigneeRequestDTO> assignees) {
 }
 

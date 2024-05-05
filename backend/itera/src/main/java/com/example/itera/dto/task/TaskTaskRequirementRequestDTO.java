@@ -7,6 +7,6 @@ import com.example.itera.dto.taskRequirement.TaskRequirementRequestDTO;
 import java.sql.Timestamp;
 import java.util.List;
 
-public record TaskTaskRequirementRequestDTO(TaskRequestDTO task, TaskRequirementRequestDTO taskRequirement, List<AssigneeRequestDTO> assignee) {
+public record TaskTaskRequirementRequestDTO(TaskRequestDTO task, TaskRequirementRequestDTO taskRequirement, List<AssigneeRequestDTO> assignees) {
 }
 
