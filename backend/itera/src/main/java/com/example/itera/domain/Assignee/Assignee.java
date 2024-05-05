@@ -28,7 +28,7 @@ public class Assignee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @Column(name = "task_step")
-    private TaskStep taskStep;
+    private String taskStep;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -44,7 +44,7 @@ public class Assignee {
 
 
 
-    public Assignee(TaskStep taskStep, User user, Task task){
+    public Assignee(String taskStep, User user, Task task){
         this.taskStep = taskStep;
         this.user = user;
         this.task = task;
