@@ -130,10 +130,30 @@ CREATE TABLE task (
     end_date TIMESTAMP,
     task_type TEXT,
     task_requirement_id TEXT,
+    task_improvement_id TEXT,
+    task_bug_id TEXT,
     iteration_id TEXT
 );
 
 CREATE TABLE task_requirement (
+    id TEXT PRIMARY KEY,
+    details VARCHAR(255),
+    complexity VARCHAR(255),
+    effort VARCHAR(255),
+    size_task VARCHAR(255),
+    task_id TEXT
+);
+
+CREATE TABLE task_improvement (
+    id TEXT PRIMARY KEY,
+    details VARCHAR(255),
+    complexity VARCHAR(255),
+    effort VARCHAR(255),
+    size_task VARCHAR(255),
+    task_id TEXT
+);
+
+CREATE TABLE task_bug (
     id TEXT PRIMARY KEY,
     details VARCHAR(255),
     complexity VARCHAR(255),
@@ -204,6 +224,18 @@ ADD CONSTRAINT fk_task_requirement_task
 FOREIGN KEY (task_id) REFERENCES task(id)
 ON DELETE CASCADE;
 
+-- Adicionando chave estrangeira para task_improvement
+ALTER TABLE task_improvement
+ADD CONSTRAINT fk_task_improvement_task
+FOREIGN KEY (task_id) REFERENCES task(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task_bug
+ALTER TABLE task_bug
+ADD CONSTRAINT fk_task_bug_task
+FOREIGN KEY (task_id) REFERENCES task(id)
+ON DELETE CASCADE;
+
 -- Adicionando chave estrangeira para task
 ALTER TABLE task
 ADD CONSTRAINT fk_task_iteration
@@ -214,6 +246,18 @@ ON DELETE CASCADE;
 ALTER TABLE task
 ADD CONSTRAINT fk_task_task_requirement
 FOREIGN KEY (task_requirement_id) REFERENCES task_requirement(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_task_improvement
+FOREIGN KEY (task_improvement_id) REFERENCES task_improvement(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_task_bug
+FOREIGN KEY (task_bug_id) REFERENCES task_bug(id)
 ON DELETE CASCADE;
 
 -- Adicionando chave estrangeira para assignee

@@ -1,8 +1,9 @@
 package com.example.itera.domain.task;
 
 import com.example.itera.domain.iteration.Iteration;
+import com.example.itera.domain.taskBug.TaskBug;
+import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
-import com.example.itera.domain.taskType.TaskType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,13 +27,28 @@ public class Task {
     private String priority;
     private Timestamp startDate;
     private Timestamp endDate;
+
     @Column(name = "task_type")
     private String taskType;
+
     @OneToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "task_requirement_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private TaskRequirement taskRequirement;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_improvement_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private TaskImprovement taskImprovement;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_bug_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private TaskBug taskBug;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -49,5 +65,23 @@ public class Task {
         this.iteration = iterationData;
     }
 
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
+        this.title = title;
+        this.priority = priority;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.taskType = taskType;
+        this.taskImprovement = taskImprovementData;
+        this.iteration = iterationData;
+    }
 
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, String taskType, TaskBug taskBugData, Iteration iterationData) {
+        this.title = title;
+        this.priority = priority;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.taskType = taskType;
+        this.taskBug = taskBugData;
+        this.iteration = iterationData;
+    }
 }
