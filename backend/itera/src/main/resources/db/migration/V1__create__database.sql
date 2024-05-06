@@ -15,7 +15,7 @@ CREATE TABLE public.project (
     name VARCHAR(50) UNIQUE NOT NULL, -- Unique project name
     deadline INTEGER NOT NULL, -- Project deadline in days
     iteration_time INTEGER NOT NULL, -- Project iteration time in days
-    work_hours INTEGER NOT NULL, -- Project work hours per day
+    work_hours TEXT NOT NULL, -- Project work hours per day
     client_name VARCHAR(50) NOT NULL, -- Client name
     created_by VARCHAR(100) NOT NULL, -- Created by (responsible user)
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation date and time
@@ -40,7 +40,7 @@ FOR EACH ROW EXECUTE FUNCTION update_modification_date();
 CREATE TABLE public.team_member (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único da equipe
     hourly_rate DOUBLE PRECISION NOT NULL, -- Taxa horária do usuário
-    dedicated_hours INTEGER NOT NULL, -- Horas dedicadas pelo usuário
+    dedicated_hours TEXT NOT NULL, -- Horas dedicadas pelo usuário
     user_id TEXT,
     role_id TEXT,
     project_id TEXT -- Identificador do projeto associado
