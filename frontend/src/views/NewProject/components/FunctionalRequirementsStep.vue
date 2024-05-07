@@ -20,7 +20,7 @@ interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
 interface Priority extends models.Priority {}
 
-defineEmits(['sideViewContentChange'])
+const $emit = defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $functionalRequirementStore = useFunctionalRequirementStore()
@@ -234,6 +234,11 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
   }
 }
 
+async function viewFunctionalRequirementOnSide(requirementId: string) {
+  $emit('sideViewContentChange', { component: FunctionalRequirementDetails })
+  await $functionalRequirementStore.fetchFunctionalRequirement(requirementId)
+}
+
 </script>
 
 <template>
@@ -293,7 +298,7 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
         :title="requirement.title"
         @edit="editFunctionalRequirement(requirement.id)"
         @remove="removeFunctionalRequirement(requirement.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', { component: FunctionalRequirementDetails, id: requirement.id }) }"
+        @side-view-content-change="() => viewFunctionalRequirementOnSide(requirement.id || '')"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
@@ -327,7 +332,10 @@ function updateFunctionalRequirement(values: FunctionalRequirementForm) {
       </ActionGridItem>
     </div>
 
-    <div class="flex gap-5 justify-center">
+    <div 
+      v-show="$route.name === 'functional-requirements'"
+      class="flex gap-5 justify-center"
+    >
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
         @click="$router.push({ name: 'requirements' })"

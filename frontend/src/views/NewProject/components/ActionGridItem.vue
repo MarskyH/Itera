@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 
 defineProps<{
   icon: string
   title: string
 }>()
 
-defineEmits(['edit', 'remove', 'sideViewContentChange'])
+const $emit = defineEmits(['edit', 'remove', 'sideViewContentChange'])
+
+const onDelete = ref<boolean>(false)
+
+function deleteAction() {
+  if (onDelete.value) {
+    $emit('remove')
+  } else {
+    onDelete.value = true
+  }
+}
 
 </script>
 
@@ -41,14 +53,17 @@ defineEmits(['edit', 'remove', 'sideViewContentChange'])
       </button>
 
       <button
-        class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25 text-sm gap-2 text"
-        @click="()=> $emit('remove')"
+        class="flex items-center rounded px-3 py-2 text-sm gap-2"
+        :class="[onDelete ? 'bg-lightRed-900 text-white' : 'bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25']"
+        @click="()=> deleteAction()"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-trash"
         />
 
-        <span class="font-semibold">Remover</span>
+        <span class="font-semibold">
+          {{ onDelete ? 'Confirmar' : 'Remover' }}
+        </span>
       </button>
     </div>
   </div>

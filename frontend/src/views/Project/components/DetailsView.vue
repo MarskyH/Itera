@@ -3,7 +3,6 @@
 defineProps<{
   content?: {
     component: any
-    id: string
   }
 }>()
  
@@ -12,6 +11,5 @@ defineProps<{
 <template>
   <component
     :is="content?.component"
-    :id="content?.id"
   />
 </template>

@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 
 interface TeamMember extends models.TeamMember {}
-
-const props = defineProps<{
-  id: string
-}>()
 
 const teamMemberDefault: TeamMember = {
   id: '',
@@ -32,16 +28,6 @@ const teamMemberDefault: TeamMember = {
 const $teamMemberStore = useTeamMemberStore()
 
 const teamMember = ref<TeamMember>({...teamMemberDefault})
-
-onMounted(async () => {
-  if ($teamMemberStore.teamMember.id !== "") {
-    teamMember.value = {...$teamMemberStore.teamMember}
-  } else {
-    await $teamMemberStore.fetchTeamMember(props.id).then(async () => {
-      teamMember.value = $teamMemberStore.teamMember
-    })
-  }
-})
 
 $teamMemberStore.$subscribe(() => {
   teamMember.value = {...$teamMemberStore.teamMember}
@@ -83,7 +69,7 @@ $teamMemberStore.$subscribe(() => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold text-sm">Valor hora-homem</span>
 
-          <span>{{ teamMember.hourlyRate }}</span>
+          <span>R$ {{ String(teamMember.hourlyRate).replace('.',',') }}</span>
         </div>
       </div>
           

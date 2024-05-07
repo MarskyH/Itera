@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { models } from "src/@types";
 import { useRiskStore } from "src/stores/RiskStore";
 
 interface Risk extends models.Risk {}
-
-const props = defineProps<{
-  id: string
-}>()
 
 const riskDefault: Risk = {
   id: '',
@@ -23,16 +19,6 @@ const riskDefault: Risk = {
 const $riskStore = useRiskStore()
 
 const risk = ref<Risk>({...riskDefault})
-
-onMounted(async () => {
-  if ($riskStore.risk.id !== "") {
-    risk.value = {...$riskStore.risk}
-  } else {
-    await $riskStore.fetchRisk(props.id).then(async () => {
-      risk.value = $riskStore.risk
-    })
-  }
-})
 
 $riskStore.$subscribe(() => {
   risk.value = {...$riskStore.risk}

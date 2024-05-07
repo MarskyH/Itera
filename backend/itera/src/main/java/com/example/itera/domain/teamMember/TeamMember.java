@@ -29,7 +29,7 @@ public class TeamMember {
     private Double hourlyRate;
 
     @Column(name = "dedicated_hours")
-    private Integer dedicatedHours;
+    private String dedicatedHours;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -49,7 +49,7 @@ public class TeamMember {
     @JsonIgnore
     private Project project;
 
-    public TeamMember(Double hourlyRate, Integer dedicatedHours, User userData, Role roleData, Project projectData) {
+    public TeamMember(Double hourlyRate, String dedicatedHours, User userData, Role roleData, Project projectData) {
         this.hourlyRate = hourlyRate;
         this.dedicatedHours = dedicatedHours;
         this.user = userData;

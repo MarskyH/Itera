@@ -10,6 +10,7 @@ import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionGridItem from "src/views/NewProject/components/ActionGridItem.vue";
 import TeamMemberDetails from "src/views/Project/components/TeamMemberDetails.vue";
+import MaskedInput from "src/components/MaskedInput.vue";
 import { InputFieldProps, TeamMemberForm, models } from "src/@types";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
@@ -20,7 +21,7 @@ interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
 interface UserModel extends models.UserModel{}
 
-defineEmits(['sideViewContentChange'])
+const $emit = defineEmits(['sideViewContentChange'])
 
 const $route = useRoute()
 const $teamMemberStore = useTeamMemberStore()
@@ -148,21 +149,23 @@ onMounted(async () => {
             type: "select",
             required: true,
             options: userOptions.value,
-            validation: yup.string().required().min(3)
+            validation: yup.string().required()
           },
           {
             name: "hourlyRate",
             label: "Valor hora-homem",
             placeholder: "R$ 0,00",
             required: true,
+            mask: "currency",
             validation: yup.number().required().min(1)
           },
           {
             name: "dedicatedHours",
             label: "Horas dedicadas",
-            placeholder: "0",
+            placeholder: "00:00",
             required: true,
-            validation: yup.number().required().min(1)
+            mask: "time",
+            validation: yup.string().required()
           },
           {
             name: "role",
@@ -308,6 +311,11 @@ function updateTeamMember(values: TeamMemberForm) {
   }
 }
 
+async function viewTeamMemberOnSide(memberId: string) {
+  $emit('sideViewContentChange', { component: TeamMemberDetails })
+  await $teamMemberStore.fetchTeamMember(memberId)
+}
+
 </script>
 
 <template>
@@ -373,7 +381,7 @@ function updateTeamMember(values: TeamMemberForm) {
         :title="member.user.name"
         @edit="editTeamMember(member.id)"
         @remove="removeTeamMember(member.id)"
-        @side-view-content-change="() => { $emit('sideViewContentChange', { component: TeamMemberDetails, id: member.id }) }"
+        @side-view-content-change="() => viewTeamMemberOnSide(member.id || '')"
       >
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
@@ -391,7 +399,7 @@ function updateTeamMember(values: TeamMemberForm) {
           </span>
 
           <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ member.hourlyRate }}
+            R$ {{ String(member.hourlyRate).replace('.',',') }}
           </span>
         </div>
 
@@ -407,7 +415,10 @@ function updateTeamMember(values: TeamMemberForm) {
       </ActionGridItem>
     </div>
 
-    <div class="flex gap-5 justify-center">
+    <div
+      v-show="$route.name === 'team'"
+      class="flex gap-5 justify-center"
+    >
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
         @click="$router.push({ name: 'roles' })"
@@ -448,16 +459,20 @@ function updateTeamMember(values: TeamMemberForm) {
       <div
         class="flex flex-col w-full gap-5 px-8 py-4"
       >
-        <InputField
+        <div 
           v-for="inputField in inputFields"
           :key="inputField.name"
-          :label="inputField.label"
-          :name="inputField.name"
-          :placeholder="inputField.placeholder"
-          :type="inputField.type"
-          :required="inputField.required"
-          :options="inputField.options"
-        />
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
       </div>
     </ActionModal>
   </Form>

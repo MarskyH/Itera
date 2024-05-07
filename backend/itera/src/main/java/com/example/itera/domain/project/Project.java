@@ -19,7 +19,7 @@ public class Project {
     private String name;
     private Integer deadline;
     private Integer iterationTime;
-    private Integer workHours;
+    private String workHours;
     private String clientName;
     private String createdBy;
     private Timestamp creationDate;

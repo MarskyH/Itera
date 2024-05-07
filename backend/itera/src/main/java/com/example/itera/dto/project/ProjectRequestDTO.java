@@ -8,7 +8,7 @@ import com.example.itera.domain. risk.Risk;
 
 import java.util.List;
 
-public record ProjectRequestDTO(String name, Integer deadline, Integer iterationTime, Integer workHours, String clientName) {
+public record ProjectRequestDTO(String name, Integer deadline, Integer iterationTime, String workHours, String clientName) {
 }
 
 
