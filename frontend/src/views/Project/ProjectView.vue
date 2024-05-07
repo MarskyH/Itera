@@ -6,6 +6,7 @@ import { useProjectStore } from "src/stores/ProjectStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import SectionsBreadcrumbs from "./components/SectionsBreadcrumbs.vue";
 import ProjectDetails from "./components/ProjectDetails.vue";
+import ProjectTools from "./components/ProjectTools.vue";
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Role extends models.Role {}
@@ -73,6 +74,8 @@ $projectStore.$subscribe(() => {
         Ver detalhes
       </button>
     </div>
+
+    <ProjectTools />
 
     <SectionsBreadcrumbs />
 

@@ -132,6 +132,16 @@ export default [
                   }
                 ]
               },
+              {
+                path: ':projectId/tarefas',
+                name: 'project-tasks',
+                component: async () => await import('src/views/ProjectTasks/ProjectTasks.vue'),
+                meta: {
+                  title: 'Projeto',
+                  icon: 'folder-open',
+                  sideViewComponent: RecentProjects
+                },
+              }
             ]
           },
         ]
