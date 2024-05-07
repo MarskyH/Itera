@@ -10,13 +10,19 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col h-fit gap-2 bg-whiteSmoke-900/60 dark:bg-jet-900/60 rounded p-5">
-    {{ title }}
+  <div class="flex flex-col h-fit gap-3 bg-whiteSmoke-900/50 dark:bg-jet-900/50 rounded p-3">
+    <div class="flex gap-2 items-center text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold">
+      <FontAwesomeIcon
+        icon="fa-solid fa-bars-staggered"
+      />
+
+      {{ title }}
+    </div>
 
     <ActionGridItem
       v-for="task in tasks"
       :key="task.id"
-      icon="bookmark"
+      :icon="task.icon"
       :title="task.title"
       @edit="() => {}"
       @remove="() => {}"

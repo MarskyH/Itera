@@ -2,14 +2,14 @@
 import TaskList from './components/TaskList.vue';
 
 const tasks1 = [
-  { id: '1', title: 'RF001 - Login', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'RF002 - Logout', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '1', title: 'RF001 - Login', icon: 'bookmark', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '2', title: 'RF002 - Logout', icon: 'bookmark', priority: 'Alta', responsible: 'Indefinido' },
 ]
 
 const tasks2 = [
-  { id: '1', title: 'Planejamento', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'Revisão', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'Retrospectiva', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '2', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
 ]
 
 </script>
