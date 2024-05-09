@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Form } from 'vee-validate'
 import * as yup from 'yup'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
@@ -10,6 +10,7 @@ import { useProjectStore } from "src/stores/ProjectStore";
 
 import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
+import MaskedInput from "src/components/MaskedInput.vue";
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Project extends models.Project {}
@@ -28,10 +29,12 @@ const projectDefault = {
 const $projectStore = useProjectStore()
 
 const $route = useRoute()
+const $router = useRouter()
 
 const project = ref<ProjectOnView>({...projectDefault})
 
 const onEdit = ref<boolean>(false)
+const onDelete = ref<boolean>(false)
 const formOnLoad = ref<boolean>(true)
 
 yup.setLocale(yupErrorMessages);
@@ -46,7 +49,6 @@ async function updateProject(projectOnCreateData: Project) {
 
   await $projectStore.updateProject(projectId ,projectOnCreateData)
     .then((response: any) => {
-      console.log(response)
       if(response === 200) {
         $projectStore.$state.project = {...projectOnCreateData, id: projectId}
         onEdit.value = false
@@ -55,13 +57,32 @@ async function updateProject(projectOnCreateData: Project) {
   )
 }
 
+async function deleteProject() {
+  if (onDelete.value) {
+    const projectId: string = String($route.params.projectId) || ''
+    
+    await $projectStore.deleteProject(projectId)
+      .then((response) => {
+         console.log(response)
+
+        if(response === 204 || response === 200) {
+          $router.push({ name: 'my-projects' })
+        }
+      })
+
+  } else {
+    onDelete.value = true
+  }
+
+}
+
 onMounted(async () => {
   await $projectStore.fetchProject(String($route.params.projectId)).then(async () => {
     project.value = { 
       ...project.value,
       ...$projectStore.project,
     }
-
+    
     inputFields = [  
       {
         name: "name",
@@ -90,10 +111,11 @@ onMounted(async () => {
       {
         name: "workHours",
         label: "Carga Horária Diária",
-        placeholder: "Digite a carga horária diária do projeto",
+        placeholder: "00:00",
         required: true,
+        mask: "time",
         value: String(project.value.workHours),
-        validation: yup.number().required().min(1)
+        validation: yup.string().required()
       },
       {
         name: "iterationTime",
@@ -107,8 +129,9 @@ onMounted(async () => {
 
     inputFields.forEach(inputField => formValidations[inputField.name] = inputField.validation)
     schema =  yup.object(formValidations);
-
+    
     formOnLoad.value = false
+
   })
 })
 
@@ -209,21 +232,21 @@ $projectStore.$subscribe(() => {
       </button>
 
       <button
-        class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25 text-sm gap-2 text"
-        @click="()=> $emit('remove')"
+        class="flex items-center rounded px-3 py-2 text-sm gap-2 text"
+        :class="[onDelete ? 'bg-lightRed-900 text-white' : 'bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25']"
+        @click="()=> deleteProject()"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-trash"
         />
 
-        <span class="font-semibold">Excluir projeto</span>
+        <span class="font-semibold">{{ onDelete ? 'Confirmar' : 'Excluir projeto' }}</span>
       </button>
     </div>
   </div>
 
   <Form
     v-if="!formOnLoad"    
-    ref="roleForm"
     :validation-schema="schema"
     @submit="(values: any) => updateProject(values)"
   >
@@ -233,15 +256,20 @@ $projectStore.$subscribe(() => {
       icon="folder"
     >
       <div class="flex flex-col w-full gap-5 px-8 py-4">
-        <InputField
+        <div 
           v-for="inputField in inputFields"
           :key="inputField.name"
-          :label="inputField.label"
-          :name="inputField.name"
-          :value="inputField.value"
-          :placeholder="inputField.placeholder"
-          :required="inputField.required"
-        />
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
       </div>
     </ActionModal>
   </Form>

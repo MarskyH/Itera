@@ -6,6 +6,7 @@ import { useProjectStore } from "src/stores/ProjectStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import SectionsBreadcrumbs from "./components/SectionsBreadcrumbs.vue";
 import ProjectDetails from "./components/ProjectDetails.vue";
+import ProjectTools from "./components/ProjectTools.vue";
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Role extends models.Role {}
@@ -37,7 +38,7 @@ onMounted(async () => {
       ...$projectStore.project,
     }
 
-    $emits('sideViewContentChange', { component: ProjectDetails, id: $route.params.projectId || '' })
+    $emits('sideViewContentChange', { component: ProjectDetails })
     
     await $roleStore.fetchRoles(String($route.params.projectId)).then(async () => {
       project.value.roles = $roleStore.roles
@@ -45,17 +46,36 @@ onMounted(async () => {
   })
 })
 
+$projectStore.$subscribe(() => {
+  project.value = {...$projectStore.project, roles: []}
+})
+
 </script>
 
 <template>
   <div class="flex flex-col gap-5">
-    <div class="flex items-center p-2 gap-5">
-      <FontAwesomeIcon
-        icon="fa-solid fa-folder"
-      />
+    <div class="flex items-center justify-between p-2 gap-5">
+      <div class="flex items-center gap-5">
+        <FontAwesomeIcon
+          icon="fa-solid fa-folder"
+        />
 
-      <span>{{ project.name }}</span>
+        <span>{{ project.name }}</span>
+      </div>
+
+      <button
+        class="flex items-center gap-2 text-sm text-lavenderIndigo-900 dark:text-tropicalIndigo-900"  
+        @click="() => $emits('sideViewContentChange', { component: ProjectDetails, id: $route.params.projectId || '' })"
+      >
+        <FontAwesomeIcon
+          icon="fa-solid fa-circle-info"
+        />
+
+        Ver detalhes
+      </button>
     </div>
+
+    <ProjectTools />
 
     <SectionsBreadcrumbs />
 

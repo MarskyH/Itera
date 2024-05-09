@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { vMaska } from 'maska'
 import { createPinia } from 'pinia'
 import money from 'v-money3'
+import VueTheMask from 'vue-the-mask'
 import '@oruga-ui/oruga-next/dist/oruga.css'
 import '@oruga-ui/oruga-next/dist/oruga-full.css'
 import './style.css'
@@ -24,4 +24,4 @@ const pinia = createPinia()
 
 const app = createApp(App)
 
-app.use(router).use(money).use(pinia).use(VueScrollTo).directive('maska', vMaska).component('FontAwesomeIcon', FontAwesomeIcon).mount('#app')
+app.use(router).use(money).use(VueTheMask).use(pinia).use(VueScrollTo).component('FontAwesomeIcon', FontAwesomeIcon).mount('#app')

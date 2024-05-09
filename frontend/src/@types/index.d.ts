@@ -254,6 +254,7 @@ export interface InputFieldProps {
   value?: string
   options?: { value: string; name: string; selected: boolean }[]
   hoverInfo?: string
+  mask?: string
   validation: any
   onChange?(): any
 }
