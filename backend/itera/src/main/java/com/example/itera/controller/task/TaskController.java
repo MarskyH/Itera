@@ -266,6 +266,113 @@ public class TaskController {
     }
 
 
+    @PutMapping("type/requirement/{id}/check")
+    public ResponseEntity<?> updateTaskRequirementCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            TaskRequirement task = taskRequirementRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+            // Atualizar apenas os campos fornecidos pelo utilizador
+            if (data.checkProject() != null) {
+                task.setCheckProject(data.checkProject());
+            }
+
+            if (data.checkRequirement() != null) {
+                task.setCheckRequirement(data.checkRequirement());
+            }
+
+            if (data.checkFront() != null) {
+                task.setCheckFront(data.checkFront());
+            }
+
+            if (data.checkBack() != null) {
+                task.setCheckBack(data.checkBack());
+            }
+
+            if (data.checkTest() != null) {
+                task.setCheckTest(data.checkTest());
+            }
+
+            taskRequirementRepository.save(task);
+            response.put("data_id:", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("type/improvement/{id}/check")
+    public ResponseEntity<?> updateTaskImprovementCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            TaskImprovement task = taskImprovementRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+            // Atualizar apenas os campos fornecidos pelo utilizador
+            if (data.checkProject() != null) {
+                task.setCheckProject(data.checkProject());
+            }
+
+            if (data.checkRequirement() != null) {
+                task.setCheckRequirement(data.checkRequirement());
+            }
+
+            if (data.checkFront() != null) {
+                task.setCheckFront(data.checkFront());
+            }
+
+            if (data.checkBack() != null) {
+                task.setCheckBack(data.checkBack());
+            }
+
+            if (data.checkTest() != null) {
+                task.setCheckTest(data.checkTest());
+            }
+
+            taskImprovementRepository.save(task);
+            response.put("data_id:", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("type/bug/{id}/check")
+    public ResponseEntity<?> updateTaskBugCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            TaskBug task = taskBugRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+            if (data.checkFront() != null) {
+                task.setCheckFront(data.checkFront());
+            }
+
+            if (data.checkBack() != null) {
+                task.setCheckBack(data.checkBack());
+            }
+
+            if (data.checkTest() != null) {
+                task.setCheckTest(data.checkTest());
+            }
+
+            taskBugRepository.save(task);
+            response.put("data_id:", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTask(@PathVariable String id, @RequestBody TaskRequestDTO data) {
         Map<String, String> response = new HashMap<>();
@@ -304,7 +411,46 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+/*
+    @PutMapping("/type/requirement/{id}")
+    public ResponseEntity<?> updateTaskRequirement(@PathVariable String id, @RequestBody TaskTaskRequirementRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
+            // Atualizar apenas os campos fornecidos pelo utilizador
+            if (data.title() != null) {
+                task.setTitle(data.title());
+            }
+            if (data.priority() != null) {
+                task.setPriority(data.priority());
+            }
+            if (data.startDate() != null) {
+                task.setStartDate(data.startDate());
+            }
+            if (data.endDate() != null) {
+                task.setEndDate(data.endDate());
+            }
+            if (data.taskrequirement_id() != null) {
+                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskrequirement_id()).orElseThrow();
+                task.setTaskRequirement(taskRequirement);
+            }
+            if (data.iteration_id() != null) {
+                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
+                task.setIteration(iteration);
+            }
+            taskRepository.save(task);
+            response.put("data_id:", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
