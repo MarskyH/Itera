@@ -147,6 +147,11 @@ CREATE TABLE task_requirement (
     complexity VARCHAR(255),
     effort VARCHAR(255),
     size_task VARCHAR(255),
+    check_project BOOLEAN DEFAULT false,
+    check_requirement BOOLEAN DEFAULT false,
+    check_front BOOLEAN DEFAULT false,
+    check_back BOOLEAN DEFAULT false,
+    check_test BOOLEAN DEFAULT false,
     task_id TEXT
 );
 
@@ -156,6 +161,11 @@ CREATE TABLE task_improvement (
     complexity VARCHAR(255),
     effort VARCHAR(255),
     size_task VARCHAR(255),
+    check_project BOOLEAN DEFAULT false,
+    check_requirement BOOLEAN DEFAULT false,
+    check_front BOOLEAN DEFAULT false,
+    check_back BOOLEAN DEFAULT false,
+    check_test BOOLEAN DEFAULT false,
     task_id TEXT
 );
 
@@ -165,6 +175,9 @@ CREATE TABLE task_bug (
     complexity VARCHAR(255),
     effort VARCHAR(255),
     size_task VARCHAR(255),
+    check_front BOOLEAN DEFAULT false,
+    check_back BOOLEAN DEFAULT false,
+    check_test BOOLEAN DEFAULT false,
     task_id TEXT
 );
 

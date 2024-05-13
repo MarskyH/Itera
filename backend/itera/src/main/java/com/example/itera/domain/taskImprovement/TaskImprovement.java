@@ -21,6 +21,11 @@ public class TaskImprovement {
     private String complexity;
     private String effort;
     private String sizeTask;
+    private Boolean checkProject;
+    private Boolean checkRequirement;
+    private Boolean checkFront;
+    private Boolean checkBack;
+    private Boolean checkTest;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")

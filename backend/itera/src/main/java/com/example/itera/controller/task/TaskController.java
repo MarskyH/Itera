@@ -34,11 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Responsável por fornecer endpoints para manipulação de requisitos
+ * Responsável por fornecer endpoints para manipulação de tarefas
  *
  * @author Marcus Loureiro
  * @version 1.0
- * @since 21/04/2024
+ * @since 05/05/2024
  */
 
 @RestController
