@@ -1,12 +1,15 @@
 package com.example.itera.controller.project;
 
+import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
 import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
 import com.example.itera.domain.risk.Risk;
 import com.example.itera.domain.role.Role;
+import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
+import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
 import com.example.itera.dto.role.RoleRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
@@ -391,6 +394,30 @@ public class ProjectController {
         return projects.stream().toList();
 
     }
+    /**
+     * Endpoint responsável por retornar o backlog do projeto pelo seu id.
+     *
+     * @param id Identificador único do projeto.
+     * @return List<BacklogResponseDTO>
+     * @author Marcus Loureiro
+     * @see  BacklogResponseDTO
+     * @since 08/04/2024
+     */
+    @GetMapping("/{id}/backlog")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<BacklogResponseDTO> getProjectBacklog(@PathVariable String id){
+        List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByProject(id);
+        List<BacklogResponseDTO>  listaBacklog = null;
+        for (RequirementResponseDTO requisito : listaRequisitos) {
+            int seq = 0;
+            listaBacklog.add(new BacklogResponseDTO(seq, requisito.id(), requisito.title(), requisito.priority(), new Assignee(), "Projeto", 0));
+            seq++;
+        }
+        return listaBacklog.stream().toList();
+
+    }
+
+
 
     /**
      * Endpoint responsável por deletar projetos e consequentemente todos os dados associados ao seu id.
