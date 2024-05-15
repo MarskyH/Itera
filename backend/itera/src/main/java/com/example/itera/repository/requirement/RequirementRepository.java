@@ -14,6 +14,12 @@ public interface RequirementRepository extends JpaRepository<Requirement, String
     @Query(value = "SELECT r FROM Requirement r WHERE r.project.id = :id")
     List<RequirementResponseDTO> findByProject(@Param("id") String id);
 
+    @Query(value = "SELECT r FROM Requirement r WHERE r.title = :name")
+    List<RequirementResponseDTO> findByName(@Param("name") String name);
+
+    @Query(value = "SELECT r FROM Requirement r WHERE r.title LIKE %:name%")
+    List<RequirementResponseDTO> findByNameContaining(@Param("name") String name);
+
 
 }
 

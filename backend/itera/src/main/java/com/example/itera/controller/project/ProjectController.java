@@ -7,6 +7,7 @@ import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalReq
 import com.example.itera.domain.risk.Risk;
 import com.example.itera.domain.role.Role;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
+import com.example.itera.dto.iteration.IterationResponseDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
 import com.example.itera.dto.project.BacklogResponseDTO;
@@ -401,7 +402,7 @@ public class ProjectController {
      * @return List<BacklogResponseDTO>
      * @author Marcus Loureiro
      * @see  BacklogResponseDTO
-     * @since 08/04/2024
+     * @since 15/05/2024
      */
     @GetMapping("/{id}/backlog")
     @ResponseStatus(code = HttpStatus.OK)
@@ -415,6 +416,43 @@ public class ProjectController {
         }
         return listaBacklog.stream().toList();
 
+    }
+
+    /**
+     * Endpoint responsável por retornar lista de Iterações ativas do projeto pelo seu id se o status for passado.
+     *
+     * @param id Identificador único do projeto.
+     * @return List<IterationResponseDTO>
+     * @author Marcus Loureiro
+     * @see  IterationResponseDTO
+     * @since 15/05/2024
+     */
+    @GetMapping("/{id}/iteration")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<IterationResponseDTO> getProjectIterationStatus(
+            @PathVariable String id,
+            @RequestParam(name = "status", required = false) Boolean status) {
+
+        List<IterationResponseDTO> listaIteracoes;
+
+        if (status != null) {
+            listaIteracoes = iterationRepository.findByProjectAndStatus(status, id);
+        } else {
+            listaIteracoes = iterationRepository.findByProject(id);
+        }
+
+        return listaIteracoes.stream().toList();
+    }
+
+    @GetMapping("/{id}/search/requirement")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<IterationResponseDTO> getProjectRequirementName(
+            @PathVariable String id,
+            @RequestParam(name = "requirementName", required = true) String requirementName) {
+
+        List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByNameContaining(requirementName);
+
+        return listaRequisitos.stream().toList();
     }
 
 

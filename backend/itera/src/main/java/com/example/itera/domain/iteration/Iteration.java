@@ -26,6 +26,7 @@ public class Iteration {
     private Timestamp startDate;
     @Column(name = "enddate")
     private Timestamp endDate;
+    private Boolean status;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

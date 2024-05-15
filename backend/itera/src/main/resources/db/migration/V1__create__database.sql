@@ -125,6 +125,7 @@ CREATE TABLE iteration (
     number INTEGER,
     startDate TIMESTAMP,
     endDate TIMESTAMP,
+    status BOOLEAN DEFAULT true,
     project_id TEXT NOT NULL
 );
 
