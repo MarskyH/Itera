@@ -45,12 +45,16 @@ CREATE TABLE public.role (
 -- Requirement Table (Tabela de Requisitos)
 CREATE TABLE public.requirement (
     id TEXT PRIMARY KEY NOT NULL, -- Identificador único do requisito
-    title VARCHAR(255) NOT NULL, -- Título do requisito
+    requirement_original TEXT,
+    title VARCHAR(255) NOT NULL UNIQUE, -- Título do requisito
     details VARCHAR(255) NOT NULL, -- Detalhes do requisito
     complexity VARCHAR(30) NOT NULL, -- Complexidade do requisito
     priority VARCHAR(30) NOT NULL, -- Prioridade do requisito
     effort INTEGER NOT NULL, -- Esforço necessário para o requisito
     size_requirement INTEGER NOT NULL, -- Tamanho do requisito
+    cont_interation INTEGER DEFAULT 0,
+    progressive_bar INTEGER DEFAULT 0,
+    done BOOLEAN DEFAULT false,
     project_id TEXT -- Identificador do projeto associado
 );
 
@@ -125,7 +129,7 @@ CREATE TABLE iteration (
     number INTEGER,
     startDate TIMESTAMP,
     endDate TIMESTAMP,
-    status BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT true,
     project_id TEXT NOT NULL
 );
 

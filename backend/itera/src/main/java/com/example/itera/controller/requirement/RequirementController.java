@@ -79,6 +79,55 @@ public class RequirementController {
         }
     }
 
+    /**
+     * Endpoint responsável por cadastrar um requisito funcional.
+     *
+     * @param id identificador do requisito que irá ser iterado
+     * @return ResponseEntity confirmando a transação e retornando o ‘id’ do projeto usado e do requesito criado.
+     * @author Marcus Loureiro
+     * @see RequirementRequestDTO
+     * @see ResponseType
+     * @since 23/03/2024
+     */
+
+
+    @PostMapping("{id}/iterated")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> iterationRequirement(@PathVariable String id) {
+        Requirement original = repository.findById(id).orElseThrow();
+        Map<String, String> response = new HashMap<>();
+        try {
+            Project projectData = projectRepository.findById(original.getProject().getId()).orElseThrow();
+            Requirement requirementData = new Requirement(
+                    original.getTitle(),
+                    original.getDetails(),
+                    original.getComplexity(),
+                    original.getPriority(),
+                    original.getEffort(),
+                    original.getSizeRequirement(),
+                    projectData
+            );
+            original.setContInteration(original.getContInteration()+1);
+            requirementData.setRequirementOriginal(original.getRequirementOriginal());
+            requirementData.setContInteration(original.getContInteration()+1);
+            requirementData.setTitle(original.getTitle() + "+" + requirementData.getContInteration());
+            repository.save(requirementData);
+            repository.save(original);
+            response.put("project_id:", projectData.getId());
+            response.put("requirement_id:", requirementData.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+        }
+    }
+
+
+
 
     /**
      * Endpoint responsável por retornar um requisito específico, buscando pelo seu identificador.

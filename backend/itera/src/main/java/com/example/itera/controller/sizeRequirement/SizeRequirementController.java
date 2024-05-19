@@ -3,6 +3,7 @@ package com.example.itera.controller.sizeRequirement;
 import com.example.itera.domain.sizeRequirement.SizeRequirement;
 import com.example.itera.dto.sizeRequirement.SizeRequirementResponseDTO;
 import com.example.itera.dto.taskType.TaskTypeResponseDTO;
+import com.example.itera.repository.sizeRequirement.SizeRequirementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ import java.util.List;
 public class SizeRequirementController {
 
     @Autowired
-    SizeRequirement repository;
+    SizeRequirementRepository repository;
 
 
     /**
@@ -39,7 +40,7 @@ public class SizeRequirementController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public List<SizeRequirementResponseDTO> getAll()  {
-        return repository.findAll().stream().map(TaskTypeResponseDTO::new).toList();
+        return repository.findAll().stream().map(SizeRequirementResponseDTO::new).toList();
     }
 
 }

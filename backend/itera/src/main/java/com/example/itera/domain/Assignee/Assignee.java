@@ -42,8 +42,6 @@ public class Assignee {
     @JsonIgnore
     private Task task;
 
-
-
     public Assignee(String taskStep, User user, Task task){
         this.taskStep = taskStep;
         this.user = user;

@@ -46,7 +46,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * Responsável por fornecer um endpoint para criar um novo projeto.
@@ -411,7 +414,7 @@ public class ProjectController {
         List<BacklogResponseDTO>  listaBacklog = null;
         for (RequirementResponseDTO requisito : listaRequisitos) {
             int seq = 0;
-            listaBacklog.add(new BacklogResponseDTO(seq, requisito.id(), requisito.title(), requisito.priority(), new Assignee(), "Projeto", 0));
+            listaBacklog.add(new BacklogResponseDTO(seq, requisito.id(), requisito.title(), requisito.priority(), 0));
             seq++;
         }
         return listaBacklog.stream().toList();
@@ -431,22 +434,32 @@ public class ProjectController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<IterationResponseDTO> getProjectIterationStatus(
             @PathVariable String id,
-            @RequestParam(name = "status", required = false) Boolean status) {
+            @RequestParam(name = "active", required = false) Boolean active) {
 
         List<IterationResponseDTO> listaIteracoes;
 
-        if (status != null) {
-            listaIteracoes = iterationRepository.findByProjectAndStatus(status, id);
+        if (active != null) {
+            listaIteracoes = iterationRepository.findByProjectAndActive(active, id);
         } else {
             listaIteracoes = iterationRepository.findByProject(id);
         }
 
-        return listaIteracoes.stream().toList();
+        if (Boolean.TRUE.equals(active)) {
+            Timestamp currentTimestamp = Timestamp.from(Instant.now());
+            listaIteracoes = listaIteracoes.stream()
+                    .sorted(Comparator.comparing((IterationResponseDTO iter) ->
+                                    !(iter.startDate().compareTo(currentTimestamp) <= 0 && iter.endDate().compareTo(currentTimestamp) >= 0))
+                            .thenComparing(IterationResponseDTO::startDate)
+                    )
+                    .collect(Collectors.toList());
+        }
+
+        return listaIteracoes;
     }
 
     @GetMapping("/{id}/search/requirement")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<IterationResponseDTO> getProjectRequirementName(
+    public List<RequirementResponseDTO> getProjectRequirementName(
             @PathVariable String id,
             @RequestParam(name = "requirementName", required = true) String requirementName) {
 

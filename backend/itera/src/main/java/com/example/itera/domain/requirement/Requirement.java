@@ -19,12 +19,16 @@ public class Requirement {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    private String requirementOriginal;
     private String title;
     private String details;
     private String complexity;
     private String priority;
     private Integer effort;
     private Integer sizeRequirement;
+    private Integer contInteration;
+    private Integer progressiveBar;
+    private Boolean done;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
