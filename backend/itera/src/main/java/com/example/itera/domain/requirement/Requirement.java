@@ -18,17 +18,17 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Requirement {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String requirementOriginal;
-    private String title;
-    private String details;
-    private String complexity;
-    private String priority;
-    private Integer effort;
-    private Integer sizeRequirement;
-    private Integer contInteration;
-    private Integer progressiveBar;
-    private Boolean done;
+    private String id = "";
+    private String requirementOriginal = "";
+    private String title = "";
+    private String details = "" ;
+    private String complexity = "";
+    private String priority = "";
+    private Integer effort = 0;
+    private Integer sizeRequirement = 0;
+    private Integer contInteration = 0;
+    private Integer progressiveBar = 0;
+    private Boolean done = false;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)

@@ -1,6 +1,7 @@
 package com.example.itera.controller.requirement;
 
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
@@ -15,6 +16,7 @@ import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -94,6 +96,7 @@ public class RequirementController {
     @PostMapping("{id}/iterated")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> iterationRequirement(@PathVariable String id) {
+        System.out.println("ID ORIGINAL:" + id);
         Requirement original = repository.findById(id).orElseThrow();
         Map<String, String> response = new HashMap<>();
         try {
@@ -107,11 +110,12 @@ public class RequirementController {
                     original.getSizeRequirement(),
                     projectData
             );
-            original.setContInteration(original.getContInteration()+1);
-            requirementData.setRequirementOriginal(original.getRequirementOriginal());
+
+            requirementData.setRequirementOriginal(original.getId());
             requirementData.setContInteration(original.getContInteration()+1);
             requirementData.setTitle(original.getTitle() + "+" + requirementData.getContInteration());
             repository.save(requirementData);
+            original.setContInteration(original.getContInteration()+1);
             repository.save(original);
             response.put("project_id:", projectData.getId());
             response.put("requirement_id:", requirementData.getId());
@@ -122,6 +126,7 @@ public class RequirementController {
         } catch (UnauthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
+            System.out.println("ERRO:" + e);
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
         }
     }

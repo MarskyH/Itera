@@ -4,6 +4,7 @@ import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
 import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
+import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.domain.risk.Risk;
 import com.example.itera.domain.role.Role;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
@@ -411,10 +412,13 @@ public class ProjectController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<BacklogResponseDTO> getProjectBacklog(@PathVariable String id){
         List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByProject(id);
-        List<BacklogResponseDTO>  listaBacklog = null;
+        List<BacklogResponseDTO>  listaBacklog = new ArrayList<BacklogResponseDTO>();
+        int seq = 0;
         for (RequirementResponseDTO requisito : listaRequisitos) {
-            int seq = 0;
-            listaBacklog.add(new BacklogResponseDTO(seq, requisito.id(), requisito.title(), requisito.priority(), 0));
+            System.out.println("requisisto" + requisito.title());
+            Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
+            BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
+            listaBacklog.add(data);
             seq++;
         }
         return listaBacklog.stream().toList();
