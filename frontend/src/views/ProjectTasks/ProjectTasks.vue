@@ -1,10 +1,26 @@
 <script setup lang="ts">
 import TaskList from './components/TaskList.vue';
+import { useRoute } from "vue-router";
+import { models } from "src/@types";
+import { useBacklogStore } from "src/stores/BacklogStore";
+import { onMounted } from 'vue';
 
-const tasks1 = [
-  { id: '1', title: 'RF001 - Login', icon: 'bookmark', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'RF002 - Logout', icon: 'bookmark', priority: 'Alta', responsible: 'Indefinido' },
-]
+
+
+
+let tasks1:[]
+
+
+
+const $backlogStore = useBacklogStore()
+const $route = useRoute()
+
+onMounted(async ()=>{
+  await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () =>{
+      tasks1 = $backlogStore.items;
+  })
+})
+
 
 const tasks2 = [
   { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },

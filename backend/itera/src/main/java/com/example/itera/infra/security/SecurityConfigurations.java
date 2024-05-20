@@ -60,7 +60,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET,  "/project/{id}/risks").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/{id}/requirements").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/{id}/nonFunctionalRequirementsProject").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,  "/project//{id}/backlog").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/project/{id}/backlog").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/{id}/iteration").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/user/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/project/{id}/withJoins").hasRole("ADMIN")

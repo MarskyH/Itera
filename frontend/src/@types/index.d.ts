@@ -90,6 +90,14 @@ export namespace models {
     accountNonExpired: boolean
   }
 
+  export interface Backlog {
+    id?: number
+    idRequirement: string
+    title: string
+    priority: string
+    progressiveBar: number
+  }
+
   export interface Project {
     id?: string
     name: string
