@@ -3,12 +3,12 @@ import TaskList from './components/TaskList.vue';
 import { useRoute } from "vue-router";
 import { models } from "src/@types";
 import { useBacklogStore } from "src/stores/BacklogStore";
-import { onMounted } from 'vue';
+import { onMounted, ref } from "vue";
+interface Backlog extends models.Backlog {}
 
 
+const tasks1 = ref<Backlog[]>([])
 
-
-let tasks1:[]
 
 
 
@@ -17,7 +17,7 @@ const $route = useRoute()
 
 onMounted(async ()=>{
   await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () =>{
-      tasks1 = $backlogStore.items;
+      tasks1.value = $backlogStore.items;
   })
 })
 
