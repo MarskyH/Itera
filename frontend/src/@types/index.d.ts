@@ -305,7 +305,7 @@ export interface TaskBug {
     task_id: string
     checkFront: boolean
     checkBack: boolean
-    checkTes: boolean
+    checkTest: boolean
 }
 
 export interface TaskOnCreate {
@@ -344,15 +344,14 @@ export interface TaskImprovementOnCreate {
   checkTest:boolean
 }
 
-export interface TaskBug {
-  id: string
+export interface TaskBugOnCreate {
   details: string
   complexity: string
   sizeTask: string
   task_id: string
   checkFront: boolean
   checkBack: boolean
-  checkTes: boolean
+  checkTest: boolean
 }
 }
 
