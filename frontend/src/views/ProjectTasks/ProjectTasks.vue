@@ -10,8 +10,6 @@ interface Backlog extends models.Backlog {}
 const tasks1 = ref<Backlog[]>([])
 
 
-
-
 const $backlogStore = useBacklogStore()
 const $route = useRoute()
 

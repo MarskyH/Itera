@@ -14,6 +14,7 @@ import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequir
 import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
 import com.example.itera.dto.role.RoleRequestDTO;
+import com.example.itera.dto.task.TaskResponseDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
@@ -35,6 +36,7 @@ import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
 import com.example.itera.repository. risk.RiskRepository;
+import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -88,6 +90,8 @@ public class ProjectController {
 
     @Autowired
     IterationRepository iterationRepository;
+
+    TaskRepository taskRepository;
 
     @Autowired
     TokenService tokenService;
@@ -359,6 +363,24 @@ public class ProjectController {
     public List<NonFunctionalRequirementProjectResponseDTO> getNonFunctionalRequirementProject(@PathVariable String id){
         return nonFunctionalRequirementProjectRepository.findByProject(id).stream().toList();
     }
+
+    /**
+     * Endpoint responsável por retornar uma lista de tarefas associados a um projeto específico.
+     *
+     * @param id Identificador único do projeto.
+     * @return Lista contendo as tarefas no formato NonFunctionalRequirementProjectResponseDTO associados ao projeto.
+     * @author Marcus Loureiro
+     * @see  TaskResponseDTO
+     * @since 19/03/2024
+     */
+    @GetMapping("iteration/{id}/tasks")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<TaskResponseDTO> getTaskProject(@PathVariable String id){
+        return taskRepository.findByIteration(id).stream().toList();
+    }
+
+
+
 
 
     /**
