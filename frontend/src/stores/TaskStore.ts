@@ -146,7 +146,7 @@ export const useTaskStore = defineStore('Task', {
       return (response?.status) ? response.status : 500
     },
 
-    async createTaskImprovement(iterationId: string, taskData: Task, taskImprovementData: TaskImprovementOnCreate, listAssignees: Assignee[]) {
+    async createTaskImprovement(iterationId: string, taskData: Task, taskImprovementData: TaskImprovement, listAssignees: Assignee[]) {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
@@ -186,7 +186,7 @@ export const useTaskStore = defineStore('Task', {
       return (response?.status) ? response.status : 500
     },
 
-    async createTaskBug(iterationId: string, taskData: Task, taskBugData: TaskBugOnCreate, listAssignees: Assignee[]) {
+    async createTaskBug(iterationId: string, taskData: Task, taskBugData: TaskBug, listAssignees: Assignee[]) {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
