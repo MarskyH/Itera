@@ -40,7 +40,7 @@ export default [
           {
             path: '/meus-projetos',
             name: 'my-projects',
-            component: async () => await import('src/views/MyProjects/MyProjectsView.vue'),
+            component: async () => await import('src/views/ProjectIteration/ProjectIteration.vue'),
             meta: {
               title: 'Meus Projetos',
               icon: 'folder-open',

@@ -23,9 +23,9 @@ const $route = useRoute()
 })*/
 
 const tasks2 = [
-  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '3', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 35 },
+  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 68 },
+  { id: '3', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 13 },
 ]
 
 </script>
