@@ -256,6 +256,10 @@ public class ProjectController {
         Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
         // Atualiza lastAccessDate para a data e hora atual
         project.setLastAccessDate(new Timestamp(new Date().getTime()));
+        // Cria as iterações caso não exista nehuma iteração para esse id do projeto
+        if(iterationRepository.findByProject(id).isEmpty()){
+            createIterations(id);
+        }
         projectRepository.save(project);
         return new ProjectResponseDTO(project);
     }

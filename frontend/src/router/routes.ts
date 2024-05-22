@@ -18,7 +18,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
@@ -141,6 +141,13 @@ export default [
                   icon: 'folder-open',
                   sideViewComponent: RecentProjects
                 },
+                children: [
+                  {
+                    path: ':iterationId/iteracao',
+                    name: 'project-iteration',
+                    component: async () => await import('src/views/ProjectIteration/ProjectIteration.vue')
+                  },
+                ]
               }
             ]
           },
