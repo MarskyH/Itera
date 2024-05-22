@@ -14,7 +14,6 @@ import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequir
 import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
 import com.example.itera.dto.role.RoleRequestDTO;
-import com.example.itera.dto.task.TaskResponseDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
@@ -36,7 +35,6 @@ import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
 import com.example.itera.repository. risk.RiskRepository;
-import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -90,8 +88,6 @@ public class ProjectController {
 
     @Autowired
     IterationRepository iterationRepository;
-
-    TaskRepository taskRepository;
 
     @Autowired
     TokenService tokenService;
@@ -256,11 +252,13 @@ public class ProjectController {
         Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
         // Atualiza lastAccessDate para a data e hora atual
         project.setLastAccessDate(new Timestamp(new Date().getTime()));
-        // Cria as iterações caso não exista nehuma iteração para esse id do projeto
-        if(iterationRepository.findByProject(id).isEmpty()){
-            createIterations(id);
-        }
         projectRepository.save(project);
+
+        //Cria iterações se necessário
+        if(iterationRepository.findByProject(project.getId()).isEmpty()){
+            createIterations(project.getId());
+        }
+
         return new ProjectResponseDTO(project);
     }
 
@@ -368,24 +366,6 @@ public class ProjectController {
         return nonFunctionalRequirementProjectRepository.findByProject(id).stream().toList();
     }
 
-    /**
-     * Endpoint responsável por retornar uma lista de tarefas associados a um projeto específico.
-     *
-     * @param id Identificador único do projeto.
-     * @return Lista contendo as tarefas no formato NonFunctionalRequirementProjectResponseDTO associados ao projeto.
-     * @author Marcus Loureiro
-     * @see  TaskResponseDTO
-     * @since 19/03/2024
-     */
-    @GetMapping("iteration/{id}/tasks")
-    @ResponseStatus(code = HttpStatus.OK)
-    public List<TaskResponseDTO> getTaskProject(@PathVariable String id){
-        return taskRepository.findByIteration(id).stream().toList();
-    }
-
-
-
-
 
     /**
      * Endpoint responsável por retornar o projeto com todos os seus dados associados dado o id do projeto.
@@ -436,20 +416,24 @@ public class ProjectController {
      */
     @GetMapping("/{id}/backlog")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<BacklogResponseDTO> getProjectBacklog(@PathVariable String id){
+    public List<BacklogResponseDTO> getProjectBacklog(@PathVariable String id) {
         List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByProject(id);
-        List<BacklogResponseDTO>  listaBacklog = new ArrayList<BacklogResponseDTO>();
+        List<BacklogResponseDTO> listaBacklog = new ArrayList<>();
         int seq = 0;
+
         for (RequirementResponseDTO requisito : listaRequisitos) {
             System.out.println("requisisto" + requisito.title());
             Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
-            BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
+            BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
             listaBacklog.add(data);
             seq++;
         }
-        return listaBacklog.stream().toList();
-
+        // Ordena a listaBacklog pelo campo orderRequirement em ordem crescente.
+        return listaBacklog.stream()
+                .sorted(Comparator.comparing(BacklogResponseDTO::orderRequirement))
+                .collect(Collectors.toList());
     }
+
 
     /**
      * Endpoint responsável por retornar lista de Iterações ativas do projeto pelo seu id se o status for passado.
@@ -497,6 +481,18 @@ public class ProjectController {
 
         return listaRequisitos.stream().toList();
     }
+
+    /*
+    @GetMapping("/{projectid}/iteration/{iterationid}/task")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<RequirementResponseDTO> getProjectIterationTasks(
+            @PathVariable String projectid,
+            @PathVariable String iterationid) {
+
+        List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByNameContaining("");
+
+        return listaRequisitos.stream().toList();
+    }*/
 
 
 

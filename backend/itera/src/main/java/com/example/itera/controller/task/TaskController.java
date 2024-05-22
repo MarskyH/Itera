@@ -65,13 +65,16 @@ public class TaskController {
     @Autowired
     TaskBugRepository taskBugRepository;
 
-
-
-
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTask(@RequestBody TaskRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        int order = 0;
+        if(data.orderTask() == null){
+            order = taskRepository.findByIteration(data.iteration_id()).size()+1;
+        }else{
+            order = data.orderTask();
+        }
         try {
             Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
             TaskRequirement taskRequirementData = new TaskRequirement();
@@ -80,6 +83,7 @@ public class TaskController {
                     data.priority(),
                     data.startDate(),
                     data.endDate(),
+                    order,
                     data.taskType(),
                     taskRequirementData,
                     iterationData
@@ -101,6 +105,12 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskRequirementRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        int order = 0;
+        if( data.task().orderTask() == null){
+            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
+        }else{
+            order =  data.task().orderTask();
+        }
         try {
             TaskRequestDTO dataTask = data.task();
             TaskRequirementRequestDTO dataTaskRequirement = data.taskRequirement();
@@ -111,6 +121,7 @@ public class TaskController {
                     dataTask.priority(),
                     dataTask.startDate(),
                     dataTask.endDate(),
+                    order,
                     data.task().taskType(),
                     (TaskRequirement) null,
                     iterationData
@@ -154,6 +165,12 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskImprovementRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        int order = 0;
+        if( data.task().orderTask() == null){
+            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
+        }else{
+            order =  data.task().orderTask();
+        }
         try {
             TaskRequestDTO dataTask = data.task();
             TaskImprovementRequestDTO dataTaskImprovement = data.taskImprovement();
@@ -164,6 +181,7 @@ public class TaskController {
                     dataTask.priority(),
                     dataTask.startDate(),
                     dataTask.endDate(),
+                    order,
                     data.task().taskType(),
                     (TaskImprovement) null,
                     iterationData
@@ -207,6 +225,12 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskBugRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        int order = 0;
+        if( data.task().orderTask() == null){
+            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
+        }else{
+            order =  data.task().orderTask();
+        }
         try {
             TaskRequestDTO dataTask = data.task();
             TaskBugRequestDTO dataTaskBug = data.taskBug();
@@ -217,6 +241,7 @@ public class TaskController {
                     dataTask.priority(),
                     dataTask.startDate(),
                     dataTask.endDate(),
+                    order,
                     data.task().taskType(),
                     (TaskBug) null,
                     iterationData

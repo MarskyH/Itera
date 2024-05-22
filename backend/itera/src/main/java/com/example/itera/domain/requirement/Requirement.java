@@ -26,6 +26,7 @@ public class Requirement {
     private String priority = "";
     private Integer effort = 0;
     private Integer sizeRequirement = 0;
+    private Integer orderRequirement = 0;
     private Integer contInteration = 0;
     private Integer progressiveBar = 0;
     private Boolean done = false;
@@ -43,15 +44,17 @@ public class Requirement {
         this.priority = data.priority();
         this.effort = data.effort();
         this.sizeRequirement = data.sizeRequirement();
+        this.orderRequirement = data.orderRequirement();
     }
 
-    public Requirement(String title, String details, String complexity, String priority, Integer effort, Integer sizeRequirement, Project project){
+    public Requirement(String title, String details, String complexity, String priority, Integer effort, Integer sizeRequirement, Integer orderRequirement, Project project){
         this.title = title;
         this.details = details;
         this.complexity = complexity;
         this.priority = priority;
         this.effort = effort;
         this.sizeRequirement = sizeRequirement;
+        this.orderRequirement = orderRequirement;
         this.project = project;
     }
 }

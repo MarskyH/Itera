@@ -56,6 +56,12 @@ public class RequirementController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveRequirement(@RequestBody RequirementRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        int order = 0;
+        if(data.orderRequirement() == null){
+            order = repository.findByProject(data.project_id()).size()+1;
+        }else{
+            order = data.orderRequirement();
+        }
         try {
             Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
             Requirement requirementData = new Requirement(
@@ -65,6 +71,7 @@ public class RequirementController {
                     data.priority(),
                     data.effort(),
                     data.sizeRequirement(),
+                    order,
                     projectData
             );
             repository.save(requirementData);
@@ -108,6 +115,7 @@ public class RequirementController {
                     original.getPriority(),
                     original.getEffort(),
                     original.getSizeRequirement(),
+                    original.getOrderRequirement(),
                     projectData
             );
 
@@ -186,6 +194,9 @@ public class RequirementController {
             }
             if (data.sizeRequirement() != null) {
                 requirement.setSizeRequirement(data.sizeRequirement());
+            }
+            if (data.orderRequirement() != null) {
+                requirement.setOrderRequirement(data.orderRequirement());
             }
             repository.save(requirement);
             response.put("data_id:", requirement.getId());

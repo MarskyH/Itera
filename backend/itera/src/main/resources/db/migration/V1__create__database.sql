@@ -52,6 +52,7 @@ CREATE TABLE public.requirement (
     priority VARCHAR(30) NOT NULL, -- Prioridade do requisito
     effort INTEGER NOT NULL, -- Esforço necessário para o requisito
     size_requirement INTEGER NOT NULL, -- Tamanho do requisito
+    order_requirement INTEGER,
     cont_interation INTEGER DEFAULT 0,
     progressive_bar INTEGER DEFAULT 0,
     done BOOLEAN DEFAULT false,
@@ -139,6 +140,7 @@ CREATE TABLE task (
     priority VARCHAR(255),
     start_date TIMESTAMP,
     end_date TIMESTAMP,
+    order_task INTEGER,
     task_type TEXT,
     task_requirement_id TEXT,
     task_improvement_id TEXT,
