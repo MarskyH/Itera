@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 import Api from 'src/services/api'
 import { type models } from 'src/@types'
-interface Backlog extends models.Backlog { }
+interface BacklogRequirement extends models.BacklogRequirement { }
 
 interface State {
-  backlog: Backlog
-  items: Backlog[]
+  backlogRequirement: BacklogRequirement
+  backlogRequirements: BacklogRequirement[]
 }
 
-const itemBacklogDefault = {
+const backlogRequirementDefault = {
   id: 0,
   idRequirement: "",
   title: "",
@@ -18,13 +18,13 @@ const itemBacklogDefault = {
 
 export const useBacklogStore = defineStore('Backlog', {
   state: (): State => ({
-    backlog: { ...itemBacklogDefault },
-    items: [],
+    backlogRequirement: { ...backlogRequirementDefault },
+    backlogRequirements: [],
   }),
 
   actions: {
-    setBacklog(backlogData: Backlog) {
-      this.backlog = backlogData
+    setBacklog(backlogData: BacklogRequirement) {
+      this.backlogRequirement = backlogData
     },
 
     async fetchBacklog(id: string) {
@@ -34,7 +34,7 @@ export const useBacklogStore = defineStore('Backlog', {
       })
 
       if (response?.status === 200) {
-        this.items = response.data?.map((elem: any) => {
+        this.backlogRequirements = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             idRequirement: elem.idRequirement,

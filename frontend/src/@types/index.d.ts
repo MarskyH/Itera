@@ -90,7 +90,7 @@ export namespace models {
     accountNonExpired: boolean
   }
 
-  export interface Backlog {
+  export interface BacklogRequirement {
     id?: number
     idRequirement: string
     title: string

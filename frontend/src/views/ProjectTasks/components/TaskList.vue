@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 
 
-defineProps<{
+const props = defineProps<{
   title: string
   tasks: Object[]
 }>()
+
+const tasksList = ref<Object[]>(props.tasks)
 
 </script>
 
@@ -20,35 +24,45 @@ defineProps<{
     </div>
 
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
-      <ActionGridItem
-        v-for="task in tasks"
-        :key="task.id"
-        :icon="task.icon"
-        :title="task.title"
-        @edit="() => {}"
-        @remove="() => {}"
-        @side-view-content-change="() => () => {}"
+      <draggable
+        v-model="tasksList"
+        group="people"
+        @start="(drag: any) => drag = true"
+        @end="(drag: any) => drag = false"
+        item-key="id"
+        animation="200"
+        class="flex flex-col gap-2 min-w-64"
       >
-        <div class="flex flex-col gap-1">
-          <span class="text-sm font-semibold">
-            Prioridade
-          </span>
+        <template #item="{element}">
+          <ActionGridItem
+            :icon="element.icon"
+            :title="element.title"
+            @edit="() => {}"
+            @remove="() => {}"
+            @side-view-content-change="() => () => {}"
+          >
+            <div class="flex flex-col gap-1">
+              <span class="text-sm font-semibold">
+                Prioridade
+              </span>
         
-          <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ task.priority }}
-          </span>
-        </div>
+              <span class="text-xs text-stone-500 dark:text-stone-400">
+                {{ element.priority }}
+              </span>
+            </div>
       
-        <div class="flex flex-col gap-1">
-          <span class="text-sm font-semibold">
-            Responsável
-          </span>
+            <div class="flex flex-col gap-1">
+              <span class="text-sm font-semibold">
+                Responsável
+              </span>
         
-          <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ task.responsible }}
-          </span>
-        </div>
-      </ActionGridItem>
+              <span class="text-xs text-stone-500 dark:text-stone-400">
+                {{ element.responsible }}
+              </span>
+            </div>
+          </ActionGridItem>
+        </template>
+      </draggable>
     </div>
   </div>
 </template>
