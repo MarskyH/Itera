@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
-
+import ProgressiveBar from './ProgressiveBar.vue';
 
 const props = defineProps<{
   title: string
@@ -59,6 +59,8 @@ const tasksList = ref<Object[]>(props.tasks)
               <span class="text-xs text-stone-500 dark:text-stone-400">
                 {{ element.responsible }}
               </span>
+
+              <ProgressiveBar :progress="element.progressiveBar" />
             </div>
           </ActionGridItem>
         </template>

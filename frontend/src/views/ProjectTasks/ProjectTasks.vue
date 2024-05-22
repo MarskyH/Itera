@@ -6,9 +6,10 @@ import { useBacklogStore } from "src/stores/BacklogStore";
 import { onMounted, ref } from "vue";
 interface BacklogRequirement extends models.BacklogRequirement {}
 
-
-const backlogRequirements = ref<BacklogRequirement[]>([])
 const onLoad = ref<boolean>(false)
+/*
+const backlogRequirements = ref<BacklogRequirement[]>([])
+
 
 const $backlogStore = useBacklogStore()
 const $route = useRoute()
@@ -20,12 +21,12 @@ onMounted(async ()=>{
     backlogRequirements.value = $backlogStore.backlogRequirements;
     onLoad.value = false
   })
-})
+})*/
 
 const tasks2 = [
-  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
-  { id: '2', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido' },
+  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 20 },
+  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido',},
+  { id: '2', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido',  progressiveBar: 50 },
 ]
 
 </script>
@@ -37,7 +38,7 @@ const tasks2 = [
   >
     <TaskList
       title="Backlog"
-      :tasks="backlogRequirements"
+      :tasks="tasks2"
     />
     <TaskList
       title="Iteração 1"
