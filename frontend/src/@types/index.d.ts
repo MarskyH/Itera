@@ -90,6 +90,14 @@ export namespace models {
     accountNonExpired: boolean
   }
 
+  export interface Backlog {
+    id?: number
+    idRequirement: string
+    title: string
+    priority: string
+    progressiveBar: number
+  }
+
   export interface Project {
     id?: string
     name: string
@@ -243,6 +251,109 @@ export namespace models {
     id: string
     weight: number
   }
+
+  export interface Assignee{
+    id: string
+    taskStep: string 
+    user_id: string 
+    task_id: string
+  }
+
+  export interface Task {
+    id: string
+    title: string
+    priority: string
+    startDate: string
+    endDate: string
+    taskType: string
+    taskrequirement_id?: string
+    taskimprovement_id?: string
+    taskbug_id?: string
+    iteration_id: string
+  }
+
+  export interface TaskRequirement {
+    id:string 
+    details:string 
+    complexity:string 
+    sizeTask:string 
+    task_id:string
+    checkProject:boolean 
+    checkRequirement:boolean 
+    checkFront:boolean 
+    checkBack:boolean
+    checkTest:boolean
+  }
+
+  export interface TaskImprovement {
+    id:string 
+    details:string 
+    complexity:string 
+    sizeTask:string 
+    task_id:string
+    checkProject:boolean 
+    checkRequirement:boolean 
+    checkFront:boolean 
+    checkBack:boolean
+    checkTest:boolean
+}
+
+export interface TaskBug {
+    id: string
+    details: string
+    complexity: string
+    sizeTask: string
+    task_id: string
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+}
+
+export interface TaskOnCreate {
+  title: string
+  priority: string
+  startDate: string
+  endDate: string
+  taskType: string
+  taskrequirement_id?: string
+  taskimprovement_id?: string
+  taskbug_id?: string
+  iteration_id: string
+}
+
+export interface TaskRequirementOnCreate {
+  details:string 
+  complexity:string 
+  sizeTask:string 
+  task_id:string
+  checkProject:boolean 
+  checkRequirement:boolean 
+  checkFront:boolean 
+  checkBack:boolean
+  checkTest:boolean
+}
+
+export interface TaskImprovementOnCreate {
+  details:string 
+  complexity:string 
+  sizeTask:string 
+  task_id:string
+  checkProject:boolean 
+  checkRequirement:boolean 
+  checkFront:boolean 
+  checkBack:boolean
+  checkTest:boolean
+}
+
+export interface TaskBugOnCreate {
+  details: string
+  complexity: string
+  sizeTask: string
+  task_id: string
+  checkFront: boolean
+  checkBack: boolean
+  checkTest: boolean
+}
 }
 
 export interface InputFieldProps {
@@ -297,80 +408,20 @@ export interface NonFunctionalRequirementForm {
   weight: number
 }
 
-
-
-/*
-
-export interface AcaoRegister {
-  titulo: string
-  descricao: string
-  tipo: string
-  risco: {
-    id: number
-    titulo: string
-    efeito: string
-    probabilidade: string
-    impacto: string
-    grauExposicao: string
-  }
+export interface TaskRequirementForm {
+  task: Task 
+  taskRequirement: TaskRequirement 
+  assignees: Assignee[]
 }
 
-export interface AcaoResponse {
-  id: number
-  titulo: string
-  descricao: string
-  tipo: string
-  risco_id: number
+export interface TaskImprovementForm {
+  task: Task 
+  taskImprovement : TaskImprovement 
+  assignees: Assignee[]
 }
 
-export interface RequisitoRegister {
-  nome: string
-  titulo: string
-  detalhamento: string
-  complexidade: string
-  prioridade: string
-  esforco: number
-  tamanho: number
-  projeto: ProjetoResponse
+export interface TaskBugForm {
+  task: Task 
+  taskBug: TaskBug 
+  assignees: Assignee[]
 }
-export interface RequisitoResponse {
-  id: number
-  nome: string
-  titulo: string
-  detalhamento: string
-  complexidade: string
-  prioridade: string
-  esforco: number
-  tamanho: number
-  projeto_id: number
-}
-
-export interface RequisitoNaoFuncionalRegister {
-  titulo: string
-  valor: number
-  projeto: ProjetoResponse
-}
-
-export interface RequisitoNaoFuncionalResponse {
-  id: number
-  titulo: string
-  valor: number
-  projeto_id: number
-}
-
-
-export interface ProjetoCompletoResponse {
-  id: number
-  nome: string
-  prazo: number
-  tempoIteracao: number
-  nomeCliente: string
-  createdBy: string
-  listaPapel: PapelResponse[]
-  listaUserEquipe: UserResponse[]
-  listaRiscos: RiscoResponse[]
-  listaRequisitos: RequisitoResponse[]
-  listaRequisitosNaoFuncionais: RequisitoNaoFuncionalResponse[]
-}
-
-*/
