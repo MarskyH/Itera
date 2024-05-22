@@ -21,7 +21,7 @@ const sideViewContent = shallowRef<any | undefined>(undefined)
         :icon="String($route.meta.icon)"
       />
 
-      <div class="flex flex-col w-full h-full p-3 rounded-md bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90%">
+      <div class="flex flex-col flex-1 w-full h-full p-3 grow shrink-0 rounded-md bg-gradient-to-b from-white to-seaSalt-900 dark:bg-gradient-to-b dark:from-eerieBlackLight-900 dark:from-10% dark:to-eerieBlackDark-900 dark:to-90% overflow-hidden">
         <RouterView @side-view-content-change="(value: any) => sideViewContent = value" />
       </div>
     </div>

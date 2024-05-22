@@ -19,34 +19,36 @@ defineProps<{
       {{ title }}
     </div>
 
-    <ActionGridItem
-      v-for="task in tasks"
-      :key="task.id"
-      :icon="task.icon"
-      :title="task.title"
-      @edit="() => {}"
-      @remove="() => {}"
-      @side-view-content-change="() => () => {}"
-    >
-      <div class="flex flex-col gap-1">
-        <span class="text-sm font-semibold">
-          Prioridade
-        </span>
-
-        <span class="text-xs text-stone-500 dark:text-stone-400">
-          {{ task.priority }}
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="text-sm font-semibold">
-          Responsável
-        </span>
-
-        <span class="text-xs text-stone-500 dark:text-stone-400">
-          {{ task.responsible }}
-        </span>
-      </div>
-    </ActionGridItem>
+    <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
+      <ActionGridItem
+        v-for="task in tasks"
+        :key="task.id"
+        :icon="task.icon"
+        :title="task.title"
+        @edit="() => {}"
+        @remove="() => {}"
+        @side-view-content-change="() => () => {}"
+      >
+        <div class="flex flex-col gap-1">
+          <span class="text-sm font-semibold">
+            Prioridade
+          </span>
+        
+          <span class="text-xs text-stone-500 dark:text-stone-400">
+            {{ task.priority }}
+          </span>
+        </div>
+      
+        <div class="flex flex-col gap-1">
+          <span class="text-sm font-semibold">
+            Responsável
+          </span>
+        
+          <span class="text-xs text-stone-500 dark:text-stone-400">
+            {{ task.responsible }}
+          </span>
+        </div>
+      </ActionGridItem>
+    </div>
   </div>
 </template>

@@ -15,10 +15,14 @@ const tasks2 = [
 </script>
 
 <template>
-  <div class="flex gap-3">
+  <div class="flex gap-3 grow shrink-0 overflow-auto">
     <TaskList
       title="Backlog"
       :tasks="tasks1"
+    />
+    <TaskList
+      title="Iteração 1"
+      :tasks="tasks2"
     />
     <TaskList
       title="Iteração 1"

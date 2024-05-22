@@ -206,6 +206,7 @@ export namespace models {
     priority: string
     effort: number
     sizeRequirement: number
+    progressiveBar: number
   }
 
   export interface FunctionalRequirementOnCreate {
