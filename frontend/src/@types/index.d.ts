@@ -253,6 +253,16 @@ export namespace models {
     weight: number
   }
 
+  export interface Iteration{
+     id:string
+     number: number
+     startDate:string
+     endDate:string
+     active: Boolean
+     project_id:string
+     requirements: FunctionalRequirement[]
+  }
+
   export interface Assignee{
     id: string
     taskStep: string 

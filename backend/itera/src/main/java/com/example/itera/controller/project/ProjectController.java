@@ -2,6 +2,7 @@ package com.example.itera.controller.project;
 
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.dto.iteration.IterationRequirementResponseDTO;
 import com.example.itera.dto.iteration.IterationResponseDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
 import com.example.itera.dto.project.BacklogResponseDTO;
@@ -38,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -144,7 +144,7 @@ public class ProjectController {
                 Timestamp endDate = new Timestamp(startDate.getTime() + (iterationTime * 24 * 60 * 60 * 1000));
 
                 // Criando e salvando a iteração com as datas calculadas
-                Iteration iterationData = new Iteration(i, startDate, endDate, projectData);
+                Iteration iterationData = new Iteration(i, startDate, endDate, true, projectData);
                 iterationRepository.save(iterationData);
 
                 // Atualizando a data inicial para a próxima iteração
@@ -437,19 +437,23 @@ public class ProjectController {
      */
     @GetMapping("/{id}/iteration")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<IterationResponseDTO> getProjectIterationStatus(
+    public List<IterationRequirementResponseDTO> getProjectIterationStatus(
             @PathVariable String id,
-            @RequestParam(name = "active", required = false) Boolean active) {
-
+            @RequestParam(name = "active", required = false) Boolean active) throws ResourceNotFoundException {
         List<IterationResponseDTO> listaIteracoes;
+        List<RequirementResponseDTO> listaRequirements;
+        List<IterationRequirementResponseDTO> response = new ArrayList<IterationRequirementResponseDTO>();
 
         if (active != null) {
             listaIteracoes = iterationRepository.findByProjectAndActive(active, id);
         } else {
             listaIteracoes = iterationRepository.findByProject(id);
         }
+        for (IterationResponseDTO iteracao : listaIteracoes) {
+            response.add(new IterationRequirementResponseDTO(iteracao, requirementRepository.findByIteration(iteracao.id())));
+        }
 
-        if (Boolean.TRUE.equals(active)) {
+        /*if (Boolean.TRUE.equals(active)) {
             Timestamp currentTimestamp = Timestamp.from(Instant.now());
             listaIteracoes = listaIteracoes.stream()
                     .sorted(Comparator.comparing((IterationResponseDTO iter) ->
@@ -457,9 +461,9 @@ public class ProjectController {
                             .thenComparing(IterationResponseDTO::startDate)
                     )
                     .collect(Collectors.toList());
-        }
+        }*/
 
-        return listaIteracoes;
+        return response;
     }
 
     @GetMapping("/{id}/search/requirement")

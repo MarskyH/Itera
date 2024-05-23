@@ -3,30 +3,35 @@ import TaskList from './components/TaskList.vue';
 import { useRoute } from "vue-router";
 import { models } from "src/@types";
 import { useBacklogStore } from "src/stores/BacklogStore";
+import { useIterationStore } from "src/stores/IterationStore";
 import { onMounted, ref } from "vue";
-interface BacklogRequirement extends models.BacklogRequirement {}
+interface BacklogRequirement extends models.BacklogRequirement { }
+interface Iteration extends models.Iteration { }
 
 const onLoad = ref<boolean>(false)
 
 const backlogRequirements = ref<BacklogRequirement[]>([])
+const iterations = ref<Iteration[]>([])
+
 
 const $backlogStore = useBacklogStore()
+const $iterationStore = useIterationStore()
+
 const $route = useRoute()
 
-onMounted(async ()=>{
+onMounted(async () => {
   onLoad.value = true
 
-  await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () =>{
-    backlogRequirements.value = $backlogStore.backlogRequirements;
-    onLoad.value = false
+  await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () => {
+    await $iterationStore.fetchIterations(String($route.params.projectId)).then(async () => {
+      backlogRequirements.value = $backlogStore.backlogRequirements;
+      iterations.value = $iterationStore.iterations;
+      onLoad.value = false
+      console.log(iterations)
+    })
   })
 })
 
-const tasks2 = [
-  { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 20 },
-  { id: '2', title: 'Revisão', icon: 'users', priority: 'Alta', responsible: 'Indefinido',},
-  { id: '2', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido',  progressiveBar: 50 },
-]
 
 </script>
 
@@ -39,19 +44,15 @@ const tasks2 = [
       title="Backlog"
       :tasks="backlogRequirements"
     />
+
     <TaskList
-      title="Iteração 1"
+      v-for="(iteration, index) in iterations"
+      :key="iteration.id"
+      :title="`Iteração ${index + 1}`"
       title-link="project-iteration"
-      :tasks="tasks2"
-      :order="1"
-      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: 1 } })"
-    />
-    <TaskList
-      title="Iteração 1"
-      title-link="project-iteration"
-      :tasks="tasks2"
-      :order="2"
-      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: 2 } })"
+      :tasks="iteration.requirements"
+      :order="index + 1"
+      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: iteration.id } })"
     />
   </div>
 </template>

@@ -49,11 +49,11 @@ export const useBacklogStore = defineStore('Backlog', {
       }
     },
 
-    async updateBacklogRequirement(requirementData: BacklogRequirement) {
+    async updateBacklogRequirement(requirementId: string, futureIndex: number) {
       const response = await Api.request({
         method: 'put',
-        route: `/requirement/${requirementData.id}`,
-        body: { orderRequirement: requirementData.orderRequirement }
+        route: `/requirement/${requirementId}`,
+        body: { orderRequirement: futureIndex+1 }
       })
 
       return response?.status === 200

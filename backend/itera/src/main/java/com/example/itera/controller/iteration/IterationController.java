@@ -64,6 +64,7 @@ public class IterationController {
                     data.number(),
                     data.startDate(),
                     data.endDate(),
+                    true,
                     projectData
             );
             repository.save(iterationData);

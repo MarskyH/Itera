@@ -3,19 +3,25 @@ import { ref } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
+import { useBacklogStore } from 'src/stores/BacklogStore';
 
 const props = defineProps<{
   title: string
   tasks: Object[]
-  order?: number 
+  order?: number
 }>()
 
 defineEmits(['titleClick'])
 
 const tasksList = ref<Object[]>(props.tasks)
 
-function updateRequirementOrder(evt: any) {
-  
+const $backlogStore = useBacklogStore()
+
+
+async function updateRequirementOrder(evt: any) {
+  await $backlogStore.updateBacklogRequirement(evt.draggedContext.element?.idRequirement, evt.draggedContext.futureIndex).then(()=>{
+    console.log(evt.relatedContext.list)
+  })
 }
 
 </script>
@@ -26,9 +32,7 @@ function updateRequirementOrder(evt: any) {
       class="flex gap-2 items-center text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold"
       @click="() => order ? $emit('titleClick', order) : {}"
     >
-      <FontAwesomeIcon
-        icon="fa-solid fa-bars-staggered"
-      />
+      <FontAwesomeIcon icon="fa-solid fa-bars-staggered" />
 
       {{ title }}
     </button>
@@ -44,29 +48,29 @@ function updateRequirementOrder(evt: any) {
         animation="200"
         class="flex flex-col gap-2 min-w-64"
       >
-        <template #item="{element}">
+        <template #item="{ element }">
           <ActionGridItem
             :icon="element.icon"
             :title="element.title"
-            @edit="() => {}"
-            @remove="() => {}"
-            @side-view-content-change="() => () => {}"
+            @edit="() => { }"
+            @remove="() => { }"
+            @side-view-content-change="() => () => { }"
           >
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">
                 Prioridade
               </span>
-        
+
               <span class="text-xs text-stone-500 dark:text-stone-400">
                 {{ element.priority }}
               </span>
             </div>
-      
+
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">
                 Responsável
               </span>
-        
+
               <span class="text-xs text-stone-500 dark:text-stone-400">
                 {{ element.responsible }}
               </span>

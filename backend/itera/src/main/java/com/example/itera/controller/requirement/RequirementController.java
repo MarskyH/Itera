@@ -62,7 +62,7 @@ public class RequirementController {
         Map<String, String> response = new HashMap<>();
         int order = 0;
         if(data.orderRequirement() == null){
-            order = repository.findByProject(data.project_id()).size()+1;
+            order = repository.findByProject(data.project_id()).size();
         }else{
             order = data.orderRequirement();
         }
@@ -96,7 +96,7 @@ public class RequirementController {
     /**
      * Endpoint responsável por cadastrar um requisito funcional.
      *
-     * @param id identificador do requisito que irá ser iterado
+     * @param idRequirement identificador do requisito que irá ser iterado
      * @return ResponseEntity confirmando a transação e retornando o ‘id’ do projeto usado e do requesito criado.
      * @author Marcus Loureiro
      * @see RequirementRequestDTO
