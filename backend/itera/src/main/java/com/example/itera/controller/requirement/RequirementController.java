@@ -1,7 +1,7 @@
 package com.example.itera.controller.requirement;
 
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
@@ -9,6 +9,7 @@ import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
+import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,10 +17,10 @@ import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +40,9 @@ public class RequirementController {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    IterationRepository iterationRepository;
 
     /**
      * Endpoint responsável por cadastrar um requisito funcional.
@@ -72,6 +76,7 @@ public class RequirementController {
                     data.effort(),
                     data.sizeRequirement(),
                     order,
+                    data.iterationId(),
                     projectData
             );
             repository.save(requirementData);
@@ -100,11 +105,11 @@ public class RequirementController {
      */
 
 
-    @PostMapping("{id}/iterated")
+    @PostMapping("{idRequirement}/iterated/{idIteration}")
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> iterationRequirement(@PathVariable String id) {
-        System.out.println("ID ORIGINAL:" + id);
-        Requirement original = repository.findById(id).orElseThrow();
+    public ResponseEntity<?> iterationRequirement(@PathVariable String idRequirement, @PathVariable String idIteration) {
+        System.out.println("ID ORIGINAL:" + idRequirement);
+        Requirement original = repository.findById(idRequirement).orElseThrow();
         Map<String, String> response = new HashMap<>();
         try {
             Project projectData = projectRepository.findById(original.getProject().getId()).orElseThrow();
@@ -116,6 +121,7 @@ public class RequirementController {
                     original.getEffort(),
                     original.getSizeRequirement(),
                     original.getOrderRequirement(),
+                    idIteration,
                     projectData
             );
 
@@ -123,8 +129,8 @@ public class RequirementController {
             requirementData.setContInteration(original.getContInteration()+1);
             requirementData.setTitle(original.getTitle() + "+" + requirementData.getContInteration());
             repository.save(requirementData);
-            original.setContInteration(original.getContInteration()+1);
-            repository.save(original);
+            //original.setContInteration(original.getContInteration()+1);
+            //repository.save(original);
             response.put("project_id:", projectData.getId());
             response.put("requirement_id:", requirementData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -198,6 +204,9 @@ public class RequirementController {
             if (data.orderRequirement() != null) {
                 requirement.setOrderRequirement(data.orderRequirement());
             }
+            if (data.iterationId() != null) {
+                requirement.setIterationId(data.iterationId());
+            }
             repository.save(requirement);
             response.put("data_id:", requirement.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
@@ -209,6 +218,13 @@ public class RequirementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/list/iteration/{iterationId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<RequirementResponseDTO> getRequirementByIteration(@PathVariable String iterationId){
+        return repository.findByIteration(iterationId).stream().toList();
+    }
+
 
 
     @DeleteMapping("/{id}")

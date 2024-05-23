@@ -1,25 +1,16 @@
 package com.example.itera.controller.project;
 
-import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
-import com.example.itera.domain.nonFunctionalRequirement.NonFunctionalRequirement;
-import com.example.itera.domain.nonFunctionalRequirementProject.NonFunctionalRequirementProject;
 import com.example.itera.domain.requirement.Requirement;
-import com.example.itera.domain.risk.Risk;
-import com.example.itera.domain.role.Role;
-import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.iteration.IterationResponseDTO;
-import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRequestDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
 import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
-import com.example.itera.dto.role.RoleRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
-import com.example.itera.dto.nonFunctionalRequirement.NonFunctionalRequirementResponseDTO;
 import com.example.itera.dto.project.ProjectRequestDTO;
 import com.example.itera.dto.project.ProjectResponseDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
@@ -33,7 +24,6 @@ import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctiona
 import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
-import com.example.itera.repository.nonFunctionalRequirement.NonFunctionalRequirementRepository;
 import com.example.itera.repository. risk.RiskRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
@@ -424,9 +414,11 @@ public class ProjectController {
         for (RequirementResponseDTO requisito : listaRequisitos) {
             System.out.println("requisisto" + requisito.title());
             Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
-            BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
-            listaBacklog.add(data);
-            seq++;
+            if(iterationRepository.existsById(r.getIterationId())){
+                BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
+                listaBacklog.add(data);
+                seq++;
+            }
         }
         // Ordena a listaBacklog pelo campo orderRequirement em ordem crescente.
         return listaBacklog.stream()

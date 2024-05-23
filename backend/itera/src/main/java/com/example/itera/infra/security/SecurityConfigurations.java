@@ -71,6 +71,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE,  "/project/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/requirement").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/requirement/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/requirement/list/iteration/{iterationId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/requirement/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/requirement").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/requirement/{id}/iterated").hasRole("ADMIN")

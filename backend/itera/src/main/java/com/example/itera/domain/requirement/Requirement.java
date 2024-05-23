@@ -30,6 +30,7 @@ public class Requirement {
     private Integer contInteration = 0;
     private Integer progressiveBar = 0;
     private Boolean done = false;
+    private String iterationId = null;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
@@ -45,9 +46,10 @@ public class Requirement {
         this.effort = data.effort();
         this.sizeRequirement = data.sizeRequirement();
         this.orderRequirement = data.orderRequirement();
+        this.iterationId = data.iterationId();
     }
 
-    public Requirement(String title, String details, String complexity, String priority, Integer effort, Integer sizeRequirement, Integer orderRequirement, Project project){
+    public Requirement(String title, String details, String complexity, String priority, Integer effort, Integer sizeRequirement, Integer orderRequirement, String iterationId, Project project){
         this.title = title;
         this.details = details;
         this.complexity = complexity;
@@ -55,6 +57,7 @@ public class Requirement {
         this.effort = effort;
         this.sizeRequirement = sizeRequirement;
         this.orderRequirement = orderRequirement;
+        this.iterationId = iterationId;
         this.project = project;
     }
 }
