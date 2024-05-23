@@ -297,9 +297,9 @@ public class TaskController {
                                                  @RequestParam(name = "listName", required = false) String listName)throws ResourceNotFoundException {
         List<TaskResponseDTO> tasks;
         if(listName!=""){
-            tasks = taskRepository.findByIterationWithListName(id, listName).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+            tasks = taskRepository.findByIterationWithListName(id, listName);
         }else{
-            tasks = taskRepository.findByIteration(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+            tasks = taskRepository.findByIteration(id);
         }
 
         List<TaskListResponseDTO> listaTasks = new ArrayList<TaskListResponseDTO>();
