@@ -7,25 +7,36 @@ import ProgressiveBar from './ProgressiveBar.vue';
 const props = defineProps<{
   title: string
   tasks: Object[]
+  order?: number 
 }>()
 
+defineEmits(['titleClick'])
+
 const tasksList = ref<Object[]>(props.tasks)
+
+function updateRequirementOrder(evt: any) {
+  
+}
 
 </script>
 
 <template>
   <div class="flex flex-col h-fit gap-3 bg-whiteSmoke-900/50 dark:bg-jet-900/50 rounded p-3">
-    <div class="flex gap-2 items-center text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold">
+    <button
+      class="flex gap-2 items-center text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold"
+      @click="() => order ? $emit('titleClick', order) : {}"
+    >
       <FontAwesomeIcon
         icon="fa-solid fa-bars-staggered"
       />
 
       {{ title }}
-    </div>
+    </button>
 
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
       <draggable
         v-model="tasksList"
+        :move="updateRequirementOrder"
         group="people"
         @start="(drag: any) => drag = true"
         @end="(drag: any) => drag = false"

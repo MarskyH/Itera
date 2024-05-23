@@ -7,9 +7,8 @@ import { onMounted, ref } from "vue";
 interface BacklogRequirement extends models.BacklogRequirement {}
 
 const onLoad = ref<boolean>(false)
-/*
-const backlogRequirements = ref<BacklogRequirement[]>([])
 
+const backlogRequirements = ref<BacklogRequirement[]>([])
 
 const $backlogStore = useBacklogStore()
 const $route = useRoute()
@@ -21,7 +20,7 @@ onMounted(async ()=>{
     backlogRequirements.value = $backlogStore.backlogRequirements;
     onLoad.value = false
   })
-})*/
+})
 
 const tasks2 = [
   { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 20 },
@@ -38,15 +37,21 @@ const tasks2 = [
   >
     <TaskList
       title="Backlog"
-      :tasks="tasks2"
+      :tasks="backlogRequirements"
     />
     <TaskList
       title="Iteração 1"
+      title-link="project-iteration"
       :tasks="tasks2"
+      :order="1"
+      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: 1 } })"
     />
     <TaskList
       title="Iteração 1"
+      title-link="project-iteration"
       :tasks="tasks2"
+      :order="2"
+      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: 2 } })"
     />
   </div>
 </template>

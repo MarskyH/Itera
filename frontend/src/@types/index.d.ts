@@ -96,6 +96,7 @@ export namespace models {
     title: string
     priority: string
     progressiveBar: number
+    orderRequirement: number
   }
 
   export interface Project {

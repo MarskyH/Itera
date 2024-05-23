@@ -18,7 +18,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: false
+      requiresAuth: true
     },
     children: [
       {
@@ -40,7 +40,7 @@ export default [
           {
             path: '/meus-projetos',
             name: 'my-projects',
-            component: async () => await import('src/views/ProjectIteration/ProjectIteration.vue'),
+            component: async () => await import('src/views/MyProjects/MyProjectsView.vue'),
             meta: {
               title: 'Meus Projetos',
               icon: 'folder-open',
@@ -133,22 +133,25 @@ export default [
                 ]
               },
               {
-                path: ':projectId/tarefas',
-                name: 'project-tasks',
-                component: async () => await import('src/views/ProjectTasks/ProjectTasks.vue'),
+                path: ':projectId/iteracoes',
+                name: 'project-iterations',
+                component: async () => await import('src/views/ProjectTasks/ProjectBacklog.vue'),
                 meta: {
                   title: 'Projeto',
                   icon: 'folder-open',
                   sideViewComponent: RecentProjects
-                },
-                children: [
-                  {
-                    path: ':iterationId/iteracao',
-                    name: 'project-iteration',
-                    component: async () => await import('src/views/ProjectIteration/ProjectIteration.vue')
-                  },
-                ]
-              }
+                }
+              },
+              {
+                path: ':projectId/iteracoes/:iterationId',
+                name: 'project-iteration',
+                component: async () => await import('src/views/ProjectIteration/ProjectIteration.vue'),
+                meta: {
+                  title: 'Iteração',
+                  icon: 'folder-open',
+                  sideViewComponent: RecentProjects
+                }
+              },
             ]
           },
         ]

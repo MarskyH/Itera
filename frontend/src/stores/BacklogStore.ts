@@ -13,7 +13,8 @@ const backlogRequirementDefault = {
   idRequirement: "",
   title: "",
   priority: "",
-  progressiveBar: 0
+  progressiveBar: 0,
+  orderRequirement: 0
 }
 
 export const useBacklogStore = defineStore('Backlog', {
@@ -34,16 +35,28 @@ export const useBacklogStore = defineStore('Backlog', {
       })
 
       if (response?.status === 200) {
+        console.log(response.data)
         this.backlogRequirements = response.data?.map((elem: any) => {
           return {
             id: elem.id,
             idRequirement: elem.idRequirement,
             title: elem.title,
             priority: elem.priority,
-            progressiveBar: elem.progressiveBar
+            progressiveBar: elem.progressiveBar,
+            orderRequirement: elem.orderRequirement
           }
         })
       }
+    },
+
+    async updateBacklogRequirement(requirementData: BacklogRequirement) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/requirement/${requirementData.id}`,
+        body: { orderRequirement: requirementData.orderRequirement }
+      })
+
+      return response?.status === 200
     }
   }
 })

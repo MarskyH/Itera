@@ -16,7 +16,8 @@ const functionalRequirementDefault: FunctionalRequirement = {
   complexity: '',
   priority: '',
   effort: 0,
-  sizeRequirement: 0
+  sizeRequirement: 0,
+  progressiveBar: 0
 }
 
 export const useFunctionalRequirementStore = defineStore('FunctionalRequirement', {
@@ -42,7 +43,8 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
             complexity: elem.complexity,
             priority: elem.priority,
             effort: elem.effort,
-            sizeRequirement: elem.sizeRequirement
+            sizeRequirement: elem.sizeRequirement,
+            progressiveBar: elem.progressiveBar
           }
 
         })
@@ -62,7 +64,8 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
           complexity: response.data?.complexity,
           priority: response.data?.priority,
           effort: response.data?.effort,
-          sizeRequirement: response.data?.sizeRequirement
+          sizeRequirement: response.data?.sizeRequirement,
+          progressiveBar: response.data?.progressiveBar
         }
       }
     },
