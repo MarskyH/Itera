@@ -28,6 +28,7 @@ public class Task {
     private Timestamp startDate;
     private Timestamp endDate;
     private Integer orderTask;
+    private String listName;
 
     @Column(name = "task_type")
     private String taskType;
@@ -56,34 +57,37 @@ public class Task {
     @JsonIgnore
     private Iteration iteration;
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
+        this.listName = listName;
         this.taskType = taskType;
         this.taskRequirement = taskRequirementData;
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
+        this.listName = listName;
         this.taskType = taskType;
         this.taskImprovement = taskImprovementData;
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String taskType, TaskBug taskBugData, Iteration iterationData) {
+    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskBug taskBugData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
+        this.listName = listName;
         this.taskType = taskType;
         this.taskBug = taskBugData;
         this.iteration = iterationData;

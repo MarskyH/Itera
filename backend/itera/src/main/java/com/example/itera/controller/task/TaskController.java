@@ -67,15 +67,20 @@ public class TaskController {
     @Autowired
     TaskBugRepository taskBugRepository;
 
+    int order = 0;
+    String listName = "A fazer";
+
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTask(@RequestBody TaskRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        int order = 0;
         if(data.orderTask() == null){
             order = taskRepository.findByIteration(data.iteration_id()).size()+1;
         }else{
             order = data.orderTask();
+        }
+        if(data.listName() != null){
+            listName = data.listName();
         }
         try {
             Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
@@ -86,6 +91,7 @@ public class TaskController {
                     data.startDate(),
                     data.endDate(),
                     order,
+                    listName,
                     data.taskType(),
                     taskRequirementData,
                     iterationData
@@ -107,7 +113,6 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskRequirementRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        int order = 0;
         if( data.task().orderTask() == null){
             order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
         }else{
@@ -124,6 +129,7 @@ public class TaskController {
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
+                    listName,
                     data.task().taskType(),
                     (TaskRequirement) null,
                     iterationData
@@ -167,7 +173,6 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskImprovementRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        int order = 0;
         if( data.task().orderTask() == null){
             order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
         }else{
@@ -184,6 +189,7 @@ public class TaskController {
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
+                    listName,
                     data.task().taskType(),
                     (TaskImprovement) null,
                     iterationData
@@ -227,7 +233,6 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskBugRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        int order = 0;
         if( data.task().orderTask() == null){
             order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
         }else{
@@ -244,6 +249,7 @@ public class TaskController {
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
+                    listName,
                     data.task().taskType(),
                     (TaskBug) null,
                     iterationData
@@ -287,8 +293,15 @@ public class TaskController {
 
     @GetMapping("/iteration/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<TaskListResponseDTO> getTaskById(@PathVariable String id) throws ResourceNotFoundException {
-        List<TaskResponseDTO> tasks = taskRepository.findByIteration(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+    public List<TaskListResponseDTO> getTaskById(@PathVariable String id,
+                                                 @RequestParam(name = "listName", required = false) String listName)throws ResourceNotFoundException {
+        List<TaskResponseDTO> tasks;
+        if(listName!=""){
+            tasks = taskRepository.findByIterationWithListName(id, listName).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        }else{
+            tasks = taskRepository.findByIteration(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        }
+
         List<TaskListResponseDTO> listaTasks = new ArrayList<TaskListResponseDTO>();
         for(TaskResponseDTO task : tasks){
             Task dataTask = taskRepository.findById(task.id()).orElseThrow();

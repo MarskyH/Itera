@@ -142,6 +142,7 @@ CREATE TABLE task (
     priority VARCHAR(255),
     start_date TIMESTAMP,
     end_date TIMESTAMP,
+    list_name VARCHAR(20),
     order_task INTEGER,
     task_type TEXT,
     task_requirement_id TEXT,
