@@ -30,7 +30,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -283,12 +285,31 @@ public class TaskController {
 
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/iteration/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public TaskResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
-        return new TaskResponseDTO(task);
+    public List<TaskListResponseDTO> getTaskById(@PathVariable String id) throws ResourceNotFoundException {
+        List<TaskResponseDTO> tasks = taskRepository.findByIteration(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        List<TaskListResponseDTO> listaTasks = new ArrayList<TaskListResponseDTO>();
+        for(TaskResponseDTO task : tasks){
+            Task dataTask = taskRepository.findById(task.id()).orElseThrow();
+            TaskRequirement taskRequirement = new TaskRequirement();
+            TaskImprovement taskImprovement = new TaskImprovement();
+            TaskBug taskBug = new TaskBug();
+            if(dataTask.getTaskRequirement()!= null){
+                taskRequirement = dataTask.getTaskRequirement();
+            }
+            if(dataTask.getTaskRequirement()!= null){
+                taskImprovement = dataTask.getTaskImprovement();
+            }
+            if(dataTask.getTaskRequirement()!= null){
+                taskBug = dataTask.getTaskBug();
+            }
+            TaskListResponseDTO item = new TaskListResponseDTO(dataTask, taskRequirement, taskImprovement, taskBug);
+            listaTasks.add(item);
+        }
+        return listaTasks;
     }
+
 
 
     @PutMapping("type/requirement/{id}/check")

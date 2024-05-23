@@ -36,19 +36,19 @@ public class Task {
     @JoinColumn(name = "task_requirement_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private TaskRequirement taskRequirement;
+    private TaskRequirement taskRequirement = null;
 
     @OneToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "task_improvement_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private TaskImprovement taskImprovement;
+    private TaskImprovement taskImprovement = null;
 
     @OneToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "task_bug_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private TaskBug taskBug;
+    private TaskBug taskBug = null;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
