@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
@@ -19,9 +19,23 @@ const $backlogStore = useBacklogStore()
 
 
 async function updateRequirementOrder(evt: any) {
-  await $backlogStore.updateBacklogRequirement(evt.draggedContext.element?.idRequirement, evt.draggedContext.futureIndex).then(()=>{
-    console.log(evt.relatedContext.list)
-  })
+  setTimeout(() => {
+    let oldIndex = evt.draggedContext.index
+    let newIndex = evt.relatedContext.index
+    
+    let nextElements: any = []
+  
+    if (oldIndex < newIndex) {
+      nextElements = tasksList.value.slice(oldIndex)
+    } else {
+      nextElements = tasksList.value.slice(newIndex)
+    }
+    
+    nextElements.forEach(async (element: any, index: number) => {
+      console.log(element?.title, index)
+      await $backlogStore.updateBacklogRequirement(element?.idRequirement, index)
+    });
+  }, 500)
 }
 
 </script>
@@ -39,7 +53,7 @@ async function updateRequirementOrder(evt: any) {
 
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
       <draggable
-        v-model="tasksList"
+        :list="tasksList"
         :move="updateRequirementOrder"
         group="people"
         @start="(drag: any) => drag = true"
@@ -50,7 +64,7 @@ async function updateRequirementOrder(evt: any) {
       >
         <template #item="{ element }">
           <ActionGridItem
-            :icon="element.icon"
+            icon="bookmark"
             :title="element.title"
             @edit="() => { }"
             @remove="() => { }"

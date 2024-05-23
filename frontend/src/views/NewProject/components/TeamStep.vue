@@ -157,7 +157,7 @@ onMounted(async () => {
             placeholder: "R$ 0,00",
             required: true,
             mask: "currency",
-            validation: yup.number().required().min(1)
+            validation: yup.number().required().min(0)
           },
           {
             name: "dedicatedHours",
