@@ -40,51 +40,9 @@ const teamMemberForm = ref<any>(null)
 
 const users = ref<UserModel[]>([])
 
-const roles = ref<Role[]>([/*
-  {
-    id: 1,
-    name: 'Desenvolvedor Front-end',
-    skills: 'Capacidade de trabalhar em squads multidisciplinares',
-    abilities: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  },
-  {
-    id: 2,
-    name: 'Desenvolvedor Back-end',
-    skills: 'Capacidade de trabalhar em squads multidisciplinares',
-    abilities: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  },
-  {
-    id: 3,
-    name: 'Desenvolvedor Back-end',
-    skills: 'Capacidade de trabalhar em squads multidisciplinares',
-    abilities: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  }*/
-])
+const roles = ref<Role[]>([])
 
-const teamMembers = ref<TeamMember[]>([
-  /*
-  {
-    id: 1,
-    name: 'José Mendes',
-    hourlyRate: 3.0,
-    dedicatedHours: 6,
-    role: roles.find(role => role.id === 1)
-  },
-  {
-    id: 2,
-    name: 'Maria Silva',
-    hourlyRate: 3.0,
-    dedicatedHours: 6,
-    role: roles.find(role => role.id === 2)
-  },
-  {
-    id: 3,
-    name: 'Ana Santos',
-    hourlyRate: 3.0,
-    dedicatedHours: 6,
-    role: roles.find(role => role.id === 3)
-  }*/
-])
+const teamMembers = ref<TeamMember[]>([])
 
 yup.setLocale(yupErrorMessages);
 

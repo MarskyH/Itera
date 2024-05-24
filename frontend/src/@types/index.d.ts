@@ -192,6 +192,11 @@ export namespace models {
     name: string
   }
 
+  export interface TaskType {
+    id: number
+    name: string
+  }
+
   export interface RiskActionType {
     id: number
     name: string

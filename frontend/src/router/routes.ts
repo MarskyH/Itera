@@ -18,7 +18,7 @@ export default [
     name: 'protected',
     redirect: () => { return 'home' },
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
@@ -149,6 +149,16 @@ export default [
                 meta: {
                   title: 'Iteração',
                   icon: 'folder-open',
+                  sideViewComponent: RecentProjects
+                }
+              },
+              {
+                path: ':projectId/iteracoes/::iterationId/tarefa/novo',
+                name: 'project-iteration',
+                component: async () => await import('src/views/Task/Task.vue'),
+                meta: {
+                  title: 'Nova tarefa',
+                  icon: 'table-columns',
                   sideViewComponent: RecentProjects
                 }
               },
