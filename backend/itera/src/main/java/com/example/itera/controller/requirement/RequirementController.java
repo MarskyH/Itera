@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Responsável por fornecer endpoints para manipulação de requisitos
@@ -207,7 +208,7 @@ public class RequirementController {
             if (data.iterationId() != null) {
                 requirement.setIterationId(data.iterationId());
             }
-            if (data.iterationId() == null){
+            if (Objects.equals(data.iterationId(), "0")){
                 requirement.setIterationId(null);
             }
             repository.save(requirement);

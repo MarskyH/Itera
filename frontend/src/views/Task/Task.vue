@@ -18,6 +18,9 @@ const $projectStore = useProjectStore();
 const $taskTypeStore = useTaskTypeStore();
 const $router = useRouter();
 
+const taskForm = ref<any>(null)
+const formValidations: any = {};
+
 const taskTypesOptions = ref<Array<any>>([]);
 const selectedTaskType = ref<string>("");
 
@@ -46,6 +49,7 @@ let inputFields: InputFieldProps[] = [
     ],
     required: true,
     validation: yup.string().required(),
+    onChange: setTaskFormByType
   },
 ];
 
@@ -414,32 +418,38 @@ let inputFieldsBug: InputFieldProps[] = [
   },
 ];
 
-const formValidations: any = {};
+const typeTaskForm: {[key: string]: InputFieldProps[]} = {
+  '1': inputFieldsRequirement,
+  '2': inputFieldsImprovement,
+  '3': inputFieldsBug
+}
 
-const schema = computed(() => {
+const schema = ref<any>(() => {
   inputFields.forEach((inputField) => {
     formValidations[inputField.name] = inputField.validation;
   });
 
-  if (showAdditionalFields.value) {
-    const selectedType = selectedTaskType.value;
-    if (selectedType === "1") {
-      inputFieldsRequirement.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    } else if (selectedType === "2") {
-      inputFieldsImprovement.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    } else if (selectedType === "3") {
-      inputFieldsBug.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    }
-  }
-
-  return yup.object().shape(formValidations);
+  return yup.object(formValidations);
 });
+
+function setTaskFormByType() {
+  let removeFields = Object.keys(formValidations).filter((key: string) => key !== 'title' && key !== 'type')
+  removeFields.forEach((field: string) => {
+    delete formValidations[field]
+  })
+
+  let type: string = taskForm.value.values.type
+  let typeInputFields: InputFieldProps[] =  typeTaskForm[type]
+
+  typeInputFields.forEach((inputField) => {
+    formValidations[inputField.name] = inputField.validation;
+  });
+
+  schema.value = yup.object(formValidations)
+
+  inputFields = inputFields.filter((field: InputFieldProps) => field.name === 'title' || field.name === 'type')
+  inputFields = inputFields.concat(typeInputFields)
+}
 
 async function setTaskTypes() {
   await $taskTypeStore.fetchTaskTypes().then(() => {
@@ -453,24 +463,7 @@ function onSubmit(values: any) {
 }
 
 function handleContinue() {
-  showAdditionalFields.value = true;
-  const selectedType = "1";
-    if (selectedType === "1") {
-      console.log("select 1")
-      inputFieldsRequirement.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    } else if (selectedType === "2") {
-      console.log("select 2")
-      inputFieldsImprovement.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    } else if (selectedType === "3") {
-      console.log("select 3")
-      inputFieldsBug.forEach((inputField) => {
-        formValidations[inputField.name] = inputField.validation;
-      });
-    }
+
 }
 
 onMounted(async () => {
@@ -480,9 +473,10 @@ onMounted(async () => {
 
 <template>
   <Form
+    ref="taskForm"
     :validation-schema="schema"
     @submit="onSubmit"
-    class="flex flex-col gap-10 p-5 items-center"
+    class="flex flex-col gap-10 p-5 items-center overflow-auto"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
       <div

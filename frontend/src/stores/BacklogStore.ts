@@ -59,10 +59,11 @@ export const useBacklogStore = defineStore('Backlog', {
     },
 
     async updateBacklogRequirementIteration(requirementId: string, iterationId: string | undefined) {
+      console.log(requirementId, iterationId)
       const response = await Api.request({
         method: 'put',
         route: `/requirement/${requirementId}`,
-        body: { iterationId: iterationId || null }
+        body: { iterationId: iterationId || '0' }
       })
 
       return response?.status === 200

@@ -18,8 +18,8 @@ const tasksList = ref<Object[]>(props.tasks)
 
 const $backlogStore = useBacklogStore()
 
-function updateRequirementOrder(sliceIndex: number) {
-  tasksList.value.forEach(async (element: any, index: number) => {
+function updateRequirementOrder(requirementList: any[], sliceIndex: number) {
+  requirementList.forEach(async (element: any, index: number) => {
     if (index >= sliceIndex) {
       await $backlogStore.updateBacklogRequirement(element?.id, index)
     }
@@ -27,7 +27,6 @@ function updateRequirementOrder(sliceIndex: number) {
 }
 
 async function updateRequirementIteration(evt: any) {
-  console.log(evt.draggedContext.element.title)
   let movingRequirementId = evt.draggedContext.element.id
   let iterationId = evt.relatedContext.component.componentData.listId
 
@@ -41,15 +40,16 @@ async function moveRequirement(evt: any) {
 
     if(!newIndex) {      
       updateRequirementIteration(evt)
-      updateRequirementOrder(evt.draggedContext.futureIndex)
+      updateRequirementOrder(tasksList.value, evt.draggedContext.futureIndex)
+      updateRequirementOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
 
       return
     }
     
     if (oldIndex < newIndex) {
-      updateRequirementOrder(oldIndex)
+      updateRequirementOrder(tasksList.value, oldIndex)
     } else {
-      updateRequirementOrder(newIndex)
+      updateRequirementOrder(tasksList.value, newIndex)
     }
   }, 500)
 }
