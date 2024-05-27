@@ -409,14 +409,14 @@ public class ProjectController {
     public List<BacklogResponseDTO> getProjectBacklog(@PathVariable String id) {
         List<RequirementResponseDTO> listaRequisitos = requirementRepository.findByProject(id);
         List<BacklogResponseDTO> listaBacklog = new ArrayList<>();
-        int seq = 0;
+    
 
         for (RequirementResponseDTO requisito : listaRequisitos) {
             Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
             if(r.getIterationId()==null){
-                BacklogResponseDTO data = new BacklogResponseDTO(seq, r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
+                BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
                 listaBacklog.add(data);
-                seq++;
+                
             }
         }
         // Ordena a listaBacklog pelo campo orderRequirement em ordem crescente.
