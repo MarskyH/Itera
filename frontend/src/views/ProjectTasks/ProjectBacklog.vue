@@ -27,7 +27,6 @@ onMounted(async () => {
       backlogRequirements.value = $backlogStore.backlogRequirements;
       iterations.value = $iterationStore.iterations;
       onLoad.value = false
-      console.log(iterations)
     })
   })
 })
@@ -48,6 +47,7 @@ onMounted(async () => {
     <TaskList
       v-for="(iteration, index) in iterations"
       :key="iteration.id"
+      :list-id="iteration.id"
       :title="`Iteração ${index + 1}`"
       title-link="project-iteration"
       :tasks="iteration.requirements"

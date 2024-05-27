@@ -37,6 +37,7 @@ export const useIterationStore = defineStore('Iteration', {
 
       if (response?.status === 200) {
         console.log(response.data)
+
         this.iterations = response.data?.map((elem: any) => {
           return {
             id: elem.id,
@@ -58,7 +59,6 @@ export const useIterationStore = defineStore('Iteration', {
       })
 
       if (response?.status === 200) {
-        console.log(response.data)
         this.iterations = response.data?.map((elem: any) => {
           return {
             id: elem.id,

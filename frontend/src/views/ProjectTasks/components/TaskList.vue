@@ -9,6 +9,7 @@ const props = defineProps<{
   title: string
   tasks: Object[]
   order?: number
+  listId?: string
 }>()
 
 defineEmits(['titleClick'])
@@ -17,24 +18,39 @@ const tasksList = ref<Object[]>(props.tasks)
 
 const $backlogStore = useBacklogStore()
 
+function updateRequirementOrder(sliceIndex: number) {
+  tasksList.value.forEach(async (element: any, index: number) => {
+    if (index >= sliceIndex) {
+      await $backlogStore.updateBacklogRequirement(element?.id, index)
+    }
+  });
+}
 
-async function updateRequirementOrder(evt: any) {
-  setTimeout(() => {
+async function updateRequirementIteration(evt: any) {
+  console.log(evt.draggedContext.element.title)
+  let movingRequirementId = evt.draggedContext.element.id
+  let iterationId = evt.relatedContext.component.componentData.listId
+
+  await $backlogStore.updateBacklogRequirementIteration(movingRequirementId, iterationId)
+}
+
+async function moveRequirement(evt: any) {
+  setTimeout(async () => {
     let oldIndex = evt.draggedContext.index
     let newIndex = evt.relatedContext.index
-    
-    let nextElements: any = []
-  
-    if (oldIndex < newIndex) {
-      nextElements = tasksList.value.slice(oldIndex)
-    } else {
-      nextElements = tasksList.value.slice(newIndex)
+
+    if(!newIndex) {      
+      updateRequirementIteration(evt)
+      updateRequirementOrder(evt.draggedContext.futureIndex)
+
+      return
     }
     
-    nextElements.forEach(async (element: any, index: number) => {
-      console.log(element?.title, index)
-      await $backlogStore.updateBacklogRequirement(element?.idRequirement, index)
-    });
+    if (oldIndex < newIndex) {
+      updateRequirementOrder(oldIndex)
+    } else {
+      updateRequirementOrder(newIndex)
+    }
   }, 500)
 }
 
@@ -54,8 +70,9 @@ async function updateRequirementOrder(evt: any) {
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
       <draggable
         :list="tasksList"
-        :move="updateRequirementOrder"
+        :move="moveRequirement"
         group="people"
+        :component-data="{ listId }"
         @start="(drag: any) => drag = true"
         @end="(drag: any) => drag = false"
         item-key="id"

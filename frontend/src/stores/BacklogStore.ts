@@ -35,7 +35,6 @@ export const useBacklogStore = defineStore('Backlog', {
       })
 
       if (response?.status === 200) {
-        console.log(response.data)
         this.backlogRequirements = response.data?.map((elem: any) => {
           return {
             id: elem.id,
@@ -53,7 +52,17 @@ export const useBacklogStore = defineStore('Backlog', {
       const response = await Api.request({
         method: 'put',
         route: `/requirement/${requirementId}`,
-        body: { orderRequirement: futureIndex+1 }
+        body: { orderRequirement: futureIndex + 1 }
+      })
+
+      return response?.status === 200
+    },
+
+    async updateBacklogRequirementIteration(requirementId: string, iterationId: string | undefined) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/requirement/${requirementId}`,
+        body: { iterationId: iterationId || null }
       })
 
       return response?.status === 200

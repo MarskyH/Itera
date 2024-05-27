@@ -207,7 +207,7 @@ public class RequirementController {
             if (data.iterationId() != null) {
                 requirement.setIterationId(data.iterationId());
             }else{
-                requirement.setIterationId(null)
+                requirement.setIterationId(null);
             }
             repository.save(requirement);
             response.put("data_id:", requirement.getId());
