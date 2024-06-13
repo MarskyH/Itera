@@ -3,31 +3,146 @@
 import { computed, onMounted, ref } from "vue";
 import { Form } from 'vee-validate';
 import * as yup from 'yup';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue';
 import { InputFieldProps, models } from 'src/@types';
 import { useProjectStore } from 'src/stores/ProjectStore';
 import MaskedInput from 'src/components/MaskedInput.vue';
 import { useTaskTypeStore } from "src/stores/TaskTypeStore";
+import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 
 interface TaskType extends models.TaskType { }
 interface Project extends models.Project { }
 
 const $projectStore = useProjectStore();
 const $taskTypeStore = useTaskTypeStore();
-const $router = useRouter();
+const $functionalRequirementStore = useFunctionalRequirementStore();
+const $route = useRoute()
 
 const taskForm = ref<any>(null)
-const formValidations: any = {};
-
 const taskTypesOptions = ref<Array<any>>([]);
+const backlogIterarion = ref<Array<any>>([]);
 const selectedTaskType = ref<string>("");
-
-selectedTaskType.value = "1"
 const showAdditionalFields = ref<boolean>(false);
 
+const formValidations: any = {};
+
+backlogIterarion.value = [
+  {
+    id: "1",
+    title: "Title 1",
+    details: "Details 1",
+    complexity: "High",
+    priority: "Low",
+    effort: 10,
+    sizeRequirement: "Large",
+    progressiveBar: 50
+  },
+  {
+    id: "2",
+    title: "Title 2",
+    details: "Details 2",
+    complexity: "Medium",
+    priority: "High",
+    effort: 20,
+    sizeRequirement: "Medium",
+    progressiveBar: 75
+  },
+  {
+    id: "3",
+    title: "Title 3",
+    details: "Details 3",
+    complexity: "Low",
+    priority: "Medium",
+    effort: 15,
+    sizeRequirement: "Small",
+    progressiveBar: 60
+  },
+  {
+    id: "4",
+    title: "Title 4",
+    details: "Details 4",
+    complexity: "High",
+    priority: "High",
+    effort: 30,
+    sizeRequirement: "Large",
+    progressiveBar: 40
+  },
+  {
+    id: "5",
+    title: "Title 5",
+    details: "Details 5",
+    complexity: "Medium",
+    priority: "Low",
+    effort: 25,
+    sizeRequirement: "Medium",
+    progressiveBar: 90
+  },
+  {
+    id: "6",
+    title: "Title 6",
+    details: "Details 6",
+    complexity: "Low",
+    priority: "Medium",
+    effort: 5,
+    sizeRequirement: "Small",
+    progressiveBar: 20
+  },
+  {
+    id: "7",
+    title: "Title 7",
+    details: "Details 7",
+    complexity: "Medium",
+    priority: "Medium",
+    effort: 18,
+    sizeRequirement: "Large",
+    progressiveBar: 70
+  },
+  {
+    id: "8",
+    title: "Title 8",
+    details: "Details 8",
+    complexity: "High",
+    priority: "High",
+    effort: 22,
+    sizeRequirement: "Medium",
+    progressiveBar: 80
+  },
+  {
+    id: "9",
+    title: "Title 9",
+    details: "Details 9",
+    complexity: "Low",
+    priority: "Low",
+    effort: 12,
+    sizeRequirement: "Small",
+    progressiveBar: 30
+  },
+  {
+    id: "10",
+    title: "Title 10",
+    details: "Details 10",
+    complexity: "Medium",
+    priority: "High",
+    effort: 27,
+    sizeRequirement: "Large",
+    progressiveBar: 60
+  }
+];
+
+
 yup.setLocale(yupErrorMessages);
+
+const setSelectOptions = (options: { id: string; title: string }[]) => {
+  return options.length > 0 ? options.map((option: { id: string; title: string }) => {
+    return {
+      value: option.id,
+      name: option.title,
+      selected: false
+    }
+  }) : []
+}
 
 let inputFields: InputFieldProps[] = [
   {
@@ -59,7 +174,7 @@ let inputFieldsRequirement: InputFieldProps[] = [
     label: "Backlog",
     placeholder: "Selecione",
     type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
+    options: setSelectOptions(backlogIterarion.value),
     required: true,
     validation: yup.string().required(),
   },
@@ -455,7 +570,15 @@ async function setTaskTypes() {
   await $taskTypeStore.fetchTaskTypes().then(() => {
     taskTypesOptions.value = $taskTypeStore.types;
   });
+
 }
+
+async function setBacklogIteration() {
+  await $functionalRequirementStore.fetchFunctionalRequirementsByIteration(String($route.params.projectId)).then(() => {
+    backlogIterarion.value = $functionalRequirementStore.functionalRequirements;
+  });
+}
+
 
 function onSubmit(values: any) {
   let projectOnCreateData: Project = { ...values };
@@ -466,8 +589,13 @@ function handleContinue() {
 
 }
 
+
 onMounted(async () => {
-  await setTaskTypes();
+  console.log("onMouted")
+  await setTaskTypes().then(async()=>{
+    await setBacklogIteration();
+    console.log(backlogIterarion.value)
+  });
 });
 </script>
 
