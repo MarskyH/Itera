@@ -50,6 +50,27 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
         })
       }
     },
+    async fetchFunctionalRequirementsByIteration(iterationId: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `iteration/${iterationId}/requirements`
+      })
+      if (response?.status === 200) {
+        this.functionalRequirements = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            title: elem.title,
+            details: elem.details,
+            complexity: elem.complexity,
+            priority: elem.priority,
+            effort: elem.effort,
+            sizeRequirement: elem.sizeRequirement,
+            progressiveBar: elem.progressiveBar
+          }
+
+        })
+      }
+    },
 
     async fetchFunctionalRequirement(id: string) {
       const response = await Api.request({

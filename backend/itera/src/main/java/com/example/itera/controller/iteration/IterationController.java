@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +42,9 @@ public class IterationController {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    RequirementRepository requirementRepository;
 
     /**
      * Endpoint responsável por cadastrar um requisito funcional.
@@ -97,7 +101,30 @@ public class IterationController {
     public IterationResponseDTO getIterationById(@PathVariable String id) throws ResourceNotFoundException {
         Iteration iteration = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
         return new IterationResponseDTO(iteration);
+
     }
+
+    /**
+     * Endpoint responsável por retornar lista de requisitos por uma iteração específica, buscando pelo seu identificador.
+     *
+     * @param id Identificador único da iteração.
+     * @return Lista de requisitos no formato RequirementResponseDTO caso encontrado, caso contrário, retorna erro 404 (Not Found).
+     * @throws ResourceNotFoundException Exceção lançada caso a iteração não seja encontrada.
+     * @author Marcus Loureiro
+     * @see RequirementResponseDTO
+     * @since 13/06/2024
+     */
+    @GetMapping("/{id}/requirements")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<RequirementResponseDTO> getRequirementsByIterationId(@PathVariable String id) throws ResourceNotFoundException {
+        List<RequirementResponseDTO> requirements = requirementRepository.findByIteration(id);
+        if (requirements.isEmpty()) {
+            throw new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id);
+        }
+        return requirements;
+    }
+
+
 
 
     /**
