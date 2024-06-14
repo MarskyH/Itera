@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { Form } from 'vee-validate';
 import * as yup from 'yup';
 import { useRoute } from 'vue-router';
@@ -134,6 +134,11 @@ backlogIterarion.value = [
 
 yup.setLocale(yupErrorMessages);
 
+const isTaskFormEmpty = computed(() => {
+  console.log(!taskForm.value || !taskForm.value.values || !Object.keys(taskForm.value.values).length)
+  return !taskForm.value || !taskForm.value.values || !Object.keys(taskForm.value.values).length;
+});
+
 const setSelectOptions = (options: { id: string; title: string }[]) => {
   return options.length > 0 ? options.map((option: { id: string; title: string }) => {
     return {
@@ -183,7 +188,11 @@ let inputFieldsRequirement: InputFieldProps[] = [
     label: "Prioridade",
     placeholder: "Selecione",
     type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
+    options: [ 
+      { value: "Low", name: "Low", selected: false },
+      { value: "Medium", name: "Medium", selected: false },
+      { value: "High", name: "High", selected: false },
+    ],
     required: true,
     validation: yup.string().required(),
   },
@@ -192,7 +201,10 @@ let inputFieldsRequirement: InputFieldProps[] = [
     label: "Complexidade",
     placeholder: "Selecione",
     type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
+    options: [ 
+      { value: "Low", name: "Low", selected: false },
+      { value: "Medium", name: "Medium", selected: false },
+      { value: "High", name: "High", selected: false },],
     required: true,
     validation: yup.string().required(),
   },
@@ -201,14 +213,17 @@ let inputFieldsRequirement: InputFieldProps[] = [
     label: "Esforço",
     placeholder: "Digite o valor do esforço",
     required: true,
-    validation: yup.string().required().min(5),
+    validation: yup.string().required().min(1),
   },
   {
     name: "size",
     label: "Tamanho",
     placeholder: "Selecione",
     type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
+    options: [
+      { value: "Small", name: "Small", selected: false },
+      { value: "Medium", name: "Medium", selected: false },
+      { value: "Large", name: "Large", selected: false }],
     required: true,
     validation: yup.string().required(),
   },
@@ -585,8 +600,30 @@ function onSubmit(values: any) {
   console.log(projectOnCreateData);
 }
 
+watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
+  const selectedBacklog = backlogIterarion.value.find(backlog => backlog.id === newBacklogId);
+  if (selectedBacklog) {
+    taskForm.value.setFieldValue('title', selectedBacklog.title);
+    taskForm.value.setFieldValue('detail', selectedBacklog.details);
+    taskForm.value.setFieldValue('complexity', selectedBacklog.complexity);
+    taskForm.value.setFieldValue('priority', selectedBacklog.priority);
+    taskForm.value.setFieldValue('effort', selectedBacklog.effort);
+    taskForm.value.setFieldValue('size', selectedBacklog.sizeRequirement);
+  }
+}, { immediate: true });
+
 function handleContinue() {
 
+}
+
+function disableInputField(inputName: string){
+    const listInputs = ['title', 'detail', 'complexity', 'priority', 'effort', 'size']
+    let selectedBacklog: any = taskForm.value?.values.backlog || false 
+    console.log(selectedBacklog)
+    if(selectedBacklog && listInputs.includes(inputName)){
+      return true
+    } 
+    return false
 }
 
 
@@ -606,6 +643,7 @@ onMounted(async () => {
     @submit="onSubmit"
     class="flex flex-col gap-10 p-5 items-center overflow-auto"
   >
+  
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
       <div
         v-for="inputField in inputFields"
@@ -614,10 +652,12 @@ onMounted(async () => {
         <MaskedInput
           v-if="inputField.mask"
           v-bind="inputField"
+          :disabled="disableInputField(inputField.name)"
         />
         <InputField
           v-else
           v-bind="inputField"
+          :disabled="disableInputField(inputField.name)"
         />
       </div>
 
@@ -631,6 +671,7 @@ onMounted(async () => {
               v-if="inputField.mask"
               v-bind="inputField"
             />
+            
             <InputField
               v-else
               v-bind="inputField"
