@@ -3,12 +3,14 @@ package com.example.itera.controller.task;
 
 import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
+import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.domain.task.Task;
 import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
+import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.dto.task.*;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementRequestDTO;
@@ -293,7 +295,12 @@ public class TaskController {
         }
     }
 
-
+    @GetMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public TaskResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+        return new TaskResponseDTO(task);
+    }
 
     @GetMapping("/iteration/{id}")
     @ResponseStatus(code = HttpStatus.OK)
