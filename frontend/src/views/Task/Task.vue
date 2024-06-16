@@ -11,12 +11,15 @@ import { useProjectStore } from 'src/stores/ProjectStore';
 import MaskedInput from 'src/components/MaskedInput.vue';
 import { useTaskTypeStore } from "src/stores/TaskTypeStore";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
+import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 
 interface TaskType extends models.TaskType { }
 interface Project extends models.Project { }
+interface TeamMember extends models.TeamMember { }
 
 const $projectStore = useProjectStore();
 const $taskTypeStore = useTaskTypeStore();
+const $teamMemberStore = useTeamMemberStore()
 const $functionalRequirementStore = useFunctionalRequirementStore();
 const $route = useRoute()
 
@@ -25,6 +28,8 @@ const taskTypesOptions = ref<Array<any>>([]);
 const backlogIterarion = ref<Array<any>>([]);
 const selectedTaskType = ref<string>("");
 const showAdditionalFields = ref<boolean>(false);
+
+const teamMembers = ref<TeamMember[]>([])
 
 const formValidations: any = {};
 
@@ -149,6 +154,18 @@ const setSelectOptions = (options: { id: string; title: string }[]) => {
   }) : []
 }
 
+function getTeamMemberOptions() {
+  return teamMembers.value.length > 0
+    ? teamMembers.value.map((member: TeamMember) => {
+      return {
+        value: member.id ? member.id : '',
+        name: `${member?.user?.name} (${member.role.function})`,
+        selected: false
+      }
+    })
+    : []
+}
+
 let inputFields: InputFieldProps[] = [
   {
     name: "title",
@@ -173,385 +190,14 @@ let inputFields: InputFieldProps[] = [
   },
 ];
 
-let inputFieldsRequirement: InputFieldProps[] = [
-  {
-    name: "backlog",
-    label: "Backlog",
-    placeholder: "Selecione",
-    type: "select",
-    options: setSelectOptions(backlogIterarion.value),
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "priority",
-    label: "Prioridade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [ 
-      { value: "Low", name: "Low", selected: false },
-      { value: "Medium", name: "Medium", selected: false },
-      { value: "High", name: "High", selected: false },
-    ],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "complexity",
-    label: "Complexidade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [ 
-      { value: "Low", name: "Low", selected: false },
-      { value: "Medium", name: "Medium", selected: false },
-      { value: "High", name: "High", selected: false },],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "effort",
-    label: "Esforço",
-    placeholder: "Digite o valor do esforço",
-    required: true,
-    validation: yup.string().required().min(1),
-  },
-  {
-    name: "size",
-    label: "Tamanho",
-    placeholder: "Selecione",
-    type: "select",
-    options: [
-      { value: "Small", name: "Small", selected: false },
-      { value: "Medium", name: "Medium", selected: false },
-      { value: "Large", name: "Large", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "detail",
-    label: "Detalhamento",
-    placeholder: "Digite o detalhamento da tarefa",
-    type: "textarea",
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "requirementeAssignee",
-    label: "Responsável requisito",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "requirementProject",
-    label: "Prazo requisito",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "projectAssignee",
-    label: "Responsável projeto",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineProject",
-    label: "Prazo projeto",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "frontAssignee",
-    label: "Responsável front-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineFront",
-    label: "Prazo front-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "backAssignee",
-    label: "Responsável back-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineBack",
-    label: "Prazo back-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "testAssignee",
-    label: "Responsável testes",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineTest",
-    label: "Prazo testes",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-];
+const inputFieldsRequirement = ref<InputFieldProps[]>([]);
+const inputFieldsImprovement = ref<InputFieldProps[]>([]);
+const inputFieldsBug = ref<InputFieldProps[]>([]);
 
-let inputFieldsImprovement: InputFieldProps[] = [
-  {
-    name: "priority",
-    label: "Prioridade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "complexity",
-    label: "Complexidade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "effort",
-    label: "Esforço",
-    placeholder: "Digite o valor do esforço",
-    required: true,
-    validation: yup.string().required().min(5),
-  },
-  {
-    name: "size",
-    label: "Tamanho",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "detail",
-    label: "Detalhamento",
-    placeholder: "Digite o detalhamento da tarefa",
-    type: "textarea",
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "requirementeAssignee",
-    label: "Responsável requisito",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "requirementProject",
-    label: "Prazo requisito",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "projectAssignee",
-    label: "Responsável projeto",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineProject",
-    label: "Prazo projeto",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "frontAssignee",
-    label: "Responsável front-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineFront",
-    label: "Prazo front-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "backAssignee",
-    label: "Responsável back-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineBack",
-    label: "Prazo back-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "testAssignee",
-    label: "Responsável testes",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineTest",
-    label: "Prazo testes",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-];
-
-let inputFieldsBug: InputFieldProps[] = [
-  {
-    name: "priority",
-    label: "Prioridade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "complexity",
-    label: "Complexidade",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "effort",
-    label: "Esforço",
-    placeholder: "Digite o valor do esforço",
-    required: true,
-    validation: yup.string().required().min(5),
-  },
-  {
-    name: "size",
-    label: "Tamanho",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "detail",
-    label: "Detalhamento",
-    placeholder: "Digite o detalhamento da tarefa",
-    type: "textarea",
-    required: true,
-    validation: yup.string().required(),
-  },
-  {
-    name: "frontAssignee",
-    label: "Responsável front-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineFront",
-    label: "Prazo front-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "backAssignee",
-    label: "Responsável back-end",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineBack",
-    label: "Prazo back-end",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "testAssignee",
-    label: "Responsável testes",
-    placeholder: "Selecione",
-    type: "select",
-    options: [{ value: "1", name: "Teste", selected: false }],
-    required: false,
-    validation: yup.string(),
-  },
-  {
-    name: "deadlineTest",
-    label: "Prazo testes",
-    placeholder: "Digite o prazo para esta etapa",
-    type: "text",
-    required: false,
-    validation: yup.string(),
-  },
-];
-
-const typeTaskForm: {[key: string]: InputFieldProps[]} = {
-  '1': inputFieldsRequirement,
-  '2': inputFieldsImprovement,
-  '3': inputFieldsBug
+let typeTaskForm: { [key: string]: InputFieldProps[] } = {
+  '1': inputFieldsRequirement.value,
+  '2': inputFieldsImprovement.value,
+  '3': inputFieldsBug.value
 }
 
 const schema = ref<any>(() => {
@@ -569,7 +215,7 @@ function setTaskFormByType() {
   })
 
   let type: string = taskForm.value.values.type
-  let typeInputFields: InputFieldProps[] =  typeTaskForm[type]
+  let typeInputFields: InputFieldProps[] = typeTaskForm[type]
 
   typeInputFields.forEach((inputField) => {
     formValidations[inputField.name] = inputField.validation;
@@ -594,6 +240,11 @@ async function setBacklogIteration() {
   });
 }
 
+async function setTeamMembers() {
+  await $teamMemberStore.fetchTeamMembers(String($route.params.projectId)).then(() => {
+    teamMembers.value = $teamMemberStore.teamMembers
+  })
+}
 
 function onSubmit(values: any) {
   let projectOnCreateData: Project = { ...values };
@@ -616,98 +267,434 @@ function handleContinue() {
 
 }
 
-function disableInputField(inputName: string){
-    const listInputs = ['title', 'detail', 'complexity', 'priority', 'effort', 'size']
-    let selectedBacklog: any = taskForm.value?.values.backlog || false 
-    console.log(selectedBacklog)
-    if(selectedBacklog && listInputs.includes(inputName)){
-      return true
-    } 
-    return false
+function disableInputField(inputName: string) {
+  const listInputs = ['title', 'detail', 'complexity', 'priority', 'effort', 'size']
+  let selectedBacklog: any = taskForm.value?.values.backlog || false
+  console.log(selectedBacklog)
+  if (selectedBacklog && listInputs.includes(inputName)) {
+    return true
+  }
+  return false
 }
 
 
 onMounted(async () => {
-  console.log("onMouted")
-  await setTaskTypes().then(async()=>{
-    await setBacklogIteration();
-    console.log(backlogIterarion.value)
+  await setTaskTypes().then(async () => {
+    await setBacklogIteration().then(async () => {
+      await setTeamMembers().then(async () => {
+        inputFieldsRequirement.value = [
+          {
+            name: "backlog",
+            label: "Backlog",
+            placeholder: "Selecione",
+            type: "select",
+            options: setSelectOptions(backlogIterarion.value),
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "priority",
+            label: "Prioridade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [
+              { value: "Low", name: "Low", selected: false },
+              { value: "Medium", name: "Medium", selected: false },
+              { value: "High", name: "High", selected: false },
+            ],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "complexity",
+            label: "Complexidade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [
+              { value: "Low", name: "Low", selected: false },
+              { value: "Medium", name: "Medium", selected: false },
+              { value: "High", name: "High", selected: false },],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "effort",
+            label: "Esforço",
+            placeholder: "Digite o valor do esforço",
+            required: true,
+            validation: yup.string().required().min(1),
+          },
+          {
+            name: "size",
+            label: "Tamanho",
+            placeholder: "Selecione",
+            type: "select",
+            options: [
+              { value: "Small", name: "Small", selected: false },
+              { value: "Medium", name: "Medium", selected: false },
+              { value: "Large", name: "Large", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "detail",
+            label: "Detalhamento",
+            placeholder: "Digite o detalhamento da tarefa",
+            type: "textarea",
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "requirementeAssignee",
+            label: "Responsável requisito",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "requirementProject",
+            label: "Prazo requisito",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "projectAssignee",
+            label: "Responsável projeto",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineProject",
+            label: "Prazo projeto",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "frontAssignee",
+            label: "Responsável front-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineFront",
+            label: "Prazo front-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "backAssignee",
+            label: "Responsável back-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineBack",
+            label: "Prazo back-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "testAssignee",
+            label: "Responsável testes",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineTest",
+            label: "Prazo testes",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          }
+        ]
+
+        inputFieldsImprovement.value = [
+          {
+            name: "priority",
+            label: "Prioridade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "complexity",
+            label: "Complexidade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "effort",
+            label: "Esforço",
+            placeholder: "Digite o valor do esforço",
+            required: true,
+            validation: yup.string().required().min(5),
+          },
+          {
+            name: "size",
+            label: "Tamanho",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "detail",
+            label: "Detalhamento",
+            placeholder: "Digite o detalhamento da tarefa",
+            type: "textarea",
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "requirementeAssignee",
+            label: "Responsável requisito",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "requirementProject",
+            label: "Prazo requisito",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "projectAssignee",
+            label: "Responsável projeto",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineProject",
+            label: "Prazo projeto",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "frontAssignee",
+            label: "Responsável front-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineFront",
+            label: "Prazo front-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "backAssignee",
+            label: "Responsável back-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineBack",
+            label: "Prazo back-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "testAssignee",
+            label: "Responsável testes",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineTest",
+            label: "Prazo testes",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          }
+        ]
+
+        inputFieldsBug.value = [
+          {
+            name: "priority",
+            label: "Prioridade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "complexity",
+            label: "Complexidade",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "effort",
+            label: "Esforço",
+            placeholder: "Digite o valor do esforço",
+            required: true,
+            validation: yup.string().required().min(5),
+          },
+          {
+            name: "size",
+            label: "Tamanho",
+            placeholder: "Selecione",
+            type: "select",
+            options: [{ value: "1", name: "Teste", selected: false }],
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "detail",
+            label: "Detalhamento",
+            placeholder: "Digite o detalhamento da tarefa",
+            type: "textarea",
+            required: true,
+            validation: yup.string().required(),
+          },
+          {
+            name: "frontAssignee",
+            label: "Responsável front-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineFront",
+            label: "Prazo front-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "backAssignee",
+            label: "Responsável back-end",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineBack",
+            label: "Prazo back-end",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "testAssignee",
+            label: "Responsável testes",
+            placeholder: "Selecione",
+            type: "select",
+            options: getTeamMemberOptions(),
+            required: false,
+            validation: yup.string(),
+          },
+          {
+            name: "deadlineTest",
+            label: "Prazo testes",
+            placeholder: "Digite o prazo para esta etapa",
+            type: "text",
+            required: false,
+            validation: yup.string(),
+          }
+        ]
+
+        typeTaskForm['1'] = inputFieldsRequirement.value
+        typeTaskForm['2'] = inputFieldsImprovement.value
+        typeTaskForm['3'] = inputFieldsBug.value
+      })
+    });
   });
 });
 </script>
 
 <template>
-  <Form
-    ref="taskForm"
-    :validation-schema="schema"
-    @submit="onSubmit"
-    class="flex flex-col gap-10 p-5 items-center overflow-auto"
-  >
-  
+  <Form ref="taskForm" :validation-schema="schema" @submit="onSubmit"
+    class="flex flex-col gap-10 p-5 items-center overflow-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <div
-        v-for="inputField in inputFields"
-        :key="inputField.name"
-      >
-        <MaskedInput
-          v-if="inputField.mask"
-          v-bind="inputField"
-          :disabled="disableInputField(inputField.name)"
-        />
-        <InputField
-          v-else
-          v-bind="inputField"
-          :disabled="disableInputField(inputField.name)"
-        />
+      <div v-for="inputField in inputFields" :key="inputField.name">
+        <MaskedInput v-if="inputField.mask" v-bind="inputField" :disabled="disableInputField(inputField.name)" />
+        <InputField v-else v-bind="inputField" :disabled="disableInputField(inputField.name)" />
       </div>
 
       <template v-if="showAdditionalFields">
         <template v-if="selectedTaskType === '1'">
-          <div
-            v-for="inputField in inputFieldsRequirement"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
-            
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsRequirement" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '2'">
-          <div
-            v-for="inputField in inputFieldsImprovement"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsImprovement" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '3'">
-          <div
-            v-for="inputField in inputFieldsBug"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsBug" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
       </template>
@@ -716,22 +703,15 @@ onMounted(async () => {
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })"
-      >
+        @click="$router.push({ name: 'home' })">
         <span>Cancelar</span>
       </button>
-      <button
-        v-if="!showAdditionalFields"
-        @click.prevent="handleContinue"
-        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md"
-      >
+      <button v-if="!showAdditionalFields" @click.prevent="handleContinue"
+        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md">
         <span>Continuar</span>
       </button>
-      <button
-        v-if="showAdditionalFields"
-        type="submit"
-        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md"
-      >
+      <button v-if="showAdditionalFields" type="submit"
+        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md">
         <span>Salvar</span>
       </button>
     </div>
