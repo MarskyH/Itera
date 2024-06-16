@@ -470,6 +470,10 @@ public class TaskController {
                 task.setListName(data.listName());
             }
 
+            if(data.orderTask() != null){
+                task.setOrderTask(data.orderTask());
+            }
+
             if (data.iteration_id() != null) {
                 Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
                 task.setIteration(iteration);
@@ -510,6 +514,10 @@ public class TaskController {
             }
             if(data.listName() != null && !data.listName().equals(task.getListName())){
                 task.setListName(data.listName());
+            }
+
+            if(data.orderTask() != null){
+                task.setOrderTask(data.orderTask());
             }
 
             if (data.iteration_id() != null) {
@@ -553,6 +561,11 @@ public class TaskController {
             if(data.listName() != null && !data.listName().equals(task.getListName())){
                 task.setListName(data.listName());
             }
+
+            if(data.orderTask() != null){
+                task.setOrderTask(data.orderTask());
+            }
+
             if (data.iteration_id() != null) {
                 Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
                 task.setIteration(iteration);
