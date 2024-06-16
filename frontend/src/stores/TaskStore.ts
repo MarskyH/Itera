@@ -62,6 +62,31 @@ export const useTaskStore = defineStore('Task', {
       }
     },
 
+    async fetchIterationTasks(iterationId: string, listName: string ) {
+      const response = await Api.request({
+        method: 'get',
+        route: `task/iteration/${iterationId}`,
+        params: { listName }
+      })
+
+      if (response?.status === 200) {
+        this.tasks = response.data?.map((elem: any) => {
+          return {
+            id: elem.taskData.id,
+            title: elem.taskData.title,
+            priority: elem.taskData.priority,
+            startDate: elem.taskData.startDate,
+            endDate: elem.taskData.endDate,
+            taskType: elem.taskData.taskType,
+            taskrequirement_id: elem.taskData.taskrequirement_id,
+            taskimprovement_id: elem.taskData.taskimprovement_id,
+            taskbug_id: elem.taskData.taskbug_id,
+            iteration_id: elem.taskData.iteration_id,
+          }
+        })
+      }
+    },
+
     async fetchTask(id: string) {
       const response = await Api.request({
         method: 'get',

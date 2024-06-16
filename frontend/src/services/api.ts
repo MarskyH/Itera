@@ -2,9 +2,7 @@ import axios, { type AxiosError } from 'axios'
 import type { API } from 'src/@types'
 import LocalStorage from 'src/services/localStorage'
 
-
 const baseURL = import.meta.env.VITE_API_URL_LOCAL
-
 
 const Axios = axios.create({
   baseURL,

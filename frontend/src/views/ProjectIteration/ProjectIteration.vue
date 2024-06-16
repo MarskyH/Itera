@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import TaskList from './components/TaskList.vue';
-import { useRoute } from "vue-router";
+import IterationTaskList from './components/IterationTaskList.vue';
+import { useRoute, useRouter } from "vue-router";
 import { models } from "src/@types";
-import { useBacklogStore } from "src/stores/BacklogStore";
 import { onMounted, ref } from "vue";
-interface BacklogRequirement extends models.BacklogRequirement {}
+import { useTaskStore } from 'src/stores/TaskStore';
+interface Task extends models.Task { }
 
 
-const backlogRequirements = ref<BacklogRequirement[]>([])
+const iterationToDoTasks = ref<Task[]>([])
 const onLoad = ref<boolean>(false)
 
-const $backlogStore = useBacklogStore()
+const $taskStore = useTaskStore()
 const $route = useRoute()
+const $router = useRouter()
 
-/*onMounted(async ()=>{
+onMounted(async () => {
   onLoad.value = true
 
-  await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () =>{
-    backlogRequirements.value = $backlogStore.backlogRequirements;
+  await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'A fazer').then(async () => {
+    iterationToDoTasks.value = $taskStore.tasks;
     onLoad.value = false
   })
-})*/
+})
 
 const tasks2 = [
   { id: '1', title: 'Planejamento', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 35 },
@@ -35,21 +36,24 @@ const tasks2 = [
     v-if="!onLoad"
     class="flex gap-3 grow shrink-0 overflow-auto"
   >
-    <TaskList
+    <IterationTaskList
       title="A fazer"
-      :tasks="tasks2"
+      :tasks="iterationToDoTasks"
+      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })"
     />
-    <TaskList
+
+    <IterationTaskList
       title="Fazendo"
-      :tasks="tasks2"
+      :tasks="[]"
     />
-    <TaskList
+
+    <IterationTaskList
       title="Feito"
-      :tasks="tasks2"
+      :tasks="[]"
     />
-    <TaskList
+    <IterationTaskList
       title="Cancelado"
-      :tasks="tasks2"
+      :tasks="[]"
     />
   </div>
 </template>

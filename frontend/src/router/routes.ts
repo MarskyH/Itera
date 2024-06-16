@@ -153,8 +153,8 @@ export default [
                 }
               },
               {
-                path: ':projectId/iteracoes/:iterationId/tarefa/novo',
-                name: 'new-iteration-task',
+                path: ':projectId/iteracoes/:iterationId/tarefa/:taskId/edit',
+                name: 'iteration-task-edit',
                 component: async () => await import('src/views/Task/Task.vue'),
                 meta: {
                   title: 'Nova tarefa',

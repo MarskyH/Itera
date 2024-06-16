@@ -3,13 +3,28 @@ import { ref } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const props = defineProps<{
   title: string
   tasks: Object[]
 }>()
 
+const $router = useRouter()
+const $route = useRoute()
+
 const tasksList = ref<Object[]>(props.tasks)
+
+function openTaskForm(taskId: string) {
+  $router.push({ 
+    name: 'iteration-task-edit', 
+    params: { 
+      projectId: $route.params.projectId, 
+      iterationId: $route.params.iterationId,
+      taskId
+    }
+  })
+}
 
 </script>
 
@@ -35,11 +50,11 @@ const tasksList = ref<Object[]>(props.tasks)
       >
         <template #item="{element}">
           <ActionGridItem
-            :icon="element.icon"
+            icon="bookmark"
             :title="element.title"
             @edit="() => {}"
             @remove="() => {}"
-            @side-view-content-change="() => () => {}"
+            @side-view-content-change="() => openTaskForm(element.id)"
           >
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">
@@ -60,7 +75,7 @@ const tasksList = ref<Object[]>(props.tasks)
                 {{ element.responsible }}
               </span>
 
-              <ProgressiveBar :progress="element.progressiveBar" />
+              <ProgressiveBar :progress="0" />
             </div>
           </ActionGridItem>
         </template>
