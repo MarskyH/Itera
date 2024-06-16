@@ -16,8 +16,8 @@ public class TaskRequirement {
     private String id;
     private String details;
     private String complexity;
-    private String effort;
-    private String sizeTask;
+    private Integer effort;
+    private Integer sizeTask;
     private Boolean checkProject;
     private Boolean checkRequirement;
     private Boolean checkFront;
@@ -28,7 +28,7 @@ public class TaskRequirement {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    public TaskRequirement(String details, String complexity, String sizeTask, String effort, Task task) {
+    public TaskRequirement(String details, String complexity, Integer sizeTask, Integer effort, Task task) {
         this.details = details;
         this.complexity = complexity;
         this.sizeTask = sizeTask;

@@ -2,16 +2,22 @@ package com.example.itera.controller.requirement;
 
 
 
+import com.example.itera.controller.task.TaskController;
+import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
+import com.example.itera.dto.task.TaskRequestRequirementDTO;
+import com.example.itera.dto.task.TaskTaskRequirementRequestDTO;
+import com.example.itera.dto.taskRequirement.TaskRequirementRequestDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
+import com.example.itera.repository.task.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Responsável por fornecer endpoints para manipulação de requisitos
@@ -44,6 +47,13 @@ public class RequirementController {
 
     @Autowired
     IterationRepository iterationRepository;
+
+    @Autowired
+    TaskRepository taskRepository;
+
+    @Autowired
+    TaskController taskController;
+
 
     /**
      * Endpoint responsável por cadastrar um requisito funcional.
@@ -205,8 +215,10 @@ public class RequirementController {
             if (data.orderRequirement() != null) {
                 requirement.setOrderRequirement(data.orderRequirement());
             }
-            if (data.iterationId() != null) {
+            if (data.iterationId() != null && requirement.getIterationId() == null) {
+                Iteration iteration = iterationRepository.findById(data.iterationId()).orElseThrow(EntityNotFoundException::new);
                 requirement.setIterationId(data.iterationId());
+                createTask(iteration, requirement);
             }
             if (Objects.equals(data.iterationId(), "0")){
                 requirement.setIterationId(null);
@@ -221,6 +233,13 @@ public class RequirementController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private void createTask(Iteration iteration, Requirement requirement) {
+        TaskRequestRequirementDTO taskRequestDTO = new TaskRequestRequirementDTO(requirement.getTitle(),  requirement.getPriority(), iteration.getStartDate(), iteration.getEndDate(), 0, "A fazer", "Requisito", null, iteration.getId());
+        TaskRequirementRequestDTO taskRequirementRequestDTO = new TaskRequirementRequestDTO(requirement.getDetails(), requirement.getComplexity(), requirement.getSizeRequirement(), requirement.getEffort(), null);
+        TaskTaskRequirementRequestDTO data = new TaskTaskRequirementRequestDTO(taskRequestDTO, taskRequirementRequestDTO , null);
+        taskController.saveTaskRequirement(data);
     }
 
     @GetMapping("/list/iteration/{iterationId}")
@@ -243,6 +262,8 @@ public class RequirementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
 }
 
 

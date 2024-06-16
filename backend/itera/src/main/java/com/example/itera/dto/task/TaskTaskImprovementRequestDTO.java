@@ -7,6 +7,6 @@ import com.example.itera.dto.taskImprovement.TaskImprovementRequestDTO;
 import java.util.List;
 
 
-public record TaskTaskImprovementRequestDTO(TaskRequestDTO task, TaskImprovementRequestDTO taskImprovement, List<AssigneeRequestDTO> assignees) {
+public record TaskTaskImprovementRequestDTO(TaskRequestRequirementDTO task, TaskImprovementRequestDTO taskImprovement, List<AssigneeRequestDTO> assignees) {
 }
 

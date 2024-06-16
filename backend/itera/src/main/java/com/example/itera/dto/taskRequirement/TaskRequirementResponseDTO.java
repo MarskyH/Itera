@@ -5,7 +5,7 @@ import com.example.itera.domain.taskRequirement.TaskRequirement;
 
 import java.sql.Timestamp;
 
-public record TaskRequirementResponseDTO(String id, String details, String complexity, String sizeTask, String task_id,
+public record TaskRequirementResponseDTO(String id, String details, String complexity, Integer sizeTask, String task_id,
                                          Boolean checkProject, Boolean checkRequirement, Boolean checkFront, Boolean checkBack,
                                          Boolean checkTest) {
     public TaskRequirementResponseDTO(TaskRequirement taskRequirement){
