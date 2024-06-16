@@ -30,10 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Responsável por fornecer endpoints para manipulação de tarefas
@@ -303,25 +300,27 @@ public class TaskController {
     public List<TaskListResponseDTO> getTaskById(@PathVariable String id,
                                                  @RequestParam(name = "listName", required = false) String listName)throws ResourceNotFoundException {
         List<TaskResponseDTO> tasks;
-        if(listName!=""){
+        if(!Objects.equals(listName, "")){
+            listName = listName.replace("+", " ");
             tasks = taskRepository.findByIterationWithListName(id, listName);
         }else{
             tasks = taskRepository.findByIteration(id);
         }
 
-        List<TaskListResponseDTO> listaTasks = new ArrayList<TaskListResponseDTO>();
+        List<TaskListResponseDTO> listaTasks = new ArrayList<>();
         for(TaskResponseDTO task : tasks){
             Task dataTask = taskRepository.findById(task.id()).orElseThrow();
+
             TaskRequirement taskRequirement = new TaskRequirement();
             TaskImprovement taskImprovement = new TaskImprovement();
             TaskBug taskBug = new TaskBug();
             if(dataTask.getTaskRequirement()!= null){
                 taskRequirement = dataTask.getTaskRequirement();
             }
-            if(dataTask.getTaskRequirement()!= null){
+            if(dataTask.getTaskImprovement()!= null){
                 taskImprovement = dataTask.getTaskImprovement();
             }
-            if(dataTask.getTaskRequirement()!= null){
+            if(dataTask.getTaskBug()!= null){
                 taskBug = dataTask.getTaskBug();
             }
             TaskListResponseDTO item = new TaskListResponseDTO(dataTask, taskRequirement, taskImprovement, taskBug);

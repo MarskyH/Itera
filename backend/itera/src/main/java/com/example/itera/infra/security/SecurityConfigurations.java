@@ -100,6 +100,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE,  "/assignee/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/task").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/task/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/task/iteration/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/task/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/task").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/task/type/requirement").hasRole("ADMIN")
