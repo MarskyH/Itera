@@ -297,9 +297,9 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public TaskResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
+    public TaskGetResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
-        return new TaskResponseDTO(task);
+        return new TaskGetResponseDTO(task);
     }
 
     @GetMapping("/iteration/{id}")
