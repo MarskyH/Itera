@@ -106,6 +106,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,  "/task/type/requirement").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/task/type/improvement").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,  "/task/type/bug").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,  "/task/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/task/type/requirement/{id}/check").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/task/type/improvement/{id}/check").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,  "/task/type/bug/{id}/check").hasRole("ADMIN")

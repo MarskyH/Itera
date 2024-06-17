@@ -302,6 +302,143 @@ public class TaskController {
         return new TaskGetResponseDTO(task);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTaskById(@PathVariable String id, @RequestBody TaskGetResponseDTO data) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Task task = taskRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+
+            // Atualizar apenas os campos fornecidos pelo usuário
+            if (data.title() != null) {
+                task.setTitle(data.title());
+            }
+            if (data.priority() != null) {
+                task.setPriority(data.priority());
+            }
+            if (data.startDate() != null) {
+                task.setStartDate(data.startDate());
+            }
+            if (data.endDate() != null) {
+                task.setEndDate(data.endDate());
+            }
+            if (data.orderTask() != null) {
+                task.setOrderTask(data.orderTask());
+            }
+            if (data.listName() != null) {
+                task.setListName(data.listName());
+            }
+            if (data.taskType() != null) {
+                task.setTaskType(data.taskType());
+            }
+            if (data.taskRequirement() != null) {
+                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskRequirement().id()).orElse(null);
+                if (taskRequirement != null) {
+                    // Atualizar os campos do taskRequirement se existir
+                    if (data.taskRequirement().details() != null) {
+                        taskRequirement.setDetails(data.taskRequirement().details());
+                    }
+                    if (data.taskRequirement().complexity() != null) {
+                        taskRequirement.setComplexity(data.taskRequirement().complexity());
+                    }
+                    if (data.taskRequirement().sizeTask() != null) {
+                        taskRequirement.setSizeTask(data.taskRequirement().sizeTask());
+                    }
+                    if (data.taskRequirement().checkProject() != null) {
+                        taskRequirement.setCheckProject(data.taskRequirement().checkProject());
+                    }
+                    if (data.taskRequirement().checkRequirement() != null) {
+                        taskRequirement.setCheckRequirement(data.taskRequirement().checkRequirement());
+                    }
+                    if (data.taskRequirement().checkFront() != null) {
+                        taskRequirement.setCheckFront(data.taskRequirement().checkFront());
+                    }
+                    if (data.taskRequirement().checkBack() != null) {
+                        taskRequirement.setCheckBack(data.taskRequirement().checkBack());
+                    }
+                    if (data.taskRequirement().checkTest() != null) {
+                        taskRequirement.setCheckTest(data.taskRequirement().checkTest());
+                    }
+                    // Adicione outras atualizações de campos de taskRequirement conforme necessário
+                    task.setTaskRequirement(taskRequirement);
+                }
+            }
+            if (data.taskImprovement() != null) {
+                TaskImprovement taskImprovement = taskImprovementRepository.findById(data.taskImprovement().id()).orElse(null);
+                if (taskImprovement != null) {
+                    // Atualizar os campos do taskImprovement se existir
+                    if (data.taskImprovement().details() != null) {
+                        taskImprovement.setDetails(data.taskImprovement().details());
+                    }
+                    if (data.taskImprovement().complexity() != null) {
+                        taskImprovement.setComplexity(data.taskImprovement().complexity());
+                    }
+                    if (data.taskImprovement().sizeTask() != null) {
+                        taskImprovement.setSizeTask(data.taskImprovement().sizeTask());
+                    }
+                    if (data.taskImprovement().checkProject() != null) {
+                        taskImprovement.setCheckProject(data.taskImprovement().checkProject());
+                    }
+                    if (data.taskImprovement().checkRequirement() != null) {
+                        taskImprovement.setCheckRequirement(data.taskImprovement().checkRequirement());
+                    }
+                    if (data.taskImprovement().checkFront() != null) {
+                        taskImprovement.setCheckFront(data.taskImprovement().checkFront());
+                    }
+                    if (data.taskImprovement().checkBack() != null) {
+                        taskImprovement.setCheckBack(data.taskImprovement().checkBack());
+                    }
+                    if (data.taskImprovement().checkTest() != null) {
+                        taskImprovement.setCheckTest(data.taskImprovement().checkTest());
+                    }
+                    // Adicione outras atualizações de campos de taskImprovement conforme necessário
+                    task.setTaskImprovement(taskImprovement);
+                }
+            }
+            if (data.taskBug() != null) {
+                TaskBug taskBug = taskBugRepository.findById(data.taskBug().id()).orElse(null);
+                if (taskBug != null) {
+                    // Atualizar os campos do taskBug se existir
+                    if (data.taskBug().details() != null) {
+                        taskBug.setDetails(data.taskBug().details());
+                    }
+                    if (data.taskBug().complexity() != null) {
+                        taskBug.setComplexity(data.taskBug().complexity());
+                    }
+                    if (data.taskBug().sizeTask() != null) {
+                        taskBug.setSizeTask(data.taskBug().sizeTask());
+                    }
+                    if (data.taskBug().checkFront() != null) {
+                        taskBug.setCheckFront(data.taskBug().checkFront());
+                    }
+                    if (data.taskBug().checkBack() != null) {
+                        taskBug.setCheckBack(data.taskBug().checkBack());
+                    }
+                    if (data.taskBug().checkTest() != null) {
+                        taskBug.setCheckTest(data.taskBug().checkTest());
+                    }
+                    // Adicione outras atualizações de campos de taskBug conforme necessário
+                    task.setTaskBug(taskBug);
+                }
+            }
+            if (data.iteration_id() != null) {
+                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
+                task.setIteration(iteration);
+            }
+
+            taskRepository.save(task);
+            response.put("data_id", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     @GetMapping("/iteration/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public List<TaskListResponseDTO> getTaskById(@PathVariable String id,

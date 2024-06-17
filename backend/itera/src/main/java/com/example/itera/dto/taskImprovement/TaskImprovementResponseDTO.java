@@ -1,5 +1,6 @@
 package com.example.itera.dto.taskImprovement;
 
+import com.example.itera.domain.task.Task;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 
 public record TaskImprovementResponseDTO(String id, String details, String complexity, String sizeTask, String task_id,
@@ -18,5 +19,22 @@ public record TaskImprovementResponseDTO(String id, String details, String compl
                 taskImprovement != null && taskImprovement.getCheckBack() != null ? taskImprovement.getCheckBack() : false,
                 taskImprovement != null && taskImprovement.getCheckTest() != null ? taskImprovement.getCheckTest() : false
         );
+    }
+
+    public TaskImprovement toEntity() {
+        TaskImprovement taskImprovement = new TaskImprovement();
+        taskImprovement.setId(this.id);
+        taskImprovement.setDetails(this.details);
+        taskImprovement.setComplexity(this.complexity);
+        taskImprovement.setSizeTask(this.sizeTask);
+        Task task = new Task();
+        task.setId(this.task_id);
+        taskImprovement.setTask(task);
+        taskImprovement.setCheckProject(this.checkProject);
+        taskImprovement.setCheckRequirement(this.checkRequirement);
+        taskImprovement.setCheckFront(this.checkFront);
+        taskImprovement.setCheckBack(this.checkBack);
+        taskImprovement.setCheckTest(this.checkTest);
+        return taskImprovement;
     }
 }
