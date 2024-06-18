@@ -236,8 +236,8 @@ public class RequirementController {
     }
 
     private void createTask(Iteration iteration, Requirement requirement) {
-        TaskRequestRequirementDTO taskRequestDTO = new TaskRequestRequirementDTO(requirement.getTitle(),  requirement.getPriority(), iteration.getStartDate(), iteration.getEndDate(), 0, "A fazer", "Requisito", null, iteration.getId());
-        TaskRequirementRequestDTO taskRequirementRequestDTO = new TaskRequirementRequestDTO(requirement.getDetails(), requirement.getComplexity(), requirement.getSizeRequirement(), requirement.getEffort(), null);
+        TaskRequestRequirementDTO taskRequestDTO = new TaskRequestRequirementDTO(requirement.getTitle(),  requirement.getPriority(), requirement.getDetails(), requirement.getComplexity(), requirement.getEffort().toString(), requirement.getSizeRequirement() ,iteration.getStartDate(), iteration.getEndDate(), 0, "A fazer", "Requisito", null, iteration.getId());
+        TaskRequirementRequestDTO taskRequirementRequestDTO = new TaskRequirementRequestDTO( null);
         TaskTaskRequirementRequestDTO data = new TaskTaskRequirementRequestDTO(taskRequestDTO, taskRequirementRequestDTO , null);
         taskController.saveTaskRequirement(data);
     }
