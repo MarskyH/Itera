@@ -258,20 +258,20 @@ export namespace models {
     weight: number
   }
 
-  export interface Iteration{
-     id:string
-     number: number
-     startDate:string
-     endDate:string
-     active: Boolean
-     project_id:string
-     requirements: FunctionalRequirement[]
+  export interface Iteration {
+    id: string
+    number: number
+    startDate: string
+    endDate: string
+    active: Boolean
+    project_id: string
+    requirements: FunctionalRequirement[]
   }
 
-  export interface Assignee{
+  export interface Assignee {
     id: string
-    taskStep: string 
-    user_id: string 
+    taskStep: string
+    user_id: string
     task_id: string
   }
 
@@ -285,91 +285,94 @@ export namespace models {
     taskrequirement_id?: string
     taskimprovement_id?: string
     taskbug_id?: string
+    taskRequirement: TaskRequirement,
+    taskImprovement?: TaskImprovement
+    taskBug?: TaskBug
     iteration_id: string
   }
 
   export interface TaskRequirement {
-    id:string 
-    details:string 
-    complexity:string 
-    sizeTask:string 
-    task_id:string
-    checkProject:boolean 
-    checkRequirement:boolean 
-    checkFront:boolean 
-    checkBack:boolean
-    checkTest:boolean
-  }
-
-  export interface TaskImprovement {
-    id:string 
-    details:string 
-    complexity:string 
-    sizeTask:string 
-    task_id:string
-    checkProject:boolean 
-    checkRequirement:boolean 
-    checkFront:boolean 
-    checkBack:boolean
-    checkTest:boolean
-}
-
-export interface TaskBug {
     id: string
     details: string
     complexity: string
-    sizeTask: string
+    sizeTask: number
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
+
+  export interface TaskImprovement {
+    id: string
+    details: string
+    complexity: string
+    sizeTask: number
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
+
+  export interface TaskBug {
+    id: string
+    details: string
+    complexity: string
+    sizeTask: number
     task_id: string
     checkFront: boolean
     checkBack: boolean
     checkTest: boolean
-}
+  }
 
-export interface TaskOnCreate {
-  title: string
-  priority: string
-  startDate: string
-  endDate: string
-  taskType: string
-  taskrequirement_id?: string
-  taskimprovement_id?: string
-  taskbug_id?: string
-  iteration_id: string
-}
+  export interface TaskOnCreate {
+    title: string
+    priority: string
+    startDate: string
+    endDate: string
+    taskType: string
+    taskrequirement_id?: string
+    taskimprovement_id?: string
+    taskbug_id?: string
+    iteration_id: string
+  }
 
-export interface TaskRequirementOnCreate {
-  details:string 
-  complexity:string 
-  sizeTask:string 
-  task_id:string
-  checkProject:boolean 
-  checkRequirement:boolean 
-  checkFront:boolean 
-  checkBack:boolean
-  checkTest:boolean
-}
+  export interface TaskRequirementOnCreate {
+    details: string
+    complexity: string
+    sizeTask: number
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
 
-export interface TaskImprovementOnCreate {
-  details:string 
-  complexity:string 
-  sizeTask:string 
-  task_id:string
-  checkProject:boolean 
-  checkRequirement:boolean 
-  checkFront:boolean 
-  checkBack:boolean
-  checkTest:boolean
-}
+  export interface TaskImprovementOnCreate {
+    details: string
+    complexity: string
+    sizeTask: number
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
 
-export interface TaskBugOnCreate {
-  details: string
-  complexity: string
-  sizeTask: string
-  task_id: string
-  checkFront: boolean
-  checkBack: boolean
-  checkTest: boolean
-}
+  export interface TaskBugOnCreate {
+    details: string
+    complexity: string
+    sizeTask: number
+    task_id: string
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
 }
 
 export interface InputFieldProps {
@@ -425,19 +428,19 @@ export interface NonFunctionalRequirementForm {
 }
 
 export interface TaskRequirementForm {
-  task: Task 
-  taskRequirement: TaskRequirement 
+  task: Task
+  taskRequirement: TaskRequirement
   assignees: Assignee[]
 }
 
 export interface TaskImprovementForm {
-  task: Task 
-  taskImprovement : TaskImprovement 
+  task: Task
+  taskImprovement: TaskImprovement
   assignees: Assignee[]
 }
 
 export interface TaskBugForm {
-  task: Task 
-  taskBug: TaskBug 
+  task: Task
+  taskBug: TaskBug
   assignees: Assignee[]
 }

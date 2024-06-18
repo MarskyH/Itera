@@ -25,9 +25,40 @@ const taskDefault: Task = {
   startDate: "",
   endDate: "",
   taskType: "",
-  taskrequirement_id: "",
-  taskimprovement_id: "",
-  taskbug_id: "",
+  taskRequirement: {
+    id: '',
+    details: '',
+    complexity: '',
+    sizeTask: 0,
+    task_id: '',
+    checkProject: false,
+    checkRequirement: false,
+    checkFront: false,
+    checkBack: false,
+    checkTest: false
+  },
+  taskImprovement: {
+    id: '',
+    details: '',
+    complexity: '',
+    sizeTask: 0,
+    task_id: '',
+    checkProject: false,
+    checkRequirement: false,
+    checkFront: false,
+    checkBack: false,
+    checkTest: false
+  },
+  taskBug: {
+    id: '',
+    details: '',
+    complexity: '',
+    sizeTask: 0,
+    task_id: '',
+    checkFront: false,
+    checkBack: false,
+    checkTest: false
+  },
   iteration_id: "",
 }
 
@@ -62,7 +93,7 @@ export const useTaskStore = defineStore('Task', {
       }
     },
 
-    async fetchIterationTasks(iterationId: string, listName: string ) {
+    async fetchIterationTasks(iterationId: string, listName: string) {
       const response = await Api.request({
         method: 'get',
         route: `task/iteration/${iterationId}`,
@@ -93,6 +124,8 @@ export const useTaskStore = defineStore('Task', {
         route: `task/${id}`,
       })
 
+      console.log(response?.data)
+
       if (response?.status === 200) {
         this.task = {
           id: response.data.id,
@@ -101,9 +134,9 @@ export const useTaskStore = defineStore('Task', {
           startDate: response.data.startDate,
           endDate: response.data.endDate,
           taskType: response.data.taskType,
-          taskrequirement_id: response.data.taskrequirement_id,
-          taskimprovement_id: response.data.taskimprovement_id,
-          taskbug_id: response.data.taskbug_id,
+          taskRequirement: response.data.taskRequirement,
+          taskImprovement: response.data.taskImprovement,
+          taskBug: response.data.taskBug,
           iteration_id: response.data.iteration_id,
         }
       }
@@ -145,15 +178,15 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskRequirementCreateData: TaskRequirementOnCreate = {
-        details:taskRequirementData.details, 
-        complexity:taskRequirementData.complexity,  
-        sizeTask:taskRequirementData.sizeTask,  
-        task_id:taskRequirementData.task_id, 
-        checkProject:taskRequirementData.checkProject,  
-        checkRequirement:taskRequirementData.checkRequirement,  
-        checkFront:taskRequirementData.checkFront,  
-        checkBack:taskRequirementData.checkBack, 
-        checkTest:taskRequirementData.checkTest, 
+        details: taskRequirementData.details,
+        complexity: taskRequirementData.complexity,
+        sizeTask: taskRequirementData.sizeTask,
+        task_id: taskRequirementData.task_id,
+        checkProject: taskRequirementData.checkProject,
+        checkRequirement: taskRequirementData.checkRequirement,
+        checkFront: taskRequirementData.checkFront,
+        checkBack: taskRequirementData.checkBack,
+        checkTest: taskRequirementData.checkTest,
       }
 
       const taskRequirementForm: TaskRequirementForm = {
@@ -185,15 +218,15 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskImprovementCreateData: TaskImprovementOnCreate = {
-        details:taskImprovementData.details, 
-        complexity:taskImprovementData.complexity,  
-        sizeTask:taskImprovementData.sizeTask,  
-        task_id:taskImprovementData.task_id, 
-        checkProject:taskImprovementData.checkProject,  
-        checkRequirement:taskImprovementData.checkRequirement,  
-        checkFront:taskImprovementData.checkFront,  
-        checkBack:taskImprovementData.checkBack, 
-        checkTest:taskImprovementData.checkTest, 
+        details: taskImprovementData.details,
+        complexity: taskImprovementData.complexity,
+        sizeTask: taskImprovementData.sizeTask,
+        task_id: taskImprovementData.task_id,
+        checkProject: taskImprovementData.checkProject,
+        checkRequirement: taskImprovementData.checkRequirement,
+        checkFront: taskImprovementData.checkFront,
+        checkBack: taskImprovementData.checkBack,
+        checkTest: taskImprovementData.checkTest,
       }
 
       const taskImprovementForm: TaskImprovementForm = {
@@ -225,13 +258,13 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskBugCreateData: TaskBugOnCreate = {
-        details:taskBugData.details, 
-        complexity:taskBugData.complexity,  
-        sizeTask:taskBugData.sizeTask,  
-        task_id:taskBugData.task_id, 
-        checkFront:taskBugData.checkFront,  
-        checkBack:taskBugData.checkBack, 
-        checkTest:taskBugData.checkTest, 
+        details: taskBugData.details,
+        complexity: taskBugData.complexity,
+        sizeTask: taskBugData.sizeTask,
+        task_id: taskBugData.task_id,
+        checkFront: taskBugData.checkFront,
+        checkBack: taskBugData.checkBack,
+        checkTest: taskBugData.checkTest,
       }
 
       const taskBugForm: TaskBugForm = {
@@ -249,7 +282,7 @@ export const useTaskStore = defineStore('Task', {
       return (response?.status) ? response.status : 500
     },
 
-    
+
 
     async deleteTask(id: string) {
       const response = await Api.request({

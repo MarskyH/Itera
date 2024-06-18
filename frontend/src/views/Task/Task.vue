@@ -39,7 +39,7 @@ const taskDefault: Task = {
   iteration_id: "",
 }
 
-const task = ref<Task>({...taskDefault})
+const task = ref<Task>({ ...taskDefault })
 const taskForm = ref<any>(null)
 const taskTypesOptions = ref<Array<any>>([]);
 const backlogIterarion = ref<Array<any>>([]);
@@ -183,30 +183,7 @@ function getTeamMemberOptions() {
     : []
 }
 
-let inputFields: InputFieldProps[] = [
-  {
-    name: "title",
-    label: "Título da tarefa",
-    placeholder: "Digite o título da tarefa",
-    required: true,
-    validation: yup.string().required().min(5),
-  },
-  {
-    name: "type",
-    label: "Tipo da tarefa",
-    placeholder: "Selecione",
-    type: "select",
-    options: [
-      { value: "1", name: "Requisito", selected: false },
-      { value: "2", name: "Melhoria", selected: false },
-      { value: "3", name: "Bug", selected: false },
-    ],
-    required: true,
-    validation: yup.string().required(),
-    onChange: setTaskFormByType
-  },
-];
-
+const inputFields = ref<InputFieldProps[]>([]);
 const inputFieldsRequirement = ref<InputFieldProps[]>([]);
 const inputFieldsImprovement = ref<InputFieldProps[]>([]);
 const inputFieldsBug = ref<InputFieldProps[]>([]);
@@ -218,7 +195,7 @@ let typeTaskForm: { [key: string]: InputFieldProps[] } = {
 }
 
 const schema = ref<any>(() => {
-  inputFields.forEach((inputField) => {
+  inputFields.value.forEach((inputField) => {
     formValidations[inputField.name] = inputField.validation;
   });
 
@@ -229,7 +206,6 @@ async function setTask() {
   await $taskStore.fetchTask(String($route.params.taskId)).then(() => {
     task.value = $taskStore.task;
   });
-
 }
 
 function setTaskFormByType() {
@@ -247,8 +223,8 @@ function setTaskFormByType() {
 
   schema.value = yup.object(formValidations)
 
-  inputFields = inputFields.filter((field: InputFieldProps) => field.name === 'title' || field.name === 'type')
-  inputFields = inputFields.concat(typeInputFields)
+  inputFields.value = inputFields.value.filter((field: InputFieldProps) => field.name === 'title' || field.name === 'type')
+  inputFields.value = inputFields.value.concat(typeInputFields)
 }
 
 async function setTaskTypes() {
@@ -291,75 +267,73 @@ function handleContinue() {
 
 }
 
-function disableInputField(inputName: string) {
-  const listInputs = ['title', 'detail', 'complexity', 'priority', 'effort', 'size']
-  let selectedBacklog: any = taskForm.value?.values.backlog || false
-  console.log(selectedBacklog)
-  if (selectedBacklog && listInputs.includes(inputName)) {
-    return true
-  }
-  return false
-}
-
-
 onMounted(async () => {
   await setTaskTypes().then(async () => {
     await setBacklogIteration().then(async () => {
       await setTask().then(async () => {
         await setTeamMembers().then(async () => {
-          inputFieldsRequirement.value = [
+          inputFields.value = [
             {
-              name: "backlog",
-              label: "Backlog",
+              name: "title",
+              label: "Título da tarefa",
+              placeholder: "Digite o título da tarefa",
+              required: true,
+              validation: yup.string().required().min(5),
+              value: task.value.title,
+              disabled: true
+            },
+            {
+              name: "type",
+              label: "Tipo da tarefa",
               placeholder: "Selecione",
               type: "select",
-              options: setSelectOptions(backlogIterarion.value),
+              options: [
+                { value: "1", name: "Requisito", selected: false },
+                { value: "2", name: "Melhoria", selected: false },
+                { value: "3", name: "Bug", selected: false },
+              ],
               required: true,
               validation: yup.string().required(),
+              onChange: setTaskFormByType
             },
+          ];
+
+          inputFieldsRequirement.value = [
             {
               name: "priority",
               label: "Prioridade",
               placeholder: "Selecione",
-              type: "select",
-              options: [
-                { value: "Low", name: "Low", selected: false },
-                { value: "Medium", name: "Medium", selected: false },
-                { value: "High", name: "High", selected: false },
-              ],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.priority
             },
             {
               name: "complexity",
               label: "Complexidade",
               placeholder: "Selecione",
-              type: "select",
-              options: [
-                { value: "Low", name: "Low", selected: false },
-                { value: "Medium", name: "Medium", selected: false },
-                { value: "High", name: "High", selected: false },],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskRequirement.complexity
             },
             {
               name: "effort",
               label: "Esforço",
               placeholder: "Digite o valor do esforço",
               required: true,
+              disabled: true,
               validation: yup.string().required().min(1),
+              value: task.value.taskRequirement.effort
             },
             {
               name: "size",
               label: "Tamanho",
               placeholder: "Selecione",
-              type: "select",
-              options: [
-                { value: "Small", name: "Small", selected: false },
-                { value: "Medium", name: "Medium", selected: false },
-                { value: "Large", name: "Large", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskRequirement.sizeTask
             },
             {
               name: "detail",
@@ -367,7 +341,9 @@ onMounted(async () => {
               placeholder: "Digite o detalhamento da tarefa",
               type: "textarea",
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskRequirement.details
             },
             {
               name: "requirementeAssignee",
@@ -384,7 +360,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "projectAssignee",
@@ -401,7 +377,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "frontAssignee",
@@ -418,7 +394,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "backAssignee",
@@ -435,7 +411,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "testAssignee",
@@ -452,7 +428,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             }
           ]
 
@@ -461,35 +437,37 @@ onMounted(async () => {
               name: "priority",
               label: "Prioridade",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.priority
             },
             {
               name: "complexity",
               label: "Complexidade",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskImprovement?.complexity
             },
             {
               name: "effort",
               label: "Esforço",
               placeholder: "Digite o valor do esforço",
               required: true,
+              disabled: true,
               validation: yup.string().required().min(5),
+              value: task.value.taskImprovement?.effort
             },
             {
               name: "size",
               label: "Tamanho",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskImprovement?.sizeTask
             },
             {
               name: "detail",
@@ -497,7 +475,9 @@ onMounted(async () => {
               placeholder: "Digite o detalhamento da tarefa",
               type: "textarea",
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskImprovement?.details
             },
             {
               name: "requirementeAssignee",
@@ -514,7 +494,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "projectAssignee",
@@ -531,7 +511,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "frontAssignee",
@@ -548,7 +528,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "backAssignee",
@@ -565,7 +545,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "testAssignee",
@@ -582,7 +562,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             }
           ]
 
@@ -591,35 +571,37 @@ onMounted(async () => {
               name: "priority",
               label: "Prioridade",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.priority
             },
             {
               name: "complexity",
               label: "Complexidade",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskBug?.complexity
             },
             {
               name: "effort",
               label: "Esforço",
               placeholder: "Digite o valor do esforço",
               required: true,
+              disabled: true,
               validation: yup.string().required().min(5),
+              value: task.value.taskBug?.effort
             },
             {
               name: "size",
               label: "Tamanho",
               placeholder: "Selecione",
-              type: "select",
-              options: [{ value: "1", name: "Teste", selected: false }],
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskBug?.sizeTask
             },
             {
               name: "detail",
@@ -627,7 +609,9 @@ onMounted(async () => {
               placeholder: "Digite o detalhamento da tarefa",
               type: "textarea",
               required: true,
+              disabled: true,
               validation: yup.string().required(),
+              value: task.value.taskBug?.details
             },
             {
               name: "frontAssignee",
@@ -644,7 +628,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "backAssignee",
@@ -661,7 +645,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             },
             {
               name: "testAssignee",
@@ -678,7 +662,7 @@ onMounted(async () => {
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
               required: false,
-              validation: yup.string(),
+              validation: yup.number(),
             }
           ]
 
@@ -707,12 +691,10 @@ onMounted(async () => {
         <MaskedInput
           v-if="inputField.mask"
           v-bind="inputField"
-          :disabled="disableInputField(inputField.name)"
         />
         <InputField
           v-else
           v-bind="inputField"
-          :disabled="disableInputField(inputField.name)"
         />
       </div>
 
