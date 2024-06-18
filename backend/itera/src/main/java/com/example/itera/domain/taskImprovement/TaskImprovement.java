@@ -17,25 +17,17 @@ public class TaskImprovement {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String details;
-    private String complexity;
-    private String effort;
-    private String sizeTask;
-    private Boolean checkProject;
-    private Boolean checkRequirement;
-    private Boolean checkFront;
-    private Boolean checkBack;
-    private Boolean checkTest;
+    private Boolean checkProject = false;
+    private Boolean checkRequirement = false;
+    private Boolean checkFront = false;
+    private Boolean checkBack = false;
+    private Boolean checkTest = false;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
 
-    public TaskImprovement(String details, String complexity, String sizeTask, String effort, Task task) {
-        this.details = details;
-        this.complexity = complexity;
-        this.sizeTask = sizeTask;
-        this.effort = effort;
+    public TaskImprovement(Task task) {
         this.task = task;
     }
 }

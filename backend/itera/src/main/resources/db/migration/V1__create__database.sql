@@ -140,6 +140,10 @@ CREATE TABLE task (
     id TEXT PRIMARY KEY,
     title VARCHAR(255),
     priority VARCHAR(255),
+    details VARCHAR(255),
+    complexity VARCHAR(255),
+    effort VARCHAR(255),
+    size_task VARCHAR(255),
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     list_name VARCHAR(20),
@@ -153,10 +157,6 @@ CREATE TABLE task (
 
 CREATE TABLE task_requirement (
     id TEXT PRIMARY KEY,
-    details VARCHAR(255),
-    complexity VARCHAR(255),
-    effort VARCHAR(255),
-    size_task VARCHAR(255),
     check_project BOOLEAN DEFAULT false,
     check_requirement BOOLEAN DEFAULT false,
     check_front BOOLEAN DEFAULT false,
@@ -167,10 +167,6 @@ CREATE TABLE task_requirement (
 
 CREATE TABLE task_improvement (
     id TEXT PRIMARY KEY,
-    details VARCHAR(255),
-    complexity VARCHAR(255),
-    effort VARCHAR(255),
-    size_task VARCHAR(255),
     check_project BOOLEAN DEFAULT false,
     check_requirement BOOLEAN DEFAULT false,
     check_front BOOLEAN DEFAULT false,
@@ -181,10 +177,6 @@ CREATE TABLE task_improvement (
 
 CREATE TABLE task_bug (
     id TEXT PRIMARY KEY,
-    details VARCHAR(255),
-    complexity VARCHAR(255),
-    effort VARCHAR(255),
-    size_task VARCHAR(255),
     check_front BOOLEAN DEFAULT false,
     check_back BOOLEAN DEFAULT false,
     check_test BOOLEAN DEFAULT false,

@@ -88,6 +88,10 @@ public class TaskController {
             Task taskData = new Task(
                     data.title(),
                     data.priority(),
+                    data.details(),
+                    data.complexity(),
+                    data.effort(),
+                    data.sizeTask(),
                     data.startDate(),
                     data.endDate(),
                     order,
@@ -113,7 +117,6 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskRequirementRequestDTO data) {
         TaskRequestRequirementDTO dataTask = data.task();
-        TaskRequirementRequestDTO dataTaskRequirement = data.taskRequirement();
         Iteration iteration;
         iteration = iterationRepository.findById(data.task().iteration_id()).orElseThrow(EntityNotFoundException::new);
         Map<String, String> response = new HashMap<>();
@@ -126,6 +129,10 @@ public class TaskController {
             Task taskData = new Task(
                     dataTask.title(),
                     dataTask.priority(),
+                    dataTask.details(),
+                    dataTask.complexity(),
+                    dataTask.effort(),
+                    dataTask.sizeTask(),
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
@@ -137,10 +144,6 @@ public class TaskController {
             taskRepository.save(taskData); // Salve a Task primeiro
 
             TaskRequirement taskRequirementData = new TaskRequirement(
-                    dataTaskRequirement.details(),
-                    dataTaskRequirement.complexity(),
-                    dataTaskRequirement.sizeTask(),
-                    dataTaskRequirement.effort(),
                     taskData
             );
             taskRequirementRepository.save(taskRequirementData);
@@ -181,13 +184,16 @@ public class TaskController {
             order =  data.task().orderTask();
         }
         try {
-            TaskRequestRequirementDTO dataTask = data.task();
-            TaskImprovementRequestDTO dataTaskImprovement = data.taskImprovement();
+            TaskRequestImprovementDTO dataTask = data.task();
 
             Iteration iterationData = iterationRepository.findById(dataTask.iteration_id()).orElseThrow();
             Task taskData = new Task(
                     dataTask.title(),
                     dataTask.priority(),
+                    dataTask.details(),
+                    dataTask.complexity(),
+                    dataTask.effort(),
+                    dataTask.sizeTask(),
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
@@ -199,10 +205,6 @@ public class TaskController {
             taskRepository.save(taskData); // Salve a Task primeiro
 
             TaskImprovement taskImprovementData = new TaskImprovement(
-                    dataTaskImprovement.details(),
-                    dataTaskImprovement.complexity(),
-                    dataTaskImprovement.sizeTask(),
-                    dataTaskImprovement.effort(),
                     taskData
             );
             taskImprovementRepository.save(taskImprovementData);
@@ -243,13 +245,16 @@ public class TaskController {
             order =  data.task().orderTask();
         }
         try {
-            TaskRequestRequirementDTO dataTask = data.task();
-            TaskBugRequestDTO dataTaskBug = data.taskBug();
+            TaskRequestBugDTO dataTask = data.task();
 
             Iteration iterationData = iterationRepository.findById(dataTask.iteration_id()).orElseThrow();
             Task taskData = new Task(
                     dataTask.title(),
                     dataTask.priority(),
+                    dataTask.details(),
+                    dataTask.complexity(),
+                    dataTask.effort(),
+                    dataTask.sizeTask(),
                     dataTask.startDate(),
                     dataTask.endDate(),
                     order,
@@ -261,10 +266,6 @@ public class TaskController {
             taskRepository.save(taskData);
 
             TaskBug taskBugData = new TaskBug(
-                    dataTaskBug.details(),
-                    dataTaskBug.complexity(),
-                    dataTaskBug.sizeTask(),
-                    dataTaskBug.effort(),
                     taskData
             );
             taskBugRepository.save(taskBugData);
@@ -316,6 +317,18 @@ public class TaskController {
             if (data.priority() != null) {
                 task.setPriority(data.priority());
             }
+            if (data.details() != null) {
+                task.setDetails(data.details());
+            }
+            if (data.complexity() != null) {
+                task.setComplexity(data.complexity());
+            }
+            if (data.effort() != null) {
+                task.setEffort(data.effort());
+            }
+            if (data.sizeTask() != null) {
+                task.setSizeTask(data.sizeTask());
+            }
             if (data.startDate() != null) {
                 task.setStartDate(data.startDate());
             }
@@ -335,15 +348,6 @@ public class TaskController {
                 TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskRequirement().id()).orElse(null);
                 if (taskRequirement != null) {
                     // Atualizar os campos do taskRequirement se existir
-                    if (data.taskRequirement().details() != null) {
-                        taskRequirement.setDetails(data.taskRequirement().details());
-                    }
-                    if (data.taskRequirement().complexity() != null) {
-                        taskRequirement.setComplexity(data.taskRequirement().complexity());
-                    }
-                    if (data.taskRequirement().sizeTask() != null) {
-                        taskRequirement.setSizeTask(data.taskRequirement().sizeTask());
-                    }
                     if (data.taskRequirement().checkProject() != null) {
                         taskRequirement.setCheckProject(data.taskRequirement().checkProject());
                     }
@@ -367,15 +371,6 @@ public class TaskController {
                 TaskImprovement taskImprovement = taskImprovementRepository.findById(data.taskImprovement().id()).orElse(null);
                 if (taskImprovement != null) {
                     // Atualizar os campos do taskImprovement se existir
-                    if (data.taskImprovement().details() != null) {
-                        taskImprovement.setDetails(data.taskImprovement().details());
-                    }
-                    if (data.taskImprovement().complexity() != null) {
-                        taskImprovement.setComplexity(data.taskImprovement().complexity());
-                    }
-                    if (data.taskImprovement().sizeTask() != null) {
-                        taskImprovement.setSizeTask(data.taskImprovement().sizeTask());
-                    }
                     if (data.taskImprovement().checkProject() != null) {
                         taskImprovement.setCheckProject(data.taskImprovement().checkProject());
                     }
@@ -399,15 +394,6 @@ public class TaskController {
                 TaskBug taskBug = taskBugRepository.findById(data.taskBug().id()).orElse(null);
                 if (taskBug != null) {
                     // Atualizar os campos do taskBug se existir
-                    if (data.taskBug().details() != null) {
-                        taskBug.setDetails(data.taskBug().details());
-                    }
-                    if (data.taskBug().complexity() != null) {
-                        taskBug.setComplexity(data.taskBug().complexity());
-                    }
-                    if (data.taskBug().sizeTask() != null) {
-                        taskBug.setSizeTask(data.taskBug().sizeTask());
-                    }
                     if (data.taskBug().checkFront() != null) {
                         taskBug.setCheckFront(data.taskBug().checkFront());
                     }
@@ -582,189 +568,6 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PutMapping("/{id}/type/requirement")
-    public ResponseEntity<?> updateTask(@PathVariable String id, @RequestBody TaskRequestRequirementDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.title() != null) {
-                task.setTitle(data.title());
-            }
-            if (data.priority() != null) {
-                task.setPriority(data.priority());
-            }
-            if (data.startDate() != null) {
-                task.setStartDate(data.startDate());
-            }
-            if (data.endDate() != null) {
-                task.setEndDate(data.endDate());
-            }
-            if (data.taskrequirement_id() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskrequirement_id()).orElseThrow();
-                task.setTaskRequirement(taskRequirement);
-            }
-            if (data.taskrequirement_id() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskrequirement_id()).orElseThrow();
-                task.setTaskRequirement(taskRequirement);
-            }
-            if(data.listName() != null && !data.listName().equals(task.getListName())){
-                task.setListName(data.listName());
-            }
-
-            if(data.orderTask() != null){
-                task.setOrderTask(data.orderTask());
-            }
-
-            if (data.iteration_id() != null) {
-                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
-                task.setIteration(iteration);
-            }
-            taskRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    @PutMapping("/{id}/type/improvement")
-    public ResponseEntity<?> updateTaskImprovement(@PathVariable String id, @RequestBody TaskRequestImprovementDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.title() != null) {
-                task.setTitle(data.title());
-            }
-            if (data.priority() != null) {
-                task.setPriority(data.priority());
-            }
-            if (data.startDate() != null) {
-                task.setStartDate(data.startDate());
-            }
-            if (data.endDate() != null) {
-                task.setEndDate(data.endDate());
-            }
-            if (data.taskimprovement_id() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskimprovement_id()).orElseThrow();
-                task.setTaskRequirement(taskRequirement);
-            }
-            if(data.listName() != null && !data.listName().equals(task.getListName())){
-                task.setListName(data.listName());
-            }
-
-            if(data.orderTask() != null){
-                task.setOrderTask(data.orderTask());
-            }
-
-            if (data.iteration_id() != null) {
-                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
-                task.setIteration(iteration);
-            }
-            taskRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    @PutMapping("/{id}/type/bug")
-    public ResponseEntity<?> updateTaskBug(@PathVariable String id, @RequestBody TaskRequestBugDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.title() != null) {
-                task.setTitle(data.title());
-            }
-            if (data.priority() != null) {
-                task.setPriority(data.priority());
-            }
-            if (data.startDate() != null) {
-                task.setStartDate(data.startDate());
-            }
-            if (data.endDate() != null) {
-                task.setEndDate(data.endDate());
-            }
-            if (data.taskbug_id() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskbug_id()).orElseThrow();
-                task.setTaskRequirement(taskRequirement);
-            }
-            if(data.listName() != null && !data.listName().equals(task.getListName())){
-                task.setListName(data.listName());
-            }
-
-            if(data.orderTask() != null){
-                task.setOrderTask(data.orderTask());
-            }
-
-            if (data.iteration_id() != null) {
-                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
-                task.setIteration(iteration);
-            }
-            taskRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-/*
-    @PutMapping("/type/requirement/{id}")
-    public ResponseEntity<?> updateTaskRequirement(@PathVariable String id, @RequestBody TaskTaskRequirementRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Task task = taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.title() != null) {
-                task.setTitle(data.title());
-            }
-            if (data.priority() != null) {
-                task.setPriority(data.priority());
-            }
-            if (data.startDate() != null) {
-                task.setStartDate(data.startDate());
-            }
-            if (data.endDate() != null) {
-                task.setEndDate(data.endDate());
-            }
-            if (data.taskrequirement_id() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskrequirement_id()).orElseThrow();
-                task.setTaskRequirement(taskRequirement);
-            }
-            if (data.iteration_id() != null) {
-                Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
-                task.setIteration(iteration);
-            }
-            taskRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-*/
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         try {

@@ -25,6 +25,10 @@ public class Task {
     private String id;
     private String title;
     private String priority;
+    private String details;
+    private String complexity;
+    private String effort;
+    private Integer sizeTask;
     private Timestamp startDate;
     private Timestamp endDate;
     private Integer orderTask;
@@ -57,9 +61,13 @@ public class Task {
     @JsonIgnore
     private Iteration iteration;
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
+        this.details = details;
+        this.complexity = complexity;
+        this.effort = effort;
+        this.sizeTask = sizeTask;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
@@ -69,9 +77,13 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
+        this.details = details;
+        this.complexity = complexity;
+        this.effort = effort;
+        this.sizeTask = sizeTask;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
@@ -81,9 +93,13 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskBug taskBugData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskBug taskBugData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
+        this.details = details;
+        this.complexity = complexity;
+        this.effort = effort;
+        this.sizeTask = sizeTask;
         this.startDate = startDate;
         this.endDate = endDate;
         this.orderTask = orderTask;
