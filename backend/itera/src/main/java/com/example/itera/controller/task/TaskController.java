@@ -1,6 +1,7 @@
 package com.example.itera.controller.task;
 
 
+import com.example.itera.controller.Assignee.AssigneeController;
 import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.requirement.Requirement;
@@ -66,6 +67,9 @@ public class TaskController {
 
     @Autowired
     TaskBugRepository taskBugRepository;
+
+    @Autowired
+    AssigneeController assigneeController;
 
 
     int order = 0;
@@ -417,11 +421,16 @@ public class TaskController {
             if (data.assigneies() != null){
                 for (AssigneeResponseDTO assignee : data.assigneies()) {
                     Assignee assigneeData = assigneeRepository.findById(assignee.id()).orElseThrow(null);
-                    assigneeData.setDeadline(assignee.deadline());
-                    assigneeData.setTaskStep(assignee.taskStep());
-                    assigneeData.setUser(userRepository.findById(assignee.id()).orElseThrow(null));
-                    assigneeData.setTask(task);
-                    assigneeRepository.save(assigneeData);
+                    if(assigneeData != null){
+                        assigneeData.setDeadline(assignee.deadline());
+                        assigneeData.setTaskStep(assignee.taskStep());
+                        assigneeData.setUser(userRepository.findById(assignee.user_id()).orElseThrow(null));
+                        assigneeData.setTask(task);
+                        assigneeRepository.save(assigneeData);
+                    }else{
+                        assigneeController.saveAssignee(new AssigneeRequestDTO(assignee.taskStep(), assignee.deadline(), assignee.user_id(), assignee.task_id()));
+                    }
+
                 }
             }
             taskRepository.save(task);

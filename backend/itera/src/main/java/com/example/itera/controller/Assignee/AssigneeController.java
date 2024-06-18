@@ -106,6 +106,9 @@ public class AssigneeController {
                 User newUser = userRepository.findById(data.user_id()).orElseThrow(EntityNotFoundException::new);
                 assignee.setUser(newUser);
             }
+            if(data.deadline() != null){
+                assignee.setDeadline(data.deadline());
+            }
             if (data.task_id() != null) {
                 Task newTask = taskRepository.findById(data.task_id()).orElseThrow(EntityNotFoundException::new);
                 assignee.setTask(newTask);
