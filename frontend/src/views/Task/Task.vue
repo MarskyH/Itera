@@ -30,6 +30,10 @@ const taskDefault: Task = {
   id: "",
   title: "",
   priority: "",
+  details: "",
+  complexity: "",
+  effort: "",
+  sizeTask: 0,
   startDate: "",
   endDate: "",
   taskType: "",
@@ -315,7 +319,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskRequirement.complexity
+              value: task.value.complexity
             },
             {
               name: "effort",
@@ -324,7 +328,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required().min(1),
-              value: task.value.taskRequirement.effort
+              value: task.value.effort
             },
             {
               name: "size",
@@ -333,7 +337,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskRequirement.sizeTask
+              value: task.value.sizeTask.toString()
             },
             {
               name: "detail",
@@ -343,7 +347,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskRequirement.details
+              value: task.value.details
             },
             {
               name: "requirementeAssignee",
@@ -449,7 +453,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskImprovement?.complexity
+              value: task.value.complexity
             },
             {
               name: "effort",
@@ -458,7 +462,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required().min(5),
-              value: task.value.taskImprovement?.effort
+              value: task.value.effort
             },
             {
               name: "size",
@@ -467,7 +471,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskImprovement?.sizeTask
+              value: task.value.sizeTask.toString()
             },
             {
               name: "detail",
@@ -477,7 +481,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskImprovement?.details
+              value: task.value.details
             },
             {
               name: "requirementeAssignee",
@@ -583,7 +587,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskBug?.complexity
+              value: task.value.complexity
             },
             {
               name: "effort",
@@ -592,7 +596,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required().min(5),
-              value: task.value.taskBug?.effort
+              value: task.value.effort
             },
             {
               name: "size",
@@ -601,7 +605,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskBug?.sizeTask
+              value: task.value.sizeTask.toString()
             },
             {
               name: "detail",
@@ -611,7 +615,7 @@ onMounted(async () => {
               required: true,
               disabled: true,
               validation: yup.string().required(),
-              value: task.value.taskBug?.details
+              value: task.value.details
             },
             {
               name: "frontAssignee",

@@ -279,13 +279,17 @@ export namespace models {
     id: string
     title: string
     priority: string
+    details: string
+    complexity: string
+    effort: string
+    sizeTask: number
     startDate: string
     endDate: string
     taskType: string
     taskrequirement_id?: string
     taskimprovement_id?: string
     taskbug_id?: string
-    taskRequirement: TaskRequirement,
+    taskRequirement?: TaskRequirement,
     taskImprovement?: TaskImprovement
     taskBug?: TaskBug
     iteration_id: string
@@ -293,9 +297,6 @@ export namespace models {
 
   export interface TaskRequirement {
     id: string
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkProject: boolean
     checkRequirement: boolean
@@ -306,9 +307,6 @@ export namespace models {
 
   export interface TaskImprovement {
     id: string
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkProject: boolean
     checkRequirement: boolean
@@ -319,9 +317,6 @@ export namespace models {
 
   export interface TaskBug {
     id: string
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkFront: boolean
     checkBack: boolean
@@ -331,6 +326,10 @@ export namespace models {
   export interface TaskOnCreate {
     title: string
     priority: string
+    details: string
+    complexity: string
+    effort: string
+    sizeTask: number
     startDate: string
     endDate: string
     taskType: string
@@ -341,9 +340,6 @@ export namespace models {
   }
 
   export interface TaskRequirementOnCreate {
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkProject: boolean
     checkRequirement: boolean
@@ -353,9 +349,6 @@ export namespace models {
   }
 
   export interface TaskImprovementOnCreate {
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkProject: boolean
     checkRequirement: boolean
@@ -365,9 +358,6 @@ export namespace models {
   }
 
   export interface TaskBugOnCreate {
-    details: string
-    complexity: string
-    sizeTask: number
     task_id: string
     checkFront: boolean
     checkBack: boolean

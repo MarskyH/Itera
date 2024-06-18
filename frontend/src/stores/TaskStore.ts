@@ -21,15 +21,16 @@ interface State {
 const taskDefault: Task = {
   id: "",
   title: "",
+  details: '',
+  complexity: '',
+  effort:'',
+  sizeTask: 0,
   priority: "",
   startDate: "",
   endDate: "",
   taskType: "",
   taskRequirement: {
     id: '',
-    details: '',
-    complexity: '',
-    sizeTask: 0,
     task_id: '',
     checkProject: false,
     checkRequirement: false,
@@ -39,9 +40,6 @@ const taskDefault: Task = {
   },
   taskImprovement: {
     id: '',
-    details: '',
-    complexity: '',
-    sizeTask: 0,
     task_id: '',
     checkProject: false,
     checkRequirement: false,
@@ -51,9 +49,6 @@ const taskDefault: Task = {
   },
   taskBug: {
     id: '',
-    details: '',
-    complexity: '',
-    sizeTask: 0,
     task_id: '',
     checkFront: false,
     checkBack: false,
@@ -81,6 +76,10 @@ export const useTaskStore = defineStore('Task', {
             id: elem.id,
             title: elem.title,
             priority: elem.priority,
+            details: elem.taskData.details,
+            complexity: elem.taskData.complexity,
+            effort: elem.taskData.effort,
+            sizeTask: elem.taskData.sizeTask,
             startDate: elem.startDate,
             endDate: elem.endDate,
             taskType: elem.taskType,
@@ -106,6 +105,10 @@ export const useTaskStore = defineStore('Task', {
             id: elem.taskData.id,
             title: elem.taskData.title,
             priority: elem.taskData.priority,
+            details: elem.taskData.details,
+            complexity: elem.taskData.complexity,
+            effort: elem.taskData.effort,
+            sizeTask: elem.taskData.sizeTask,
             startDate: elem.taskData.startDate,
             endDate: elem.taskData.endDate,
             taskType: elem.taskData.taskType,
@@ -131,6 +134,10 @@ export const useTaskStore = defineStore('Task', {
           id: response.data.id,
           title: response.data.title,
           priority: response.data.priority,
+          details: response.data.details,
+          complexity: response.data.complexity,
+          effort: response.data.effort,
+          sizeTask: response.data.sizeTask,
           startDate: response.data.startDate,
           endDate: response.data.endDate,
           taskType: response.data.taskType,
@@ -146,6 +153,10 @@ export const useTaskStore = defineStore('Task', {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
         taskType: taskData.taskType,
@@ -168,6 +179,10 @@ export const useTaskStore = defineStore('Task', {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
         taskType: taskData.taskType,
@@ -178,9 +193,6 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskRequirementCreateData: TaskRequirementOnCreate = {
-        details: taskRequirementData.details,
-        complexity: taskRequirementData.complexity,
-        sizeTask: taskRequirementData.sizeTask,
         task_id: taskRequirementData.task_id,
         checkProject: taskRequirementData.checkProject,
         checkRequirement: taskRequirementData.checkRequirement,
@@ -208,6 +220,10 @@ export const useTaskStore = defineStore('Task', {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
         taskType: taskData.taskType,
@@ -218,9 +234,6 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskImprovementCreateData: TaskImprovementOnCreate = {
-        details: taskImprovementData.details,
-        complexity: taskImprovementData.complexity,
-        sizeTask: taskImprovementData.sizeTask,
         task_id: taskImprovementData.task_id,
         checkProject: taskImprovementData.checkProject,
         checkRequirement: taskImprovementData.checkRequirement,
@@ -248,6 +261,10 @@ export const useTaskStore = defineStore('Task', {
       const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
         taskType: taskData.taskType,
@@ -258,9 +275,6 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskBugCreateData: TaskBugOnCreate = {
-        details: taskBugData.details,
-        complexity: taskBugData.complexity,
-        sizeTask: taskBugData.sizeTask,
         task_id: taskBugData.task_id,
         checkFront: taskBugData.checkFront,
         checkBack: taskBugData.checkBack,
