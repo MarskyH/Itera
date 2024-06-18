@@ -185,6 +185,7 @@ CREATE TABLE task_bug (
 
 CREATE TABLE assignee (
     id TEXT PRIMARY KEY,
+    deadline INTEGER,
     task_step VARCHAR(255),
     user_id TEXT,
     task_id TEXT

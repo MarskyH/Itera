@@ -30,6 +30,9 @@ public class Assignee {
     @Column(name = "task_step")
     private String taskStep;
 
+    @Column(name = "deadline")
+    private Integer deadline;
+
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -42,8 +45,9 @@ public class Assignee {
     @JsonIgnore
     private Task task;
 
-    public Assignee(String taskStep, User user, Task task){
+    public Assignee(String taskStep, Integer deadline, User user, Task task){
         this.taskStep = taskStep;
+        this.deadline = deadline;
         this.user = user;
         this.task = task;
     }

@@ -68,6 +68,7 @@ public class AssigneeController {
             User userData = userRepository.findById(data.user_id()).orElseThrow();
             Assignee assigneeData = new Assignee(
                     data.taskStep(),
+                    data.deadline(),
                     userData,
                     taskData
             );

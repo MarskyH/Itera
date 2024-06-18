@@ -10,6 +10,7 @@ import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
+import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.dto.task.*;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
@@ -154,7 +155,7 @@ public class TaskController {
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
                     User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -215,7 +216,7 @@ public class TaskController {
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
                     User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -275,7 +276,7 @@ public class TaskController {
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
                     User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), userData, taskData);
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -300,7 +301,8 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public TaskGetResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
-        return new TaskGetResponseDTO(task);
+        List<AssigneeResponseDTO> assigneeResponseDTOList = assigneeRepository.findByTask(task.getId());
+        return new TaskGetResponseDTO(task, assigneeResponseDTOList);
     }
 
     @PutMapping("/{id}")
@@ -412,6 +414,16 @@ public class TaskController {
                 task.setIteration(iteration);
             }
 
+            if (data.assigneies() != null){
+                for (AssigneeResponseDTO assignee : data.assigneies()) {
+                    Assignee assigneeData = assigneeRepository.findById(assignee.id()).orElseThrow(null);
+                    assigneeData.setDeadline(assignee.deadline());
+                    assigneeData.setTaskStep(assignee.taskStep());
+                    assigneeData.setUser(userRepository.findById(assignee.id()).orElseThrow(null));
+                    assigneeData.setTask(task);
+                    assigneeRepository.save(assigneeData);
+                }
+            }
             taskRepository.save(task);
             response.put("data_id", task.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
