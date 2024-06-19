@@ -30,3 +30,25 @@ public enum TaskStep {
         }
     }
 }
+/*
+[
+        {
+        "taskStep": "R",
+        "deadline": 5,
+        "user_id": "123456",
+        "task_id": "789012"
+        },
+        {
+        "taskStep": "P",
+        "deadline": 10,
+        "user_id": "654321",
+        "task_id": "210987"
+        },
+        {
+        "taskStep": "B",
+        "deadline": 15,
+        "user_id": "987654",
+        "task_id": "321098"
+        }
+]
+*/

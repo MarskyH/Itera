@@ -28,7 +28,7 @@ public class Assignee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @Column(name = "task_step")
-    private String taskStep;
+    private TaskStep taskStep;
 
     @Column(name = "deadline")
     private Integer deadline;
@@ -45,7 +45,7 @@ public class Assignee {
     @JsonIgnore
     private Task task;
 
-    public Assignee(String taskStep, Integer deadline, User user, Task task){
+    public Assignee(TaskStep taskStep, Integer deadline, User user, Task task){
         this.taskStep = taskStep;
         this.deadline = deadline;
         this.user = user;
