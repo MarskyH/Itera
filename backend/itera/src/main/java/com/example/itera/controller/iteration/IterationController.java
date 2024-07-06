@@ -116,11 +116,8 @@ public class IterationController {
      */
     @GetMapping("/{id}/requirements")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<RequirementResponseDTO> getRequirementsByIterationId(@PathVariable String id) throws ResourceNotFoundException {
+    public List<RequirementResponseDTO> getRequirementsByIterationId(@PathVariable String id){
         List<RequirementResponseDTO> requirements = requirementRepository.findByIteration(id);
-        if (requirements.isEmpty()) {
-            throw new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id);
-        }
         return requirements;
     }
 
