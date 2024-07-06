@@ -63,7 +63,7 @@ public class Requirement {
 
    public int getSizeRequirement(String sizeRequirement) {
         switch (sizeRequirement) {
-            case "Baixo":
+            case "Pequeno":
                 return 5;
             case "Médio":
                 return 10;
