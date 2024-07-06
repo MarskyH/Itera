@@ -207,6 +207,11 @@ export namespace models {
     name: string
   }
 
+  export interface SizeRequirement {
+    id: number
+    name: string
+  }
+
   export interface NonFunctionalRequirementWeights {
     value: number
     description: string

@@ -14,11 +14,12 @@ import { useRoute } from "vue-router";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
- 
+import { useSizeRequirementStore } from "src/stores/SizeRequirementStore";
 
 interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
 interface Priority extends models.Priority {}
+interface SizeRequirement extends models.SizeRequirement {}
 
 const $emit = defineEmits(['sideViewContentChange'])
 
@@ -26,6 +27,7 @@ const $route = useRoute()
 const $functionalRequirementStore = useFunctionalRequirementStore()
 const $degreeStore = useDegreeStore()
 const $priorityStore = usePriorityStore()
+const $sizeRequirementStore = useSizeRequirementStore()
 
 const isActionModalOpen = ref<boolean>(false)
 const onEditRecord = ref<string | null>(null)
@@ -36,6 +38,7 @@ const functionalRequirementForm = ref<any>(null)
 
 const degreeOptions = ref<Degree[]>([])
 const priorityOptions = ref<Priority[]>([])
+const sizeRequirementOptions = ref<SizeRequirement[]>([])
 
 const functionalRequirements = ref<FunctionalRequirement[]>([
   /*
@@ -97,11 +100,18 @@ async function setPriorityOption(){
   })
 }
 
+async function setSizeRequirementOption(){
+  await $sizeRequirementStore.fetchSizeRequirements().then(()=>{
+    sizeRequirementOptions.value = $sizeRequirementStore.sizeRequirements
+  })
+}
+
 onMounted(async () => {
   await setFunctionalRequirements().then(async ()=>{
     await setDegreeOptions().then(async () => {
       await setPriorityOption().then(async () => {
-        inputFields =  [
+        await setSizeRequirementOption().then(async () =>{
+          inputFields =  [
         {
           name: "title",
           label: "Título",
@@ -144,9 +154,10 @@ onMounted(async () => {
         {
           name: "sizeRequirement",
           label: "Tamanho",
-          placeholder: "Digite o tamanho",
+          placeholder: "Selecione o tamanho",
           required: true,
-          validation: yup.number().required().min(1)
+          options: setSelectOptions(sizeRequirementOptions.value),
+          validation: yup.string().required()
         },
       ]
 
@@ -154,6 +165,7 @@ onMounted(async () => {
       schema = yup.object(formValidations);
 
       formOnLoad.value = false
+        })
       })
     });
   });
