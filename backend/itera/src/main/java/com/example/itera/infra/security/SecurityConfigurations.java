@@ -121,7 +121,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET,  "/riskActionType").hasRole("USER")
                         .requestMatchers(HttpMethod.GET,  "/degree").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/tasktype").hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.GET,  "/").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

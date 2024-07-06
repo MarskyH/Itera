@@ -85,7 +85,7 @@ public class RequirementController {
                     data.complexity(),
                     data.priority(),
                     data.effort(),
-                    data.sizeRequirement(),
+                    getSizeRequirement(data.sizeRequirement()),
                     order,
                     data.iterationId(),
                     projectData
@@ -210,7 +210,7 @@ public class RequirementController {
                 requirement.setEffort(data.effort());
             }
             if (data.sizeRequirement() != null) {
-                requirement.setSizeRequirement(data.sizeRequirement());
+                requirement.setSizeRequirement(getSizeRequirement(data.sizeRequirement()));
             }
             if (data.orderRequirement() != null) {
                 requirement.setOrderRequirement(data.orderRequirement());
@@ -260,6 +260,19 @@ public class RequirementController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private static int getSizeRequirement(String sizeRequirement) {
+        switch (sizeRequirement) {
+            case "Baixo":
+                return 5;
+            case "Médio":
+                return 10;
+            case "Grande":
+                return 15;
+            default:
+                throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
         }
     }
 

@@ -44,7 +44,7 @@ public class Requirement {
         this.complexity = data.complexity();
         this.priority = data.priority();
         this.effort = data.effort();
-        this.sizeRequirement = data.sizeRequirement();
+        this.sizeRequirement = getSizeRequirement(data.sizeRequirement());
         this.orderRequirement = data.orderRequirement();
         this.iterationId = data.iterationId();
     }
@@ -59,5 +59,18 @@ public class Requirement {
         this.orderRequirement = orderRequirement;
         this.iterationId = iterationId;
         this.project = project;
+    }
+
+   public int getSizeRequirement(String sizeRequirement) {
+        switch (sizeRequirement) {
+            case "Baixo":
+                return 5;
+            case "Médio":
+                return 10;
+            case "Grande":
+                return 15;
+            default:
+                throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
+        }
     }
 }
