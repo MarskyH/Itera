@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ModeToggleButton2 from "./ModeToggleButton2.vue";
+import {useLoginStore} from "src/stores/LoginStore"
+
+const $store = useLoginStore()
 
 defineProps({
   title: {
@@ -12,6 +15,11 @@ defineProps({
     required: true
   }
 })
+
+function logout(){
+  $store.userLogout()
+  window.location.reload();
+}
 
 </script>
 
@@ -51,6 +59,7 @@ defineProps({
 
       <button
         class="flex justify-center items-center w-10 h-10 rounded-md p-3 bg-periwinkle-900 dark:bg-charcoal-900"
+        @click="logout()"
       >
         <FontAwesomeIcon
           :icon="`fa-solid fa-user`"
