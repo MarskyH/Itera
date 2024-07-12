@@ -10,8 +10,7 @@ interface TaskImprovement extends models.TaskImprovement { }
 interface TaskImprovementOnCreate extends models.TaskImprovementOnCreate { }
 interface TaskBug extends models.TaskBug { }
 interface TaskBugOnCreate extends models.TaskBugOnCreate { }
-
-
+interface TaskForm extends models.TaskForm { }
 
 interface State {
   task: Task
@@ -126,8 +125,6 @@ export const useTaskStore = defineStore('Task', {
         method: 'get',
         route: `task/${id}`,
       })
-
-      console.log(response?.data)
 
       if (response?.status === 200) {
         this.task = {
@@ -295,9 +292,17 @@ export const useTaskStore = defineStore('Task', {
 
       return (response?.status) ? response.status : 500
     },
+    
+    async updateTask(id: string, taskData: TaskForm) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/task/${id}`,
+        body: taskData
+      })
 
-
-
+      return response
+    },
+    
     async deleteTask(id: string) {
       const response = await Api.request({
         method: 'delete',
@@ -306,16 +311,5 @@ export const useTaskStore = defineStore('Task', {
 
       return response?.status === 200
     },
-
-    /*
-    async updateTask(id: string, taskData: Task) {
-      const response = await Api.request({
-        method: 'put',
-        route: `/task/${id}`,
-        body: taskData
-      })
-
-      return response?.status === 200
-    },*/
   }
 })

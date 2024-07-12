@@ -18,6 +18,9 @@ interface TaskType extends models.TaskType { }
 interface Task extends models.Task { }
 interface Project extends models.Project { }
 interface TeamMember extends models.TeamMember { }
+interface Assignee extends models.Assignee { }
+interface TaskForm extends models.TaskForm { }
+
 
 const $projectStore = useProjectStore();
 const $taskStore = useTaskStore();
@@ -250,9 +253,60 @@ async function setTeamMembers() {
   })
 }
 
-function onSubmit(values: any) {
-  let projectOnCreateData: Project = { ...values };
-  console.log(projectOnCreateData);
+let taskType: { [key: string]: string } = {
+  '1': 'Requisito',
+  '2': 'Melhoria',
+  '3': 'Bug'
+}
+
+async function onSubmit(values: any) {
+  console.log(values)
+
+  let assigneies: Assignee[] = [
+    {
+      taskStep: 'Projeto',
+      deadline: values.deadlineProject,
+      user_id: values.projectAssignee,
+      task_id: task.value.id
+    },
+    {
+      taskStep: 'Requisito',
+      deadline: values.deadlineRequirement,
+      user_id: values.requirementAssignee,
+      task_id: task.value.id
+    },
+    {
+      taskStep: 'Front',
+      deadline: values.deadlineFront,
+      user_id: values.frontAssignee,
+      task_id: task.value.id
+    },
+    {
+      taskStep: 'Back',
+      deadline: values.deadlineBack,
+      user_id: values.backAssignee,
+      task_id: task.value.id
+    },
+    {
+      taskStep: 'Teste',
+      deadline: values.deadlineTest,
+      user_id: values.testAssignee,
+      task_id: task.value.id
+    },
+  ]
+
+  const taskData: TaskForm = {
+    taskType: taskType[values.type],
+    assigneies
+  }
+
+  await $taskStore.updateTask(task.value.id ,taskData).then((response: any) => {
+    if (response.status === 200) {
+      alert('Salvo com sucesso')
+    } else {
+      alert('Erro ao salvar')
+    }
+  })
 }
 
 watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
@@ -266,10 +320,6 @@ watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
     taskForm.value.setFieldValue('size', selectedBacklog.sizeRequirement);
   }
 }, { immediate: true });
-
-function handleContinue() {
-
-}
 
 onMounted(async () => {
   await setTaskTypes().then(async () => {
@@ -350,7 +400,7 @@ onMounted(async () => {
               value: task.value.details
             },
             {
-              name: "requirementeAssignee",
+              name: "requirementAssignee",
               label: "Responsável requisito",
               placeholder: "Selecione",
               type: "select",
@@ -359,7 +409,7 @@ onMounted(async () => {
               validation: yup.string(),
             },
             {
-              name: "requirementProject",
+              name: "deadlineRequirement",
               label: "Prazo requisito",
               placeholder: "Digite o prazo para esta etapa",
               type: "text",
@@ -484,7 +534,7 @@ onMounted(async () => {
               value: task.value.details
             },
             {
-              name: "requirementeAssignee",
+              name: "requirementAssignee",
               label: "Responsável requisito",
               placeholder: "Selecione",
               type: "select",
@@ -762,16 +812,8 @@ onMounted(async () => {
         <span>Cancelar</span>
       </button>
       <button
-        v-if="!showAdditionalFields"
-        @click.prevent="handleContinue"
-        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md"
-      >
-        <span>Continuar</span>
-      </button>
-      <button
-        v-if="showAdditionalFields"
         type="submit"
-        class="flex text-white w-32 justify-evenly items-center bg-stone-600 dark:bg-lavander-800 px-4 py-2 gap-4 rounded-md"
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
       >
         <span>Salvar</span>
       </button>

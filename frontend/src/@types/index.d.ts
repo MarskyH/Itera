@@ -274,9 +274,10 @@ export namespace models {
   }
 
   export interface Assignee {
-    id: string
+    id?: string | null
     taskStep: string
     user_id: string
+    deadline: number
     task_id: string
   }
 
@@ -368,6 +369,11 @@ export namespace models {
     checkBack: boolean
     checkTest: boolean
   }
+
+  export interface TaskForm {
+    taskType: string
+    assigneies: Assignee[]
+  }
 }
 
 export interface InputFieldProps {
@@ -421,6 +427,8 @@ export interface NonFunctionalRequirementForm {
   id: string
   weight: number
 }
+
+
 
 export interface TaskRequirementForm {
   task: Task
