@@ -108,4 +108,17 @@ public class Task {
         this.taskBug = taskBugData;
         this.iteration = iterationData;
     }
+
+    public Boolean updateTaskListName(String newListName, String oldListName){
+        if(oldListName.equals("A fazer") && (newListName.equals("Fazendo") || newListName.equals("Cancelado"))){
+            return true;
+        }else if(oldListName.equals("Fazendo") && (newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente"))){
+            return true;
+        }else if(oldListName.equals("Pendente") && (newListName.equals("Fazendo") || newListName.equals("Cancelado"))){
+            return true;
+        }else if(oldListName.equals("Feito") || oldListName.equals("Cancelado")){
+            return false;
+        }
+        return false;
+    }
 }

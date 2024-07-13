@@ -314,9 +314,16 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaskById(@PathVariable String id, @RequestBody TaskGetResponseDTO data) {
         Map<String, String> response = new HashMap<>();
+
         try {
             Task task = taskRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+
+            if(task.updateTaskListName(data.listName(), task.getListName())){
+                response.put("data_id", task.getId());
+                response.put("message", ResponseType.FAIL_UPDATE.getMessage() + " - " + data.listName() + " to " + task.getListName());
+                return ResponseEntity.badRequest().body(response);
+            }
 
             // Atualizar apenas os campos fornecidos pelo usuário
             if (data.title() != null) {
