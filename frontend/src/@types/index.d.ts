@@ -276,7 +276,7 @@ export namespace models {
   export interface Assignee {
     id?: string | null
     taskStep: string
-    user_id: string
+    member_id: string
     deadline: number
     task_id: string
   }

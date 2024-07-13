@@ -264,33 +264,33 @@ async function onSubmit(values: any) {
 
   let assigneies: Assignee[] = [
     {
-      taskStep: 'Projeto',
+      taskStep: 'P',
       deadline: values.deadlineProject,
-      user_id: values.projectAssignee,
+      member_id: values.projectAssignee,
       task_id: task.value.id
     },
     {
-      taskStep: 'Requisito',
+      taskStep: 'R',
       deadline: values.deadlineRequirement,
-      user_id: values.requirementAssignee,
+      member_id: values.requirementAssignee,
       task_id: task.value.id
     },
     {
-      taskStep: 'Front',
+      taskStep: 'F',
       deadline: values.deadlineFront,
-      user_id: values.frontAssignee,
+      member_id: values.frontAssignee,
       task_id: task.value.id
     },
     {
-      taskStep: 'Back',
+      taskStep: 'B',
       deadline: values.deadlineBack,
-      user_id: values.backAssignee,
+      member_id: values.backAssignee,
       task_id: task.value.id
     },
     {
-      taskStep: 'Teste',
+      taskStep: 'T',
       deadline: values.deadlineTest,
-      user_id: values.testAssignee,
+      member_id: values.testAssignee,
       task_id: task.value.id
     },
   ]
@@ -300,7 +300,7 @@ async function onSubmit(values: any) {
     assigneies
   }
 
-  await $taskStore.updateTask(task.value.id ,taskData).then((response: any) => {
+  await $taskStore.updateTask(task.value.id, taskData).then((response: any) => {
     if (response.status === 200) {
       alert('Salvo com sucesso')
     } else {
@@ -731,74 +731,34 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Form
-    ref="taskForm"
-    :validation-schema="schema"
-    @submit="onSubmit"
-    class="flex flex-col gap-10 p-5 items-center overflow-auto"
-  >
+  <Form ref="taskForm" :validation-schema="schema" @submit="onSubmit"
+    class="flex flex-col gap-10 p-5 items-center overflow-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <div
-        v-for="inputField in inputFields"
-        :key="inputField.name"
-      >
-        <MaskedInput
-          v-if="inputField.mask"
-          v-bind="inputField"
-        />
-        <InputField
-          v-else
-          v-bind="inputField"
-        />
+      <div v-for="inputField in inputFields" :key="inputField.name">
+        <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+        <InputField v-else v-bind="inputField" />
       </div>
 
       <template v-if="showAdditionalFields">
         <template v-if="selectedTaskType === '1'">
-          <div
-            v-for="inputField in inputFieldsRequirement"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsRequirement" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
 
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '2'">
-          <div
-            v-for="inputField in inputFieldsImprovement"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsImprovement" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '3'">
-          <div
-            v-for="inputField in inputFieldsBug"
-            :key="inputField.name"
-          >
-            <MaskedInput
-              v-if="inputField.mask"
-              v-bind="inputField"
-            />
-            <InputField
-              v-else
-              v-bind="inputField"
-            />
+          <div v-for="inputField in inputFieldsBug" :key="inputField.name">
+            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+            <InputField v-else v-bind="inputField" />
           </div>
         </template>
       </template>
@@ -807,14 +767,11 @@ onMounted(async () => {
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })"
-      >
+        @click="$router.push({ name: 'home' })">
         <span>Cancelar</span>
       </button>
-      <button
-        type="submit"
-        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-      >
+      <button type="submit"
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md">
         <span>Salvar</span>
       </button>
     </div>
