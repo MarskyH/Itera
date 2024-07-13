@@ -9,6 +9,7 @@ import com.example.itera.domain.task.Task;
 import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
+import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
@@ -26,6 +27,7 @@ import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.taskBug.TaskBugRepository;
 import com.example.itera.repository.taskImprovement.TaskImprovementRepository;
 import com.example.itera.repository.taskRequirement.TaskRequirementRepository;
+import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
@@ -67,9 +69,9 @@ public class TaskController {
 
     @Autowired
     TaskBugRepository taskBugRepository;
-
     @Autowired
-    AssigneeController assigneeController;
+    TeamMemberRepository teamMemberRepository;
+
 
 
     int order = 0;
@@ -158,8 +160,8 @@ public class TaskController {
 
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
-                    User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
+                    TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -219,8 +221,8 @@ public class TaskController {
 
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
-                    User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
+                    TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -279,8 +281,8 @@ public class TaskController {
             taskRepository.save(taskData);
             if(data.assignees() != null){
                 for (AssigneeRequestDTO assignee : data.assignees()) {
-                    User userData = userRepository.findById(assignee.user_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), userData, taskData);
+                    TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
+                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
@@ -420,17 +422,17 @@ public class TaskController {
 
             if (data.assigneies() != null){
                 for (AssigneeResponseDTO assignee : data.assigneies()) {
-                    Assignee assigneeData = assigneeRepository.findById(assignee.id()).orElseThrow(null);
-                    if(assigneeData != null){
+                    Assignee assigneeData = new Assignee();
+                    System.out.println(assignee.toString());
+                    if(assignee.id() != null){
+                        assigneeData = assigneeRepository.findById(assignee.id()).orElseThrow(null);
+                    }
+                        TeamMember member = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
                         assigneeData.setDeadline(assignee.deadline());
                         assigneeData.setTaskStep(assignee.taskStep());
-                        assigneeData.setUser(userRepository.findById(assignee.user_id()).orElseThrow(null));
+                        assigneeData.setTeamMember(member);
                         assigneeData.setTask(task);
                         assigneeRepository.save(assigneeData);
-                    }else{
-                        assigneeController.saveAssignee(new AssigneeRequestDTO(assignee.taskStep(), assignee.deadline(), assignee.user_id(), assignee.task_id()));
-                    }
-
                 }
             }
             taskRepository.save(task);

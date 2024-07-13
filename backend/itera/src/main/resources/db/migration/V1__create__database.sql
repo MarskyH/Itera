@@ -187,7 +187,7 @@ CREATE TABLE assignee (
     id TEXT PRIMARY KEY,
     deadline INTEGER,
     task_step VARCHAR(255),
-    user_id TEXT,
+    member_id TEXT,
     task_id TEXT
 );
 
@@ -285,7 +285,7 @@ ON DELETE CASCADE;
 -- Adicionando chave estrangeira para assignee
 ALTER TABLE assignee
 ADD CONSTRAINT fk_assignee_user
-FOREIGN KEY (user_id) REFERENCES users(id)
+FOREIGN KEY (member_id) REFERENCES team_member(id)
 ON DELETE CASCADE,
 ADD CONSTRAINT fk_assignee_iteration
 FOREIGN KEY (task_id) REFERENCES task(id)

@@ -5,6 +5,7 @@ import com.example.itera.domain.project.Project;
 import com.example.itera.domain.task.Task;
 import com.example.itera.domain.task.TaskStep;
 import com.example.itera.domain.taskType.TaskType;
+import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
@@ -34,10 +35,10 @@ public class Assignee {
     private Integer deadline;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private User user;
+    private TeamMember teamMember;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "task_id", nullable = false)
@@ -45,10 +46,10 @@ public class Assignee {
     @JsonIgnore
     private Task task;
 
-    public Assignee(TaskStep taskStep, Integer deadline, User user, Task task){
+    public Assignee(TaskStep taskStep, Integer deadline, TeamMember member, Task task){
         this.taskStep = taskStep;
         this.deadline = deadline;
-        this.user = user;
+        this.teamMember = member;
         this.task = task;
     }
 

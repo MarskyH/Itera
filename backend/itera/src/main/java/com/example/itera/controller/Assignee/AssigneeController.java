@@ -5,6 +5,7 @@ import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.domain.task.Task;
+import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
@@ -15,6 +16,7 @@ import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.assignee.AssigneeRepository;
 import com.example.itera.repository.task.TaskRepository;
+import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
@@ -42,7 +44,7 @@ public class AssigneeController {
     AssigneeRepository assigneeRepository;
 
     @Autowired
-    UserRepository userRepository;
+    TeamMemberRepository teamMemberRepository;
 
     @Autowired
     TaskRepository taskRepository;
@@ -65,17 +67,18 @@ public class AssigneeController {
         Map<String, String> response = new HashMap<>();
         try {
             Task taskData = taskRepository.findById(data.task_id()).orElseThrow();
-            User userData = userRepository.findById(data.user_id()).orElseThrow();
+            TeamMember memberData = teamMemberRepository.findById(data.member_id()).orElseThrow();
             Assignee assigneeData = new Assignee(
                     data.taskStep(),
                     data.deadline(),
-                    userData,
+                    memberData,
                     taskData
             );
             assigneeRepository.save(assigneeData);
             response.put("assignee_id:", assigneeData.getId());
             response.put("task_id:", taskData.getId());
             response.put("message:", ResponseType.SUCCESS_SAVE.getMessage());
+            System.out.println("assignee_id: " + assigneeData.getId());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -102,9 +105,9 @@ public class AssigneeController {
             Assignee assignee = assigneeRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
             // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.user_id() != null) {
-                User newUser = userRepository.findById(data.user_id()).orElseThrow(EntityNotFoundException::new);
-                assignee.setUser(newUser);
+            if (data.member_id() != null) {
+                TeamMember newMember = teamMemberRepository.findById(data.member_id()).orElseThrow(EntityNotFoundException::new);
+                assignee.setTeamMember(newMember);
             }
             if(data.deadline() != null){
                 assignee.setDeadline(data.deadline());
