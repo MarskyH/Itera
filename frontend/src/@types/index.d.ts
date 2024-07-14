@@ -1,4 +1,5 @@
 import userModel from "src/model/usuarioModel"
+import { boolean } from "yup"
 
 type id = number
 
@@ -278,6 +279,24 @@ export namespace models {
     taskStep: string
     member_id: string
     deadline: number
+    task_id: string
+  }
+
+  export interface Pendency {
+    id?: string | null
+    title: string
+    description: string
+    creationDate: string
+    endDate: string
+    status: boolean
+    task_id: string
+  }
+
+  export interface PendencyOnCreate {
+    id?: string | null
+    title: string
+    description: string
+    status: boolean
     task_id: string
   }
 
