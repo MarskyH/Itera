@@ -3,6 +3,7 @@ package com.example.itera.dto.task;
 import com.example.itera.domain.task.Task;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
+import com.example.itera.dto.pendency.PendencyResponseDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementResponseDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementResponseDTO;
 import com.example.itera.dto.taskBug.TaskBugResponseDTO;
@@ -27,9 +28,11 @@ public record TaskGetResponseDTO(
         TaskImprovementResponseDTO taskImprovement,
         TaskBugResponseDTO taskBug,
         String iteration_id,
-        List<AssigneeResponseDTO> assigneies
+        List<AssigneeResponseDTO> assigneies,
+
+        List<PendencyResponseDTO> pendencies
 ) {
-    public TaskGetResponseDTO(Task task, List<AssigneeResponseDTO> assigneies) {
+    public TaskGetResponseDTO(Task task, List<AssigneeResponseDTO> assigneies, List<PendencyResponseDTO> pendencies) {
         this(
                 task.getId() != null ? task.getId() : "",
                 task.getTitle(),
@@ -47,7 +50,8 @@ public record TaskGetResponseDTO(
                 task.getTaskImprovement() != null ? new TaskImprovementResponseDTO(task.getTaskImprovement()) : null,
                 task.getTaskBug() != null ? new TaskBugResponseDTO(task.getTaskBug()) : null,
                 task.getIteration() != null && task.getIteration().getId() != null ? task.getIteration().getId() : "",
-                assigneies = assigneies
+                assigneies = assigneies,
+                pendencies = pendencies
         );
     }
 }

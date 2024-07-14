@@ -191,6 +191,16 @@ CREATE TABLE assignee (
     task_id TEXT
 );
 
+CREATE TABLE pendency (
+    id TEXT PRIMARY KEY,
+    TITLE VARCHAR(100),
+    description TEXT,
+    creation_date TIMESTAMP,
+    end_date TIMESTAMP,
+    status BOOLEAN,
+    task_id TEXT
+);
+
 -- Foreign Keys (Chaves Estrangeiras)
 
 ALTER TABLE public.role
@@ -295,6 +305,12 @@ ON DELETE CASCADE;
 ALTER TABLE iteration
 ADD CONSTRAINT fk_iteration_project
 FOREIGN KEY (project_id) REFERENCES project(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para pendency
+ALTER TABLE pendency
+ADD CONSTRAINT fk_pendency_task
+FOREIGN KEY (task_id) REFERENCES task(id)
 ON DELETE CASCADE;
 
 -- Data Insertion (Inserção de Dados)

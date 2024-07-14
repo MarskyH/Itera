@@ -13,6 +13,7 @@ import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
+import com.example.itera.dto.pendency.PendencyResponseDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.dto.task.*;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
@@ -23,6 +24,7 @@ import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.assignee.AssigneeRepository;
 import com.example.itera.repository.iteration.IterationRepository;
+import com.example.itera.repository.pendency.PendencyRepository;
 import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.taskBug.TaskBugRepository;
 import com.example.itera.repository.taskImprovement.TaskImprovementRepository;
@@ -54,7 +56,7 @@ public class TaskController {
     IterationRepository iterationRepository;
 
     @Autowired
-    UserRepository userRepository;
+    PendencyRepository pendencyRepository;
 
     @Autowired
     AssigneeRepository assigneeRepository;
@@ -308,8 +310,11 @@ public class TaskController {
     public TaskGetResponseDTO getTaskById(@PathVariable String id) throws ResourceNotFoundException {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
         List<AssigneeResponseDTO> assigneeResponseDTOList = assigneeRepository.findByTask(task.getId());
-        return new TaskGetResponseDTO(task, assigneeResponseDTOList);
+        List<PendencyResponseDTO> pendencyResponseDTOList = pendencyRepository.findByTask(task.getId());
+        return new TaskGetResponseDTO(task, assigneeResponseDTOList, pendencyResponseDTOList);
     }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaskById(@PathVariable String id, @RequestBody TaskGetResponseDTO data) {
