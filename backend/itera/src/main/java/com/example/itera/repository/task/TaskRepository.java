@@ -15,7 +15,6 @@ public interface TaskRepository extends JpaRepository<Task, String>{
 
     @Query(value = "SELECT t FROM Task t WHERE t.iteration.id = :id and t.listName = :listName")
     List<TaskResponseDTO> findByIterationWithListName(@Param("id") String id, @Param("listName") String listName);
-
 }
 
 

@@ -189,6 +189,7 @@ public class RequirementController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRequirement(@PathVariable String id, @RequestBody RequirementRequestDTO data) {
+        System.out.println(data.iterationId());
         Map<String, String> response = new HashMap<>();
         try {
             Requirement requirement = repository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -215,10 +216,12 @@ public class RequirementController {
             if (data.orderRequirement() != null) {
                 requirement.setOrderRequirement(data.orderRequirement());
             }
-            if (data.iterationId() != null && requirement.getIterationId() == null) {
+            if (data.iterationId() != null && !Objects.equals(data.iterationId(), "0")) {
                 Iteration iteration = iterationRepository.findById(data.iterationId()).orElseThrow(EntityNotFoundException::new);
+                if (requirement.getIterationId() == null) {
+                    createTask(iteration, requirement);
+                }
                 requirement.setIterationId(data.iterationId());
-                createTask(iteration, requirement);
             }
             if (Objects.equals(data.iterationId(), "0")){
                 requirement.setIterationId(null);
@@ -228,6 +231,7 @@ public class RequirementController {
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (EntityNotFoundException ex) {
+            System.out.println(ex);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();

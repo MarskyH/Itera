@@ -302,6 +302,16 @@ export const useTaskStore = defineStore('Task', {
 
       return response
     },
+
+    async updateTaskListName(id: string, listName: String) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/task/${id}`,
+        body: {listName: listName}
+      })
+
+      return response
+    },
     
     async deleteTask(id: string) {
       const response = await Api.request({

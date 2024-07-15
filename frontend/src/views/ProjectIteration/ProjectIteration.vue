@@ -52,6 +52,10 @@ const tasks2 = [
       :tasks="[]"
     />
     <IterationTaskList
+      title="Pendente"
+      :tasks="[]"
+    />
+    <IterationTaskList
       title="Cancelado"
       :tasks="[]"
     />
