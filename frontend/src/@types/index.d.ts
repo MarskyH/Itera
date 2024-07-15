@@ -318,6 +318,7 @@ export namespace models {
     taskImprovement?: TaskImprovement
     taskBug?: TaskBug
     iteration_id: string
+    assignees: Assignee[]
   }
 
   export interface TaskRequirement {

@@ -54,6 +54,7 @@ const taskDefault: Task = {
     checkTest: false
   },
   iteration_id: "",
+  assignees: []
 }
 
 export const useTaskStore = defineStore('Task', {
@@ -142,6 +143,7 @@ export const useTaskStore = defineStore('Task', {
           taskImprovement: response.data.taskImprovement,
           taskBug: response.data.taskBug,
           iteration_id: response.data.iteration_id,
+          assignees: response.data.assigneies
         }
       }
     },

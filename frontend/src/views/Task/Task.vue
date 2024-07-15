@@ -1,33 +1,29 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Form } from 'vee-validate';
 import * as yup from 'yup';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue';
 import { InputFieldProps, models } from 'src/@types';
-import { useProjectStore } from 'src/stores/ProjectStore';
 import MaskedInput from 'src/components/MaskedInput.vue';
 import { useTaskTypeStore } from "src/stores/TaskTypeStore";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useTaskStore } from "src/stores/TaskStore";
 
-interface TaskType extends models.TaskType { }
 interface Task extends models.Task { }
-interface Project extends models.Project { }
 interface TeamMember extends models.TeamMember { }
 interface Assignee extends models.Assignee { }
 interface TaskForm extends models.TaskForm { }
 
-
-const $projectStore = useProjectStore();
 const $taskStore = useTaskStore();
 const $taskTypeStore = useTaskTypeStore();
 const $teamMemberStore = useTeamMemberStore()
 const $functionalRequirementStore = useFunctionalRequirementStore();
 const $route = useRoute()
+const $router = useRouter()
 
 const taskDefault: Task = {
   id: "",
@@ -44,6 +40,7 @@ const taskDefault: Task = {
   taskimprovement_id: "",
   taskbug_id: "",
   iteration_id: "",
+  assignees: []
 }
 
 const task = ref<Task>({ ...taskDefault })
@@ -163,31 +160,28 @@ backlogIterarion.value = [
 
 yup.setLocale(yupErrorMessages);
 
-const isTaskFormEmpty = computed(() => {
-  console.log(!taskForm.value || !taskForm.value.values || !Object.keys(taskForm.value.values).length)
-  return !taskForm.value || !taskForm.value.values || !Object.keys(taskForm.value.values).length;
-});
-
-const setSelectOptions = (options: { id: string; title: string }[]) => {
-  return options.length > 0 ? options.map((option: { id: string; title: string }) => {
-    return {
-      value: option.id,
-      name: option.title,
-      selected: false
-    }
-  }) : []
-}
-
 function getTeamMemberOptions() {
   return teamMembers.value.length > 0
     ? teamMembers.value.map((member: TeamMember) => {
       return {
         value: member.id ? member.id : '',
         name: `${member?.user?.name} (${member.role.function})`,
-        selected: false
+        selected: task.value.assignees.find((assignee: any) => assignee.member_id === member.id) ? true : false
       }
     })
     : []
+}
+
+function getSelectedTeamMemberOption(step: string) {
+  return task.value.assignees.find((assignee: any) =>
+    assignee.taskStep === step
+  )?.member_id
+}
+
+function getStepDeadline(step: string) {
+  return task.value.assignees.find((assignee: any) =>
+    assignee.taskStep === step
+  )?.deadline
 }
 
 const inputFields = ref<InputFieldProps[]>([]);
@@ -259,6 +253,12 @@ let taskType: { [key: string]: string } = {
   '3': 'Bug'
 }
 
+let taskTypeValues: { [key: string]: string } = {
+  'Requisito': '1',
+  'Melhoria': '2',
+  'Bug': '3'
+}
+
 async function onSubmit(values: any) {
   console.log(values)
 
@@ -303,6 +303,7 @@ async function onSubmit(values: any) {
   await $taskStore.updateTask(task.value.id, taskData).then((response: any) => {
     if (response.status === 200) {
       alert('Salvo com sucesso')
+      $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
     } else {
       alert('Erro ao salvar')
     }
@@ -342,11 +343,12 @@ onMounted(async () => {
               placeholder: "Selecione",
               type: "select",
               options: [
-                { value: "1", name: "Requisito", selected: false },
-                { value: "2", name: "Melhoria", selected: false },
-                { value: "3", name: "Bug", selected: false },
+                { value: "1", name: "Requisito", selected:  task.value.taskType === "Requisito" },
+                { value: "2", name: "Melhoria", selected:  task.value.taskType === "Melhoria" },
+                { value: "3", name: "Bug", selected:  task.value.taskType === "Bug" },
               ],
               required: true,
+              value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
               validation: yup.string().required(),
               onChange: setTaskFormByType
             },
@@ -407,6 +409,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('R') || ''
             },
             {
               name: "deadlineRequirement",
@@ -415,6 +418,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : ''
             },
             {
               name: "projectAssignee",
@@ -424,6 +428,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('P') || ''
             },
             {
               name: "deadlineProject",
@@ -432,6 +437,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : ''
             },
             {
               name: "frontAssignee",
@@ -441,6 +447,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('F') || ''
             },
             {
               name: "deadlineFront",
@@ -449,6 +456,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
             },
             {
               name: "backAssignee",
@@ -458,6 +466,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('B') || ''
             },
             {
               name: "deadlineBack",
@@ -466,6 +475,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
             },
             {
               name: "testAssignee",
@@ -475,6 +485,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('T') || ''
             },
             {
               name: "deadlineTest",
@@ -483,6 +494,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
             }
           ]
 
@@ -541,6 +553,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('R') || ''
             },
             {
               name: "requirementProject",
@@ -549,6 +562,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : ''
             },
             {
               name: "projectAssignee",
@@ -558,6 +572,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('P') || ''
             },
             {
               name: "deadlineProject",
@@ -566,6 +581,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : ''
             },
             {
               name: "frontAssignee",
@@ -575,6 +591,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('F') || ''
             },
             {
               name: "deadlineFront",
@@ -583,6 +600,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
             },
             {
               name: "backAssignee",
@@ -592,6 +610,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('B') || ''
             },
             {
               name: "deadlineBack",
@@ -600,6 +619,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
             },
             {
               name: "testAssignee",
@@ -609,6 +629,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('T') || ''
             },
             {
               name: "deadlineTest",
@@ -617,6 +638,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
             }
           ]
 
@@ -675,6 +697,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('F') || ''
             },
             {
               name: "deadlineFront",
@@ -683,6 +706,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
             },
             {
               name: "backAssignee",
@@ -692,6 +716,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('B') || ''
             },
             {
               name: "deadlineBack",
@@ -700,6 +725,7 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
             },
             {
               name: "testAssignee",
@@ -709,6 +735,7 @@ onMounted(async () => {
               options: getTeamMemberOptions(),
               required: false,
               validation: yup.string(),
+              value: getSelectedTeamMemberOption('T') || ''
             },
             {
               name: "deadlineTest",
@@ -717,9 +744,10 @@ onMounted(async () => {
               type: "text",
               required: false,
               validation: yup.number(),
+              value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
             }
           ]
-
+          
           typeTaskForm['1'] = inputFieldsRequirement.value
           typeTaskForm['2'] = inputFieldsImprovement.value
           typeTaskForm['3'] = inputFieldsBug.value
@@ -727,38 +755,82 @@ onMounted(async () => {
       });
     });
   })
+
+  if(task.value.taskType) {
+    setTaskFormByType()
+  }
 });
 </script>
 
 <template>
-  <Form ref="taskForm" :validation-schema="schema" @submit="onSubmit"
-    class="flex flex-col gap-10 p-5 items-center overflow-auto">
+  <Form
+    ref="taskForm"
+    :validation-schema="schema"
+    @submit="onSubmit"
+    class="flex flex-col gap-10 p-5 items-center overflow-auto"
+  >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <div v-for="inputField in inputFields" :key="inputField.name">
-        <MaskedInput v-if="inputField.mask" v-bind="inputField" />
-        <InputField v-else v-bind="inputField" />
+      <div
+        v-for="inputField in inputFields"
+        :key="inputField.name"
+      >
+        <MaskedInput
+          v-if="inputField.mask"
+          v-bind="inputField"
+        />
+        <InputField
+          v-else
+          v-bind="inputField"
+        />
       </div>
 
       <template v-if="showAdditionalFields">
         <template v-if="selectedTaskType === '1'">
-          <div v-for="inputField in inputFieldsRequirement" :key="inputField.name">
-            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
+          <div
+            v-for="inputField in inputFieldsRequirement"
+            :key="inputField.name"
+          >
+            <MaskedInput
+              v-if="inputField.mask"
+              v-bind="inputField"
+            />
 
-            <InputField v-else v-bind="inputField" />
+            <InputField
+              v-else
+              v-bind="inputField"
+            />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '2'">
-          <div v-for="inputField in inputFieldsImprovement" :key="inputField.name">
-            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
-            <InputField v-else v-bind="inputField" />
+          <div
+            v-for="inputField in inputFieldsImprovement"
+            :key="inputField.name"
+          >
+            <MaskedInput
+              v-if="inputField.mask"
+              v-bind="inputField"
+            />
+            <InputField
+              v-else
+              v-bind="inputField"
+            />
           </div>
         </template>
 
         <template v-if="selectedTaskType === '3'">
-          <div v-for="inputField in inputFieldsBug" :key="inputField.name">
-            <MaskedInput v-if="inputField.mask" v-bind="inputField" />
-            <InputField v-else v-bind="inputField" />
+          <div
+            v-for="inputField in inputFieldsBug"
+            :key="inputField.name"
+          >
+            <MaskedInput
+              v-if="inputField.mask"
+              v-bind="inputField"
+            />
+            <InputField
+              v-else
+              v-bind="inputField"
+            />
           </div>
         </template>
       </template>
@@ -767,11 +839,14 @@ onMounted(async () => {
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="$router.push({ name: 'home' })">
+        @click="() => $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })"
+      >
         <span>Cancelar</span>
       </button>
-      <button type="submit"
-        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md">
+      <button
+        type="submit"
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+      >
         <span>Salvar</span>
       </button>
     </div>
