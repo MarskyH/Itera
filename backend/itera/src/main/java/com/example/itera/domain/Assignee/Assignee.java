@@ -28,6 +28,8 @@ public class Assignee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "task_step")
     private TaskStep taskStep;
 

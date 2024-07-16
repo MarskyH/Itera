@@ -109,16 +109,17 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Boolean updateTaskListName(String newListName, String oldListName){
-        if(oldListName.equals("A fazer") && (newListName.equals("Fazendo") || newListName.equals("Cancelado"))){
-            return true;
-        }else if(oldListName.equals("Fazendo") && (newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente"))){
-            return true;
-        }else if(oldListName.equals("Pendente") && (newListName.equals("Fazendo") || newListName.equals("Cancelado"))){
-            return true;
-        }else if(oldListName.equals("Feito") || oldListName.equals("Cancelado")){
-            return false;
+    public Boolean updateTaskListName(String oldListName, String newListName) {
+        switch (oldListName) {
+            case "A fazer":
+                return newListName.equals("Fazendo") || newListName.equals("Cancelado");
+            case "Pendente":
+                return newListName.equals("Fazendo") || newListName.equals("Cancelado");
+            case "Fazendo":
+                return newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente");
+            default:
+                return false;
         }
-        return false;
     }
 }
+

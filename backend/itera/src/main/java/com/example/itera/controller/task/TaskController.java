@@ -432,18 +432,23 @@ public class TaskController {
             }
 
             if (data.assigneies() != null){
+                System.out.println("DATA ASSIGNEE:" + data.assigneies());
                 for (AssigneeResponseDTO assignee : data.assigneies()) {
-                    Assignee assigneeData = new Assignee();
-                    System.out.println(assignee.toString());
-                    if(assignee.id() != null){
-                        assigneeData = assigneeRepository.findById(assignee.id()).orElseThrow(null);
-                    }
-                        TeamMember member = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
-                        assigneeData.setDeadline(assignee.deadline());
-                        assigneeData.setTaskStep(assignee.taskStep());
-                        assigneeData.setTeamMember(member);
-                        assigneeData.setTask(task);
-                        assigneeRepository.save(assigneeData);
+                    Assignee assigneeData;
+                        try{
+                            assigneeData = assigneeRepository.findByMemberIdStep(assignee.taskStep(), assignee.member_id());
+                            if(assigneeData == null){
+                                assigneeData = new Assignee();
+                            }
+                            TeamMember member = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
+                            assigneeData.setDeadline(assignee.deadline());
+                            assigneeData.setTaskStep(assignee.taskStep());
+                            assigneeData.setTeamMember(member);
+                            assigneeData.setTask(task);
+                            assigneeRepository.save(assigneeData);
+                        }catch (Exception e){
+                            return ResponseEntity.notFound().build();
+                        }
                 }
             }
             taskRepository.save(task);
