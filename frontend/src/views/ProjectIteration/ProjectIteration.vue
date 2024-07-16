@@ -29,43 +29,6 @@ const tasks2 = [
   { id: '3', title: 'Retrospectiva', icon: 'users', priority: 'Alta', responsible: 'Indefinido', progressiveBar: 13 },
 ]
 
-function updateTaskOrder(taskList: any[], sliceIndex: number) {
-  taskList.forEach(async (element: any, index: number) => {
-    if (index >= sliceIndex) {
-      await $taskStore.updateTaskOrder(element?.id, index)
-    }
-  });
-}
-
-async function updateListName(evt: any) {
-  let movingTaskId = evt.draggedContext.element.id
-  let listName = evt.relatedContext.component.componentData.listId
-
-  await $taskStore.updateTaskListName(movingTaskId, listName)
-}
-
-async function moveTask(evt: any) {
-  setTimeout(async () => {
-    let oldIndex = evt.draggedContext.index
-    let newIndex = evt.relatedContext.index
-
-    if(!newIndex) {      
-      updateListName(evt)
-      updateTaskOrder(tasksList.value, evt.draggedContext.futureIndex)
-      updateTaskOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
-
-      return
-    }
-    
-    if (oldIndex < newIndex) {
-      updateTaskOrder(tasksList.value, oldIndex)
-    } else {
-      updateTaskOrder(tasksList.value, newIndex)
-    }
-  }, 500)
-}
-
-
 </script>
 
 <template>
@@ -75,25 +38,30 @@ async function moveTask(evt: any) {
   >
     <IterationTaskList
       title="A fazer"
+      list-name="A fazer"
       :tasks="iterationToDoTasks"
       @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })"
     />
 
     <IterationTaskList
       title="Fazendo"
+      list-name="Fazendo"
       :tasks="[]"
     />
 
     <IterationTaskList
       title="Feito"
+      list-name="Feito"
       :tasks="[]"
     />
     <IterationTaskList
       title="Pendente"
+      list-name="Pendente"
       :tasks="[]"
     />
     <IterationTaskList
       title="Cancelado"
+      list-name="Cancelado"
       :tasks="[]"
     />
   </div>

@@ -4,11 +4,15 @@ import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useTaskStore } from 'src/stores/TaskStore';
 
 const props = defineProps<{
   title: string
   tasks: Object[]
+  listName: string
 }>()
+
+const $taskStore = useTaskStore()
 
 const $router = useRouter()
 const $route = useRoute()
@@ -26,6 +30,42 @@ function openTaskForm(taskId: string) {
   })
 }
 
+async function updateTaskList(evt: any) {
+  let movingTaskId = evt.draggedContext.element.id
+  let taskListName = evt.relatedContext.component.componentData.listName
+
+  await $taskStore.updateTaskListName(movingTaskId, taskListName)
+}
+
+function updateTaskOrder(list: any[], sliceIndex: number) {
+  list.forEach(async (element: any, index: number) => {
+    if (index >= sliceIndex) {
+      await $taskStore.updateTaskOrder(element?.id, index)
+    }
+  });
+}
+
+async function moveTask(evt: any) {
+  setTimeout(async () => {
+    let oldIndex = evt.draggedContext.index
+    let newIndex = evt.relatedContext.index
+
+    if(!newIndex) {      
+      updateTaskList(evt)
+      updateTaskOrder(tasksList.value, evt.draggedContext.futureIndex)
+      updateTaskOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
+
+      return
+    }
+    
+    if (oldIndex < newIndex) {
+      updateTaskOrder(tasksList.value, oldIndex)
+    } else {
+      updateTaskOrder(tasksList.value, newIndex)
+    }
+  }, 500)
+}
+
 </script>
 
 <template>
@@ -40,7 +80,9 @@ function openTaskForm(taskId: string) {
 
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
       <draggable
-        v-model="tasksList"
+        :list="tasksList"
+        :move="moveTask"
+        :component-data="{ listName }"
         group="people"
         @start="(drag: any) => drag = true"
         @end="(drag: any) => drag = false"
