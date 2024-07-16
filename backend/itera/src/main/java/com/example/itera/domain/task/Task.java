@@ -111,7 +111,9 @@ public class Task {
 
     public Boolean updateTaskListName(String oldListName, String newListName) {
         switch (oldListName) {
-            case "A fazer", "Pendente":
+            case "A fazer":
+                return newListName.equals("Fazendo") || newListName.equals("Cancelado");
+            case "Pendente":
                 return newListName.equals("Fazendo") || newListName.equals("Cancelado");
             case "Fazendo":
                 return newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente");
