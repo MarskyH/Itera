@@ -323,7 +323,9 @@ public class TaskController {
         try {
             Task task = taskRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
-            if (data.listName() != null && task.updateTaskListName(data.listName(), task.getListName())) {
+            if (data.listName() != null && task.updateTaskListName(task.getListName(), data.listName())) {
+                task.setListName(data.listName());
+            }else{
                 response.put("data_id", task.getId());
                 response.put("message", ResponseType.FAIL_UPDATE.getMessage() + " - " + data.listName() + " to " + task.getListName());
                 return ResponseEntity.badRequest().body(response);
@@ -356,9 +358,6 @@ public class TaskController {
             }
             if (data.orderTask() != null) {
                 task.setOrderTask(data.orderTask());
-            }
-            if (data.listName() != null) {
-                task.setListName(data.listName());
             }
             if (data.taskType() != null) {
                 task.setTaskType(data.taskType());
