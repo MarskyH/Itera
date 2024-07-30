@@ -332,7 +332,7 @@ export namespace models {
   }
 
   export interface TaskRequirementOnUpdate {
-    task_id: string
+    id: string
     checkProject: boolean
     checkRequirement: boolean
     checkFront: boolean
@@ -351,7 +351,7 @@ export namespace models {
   }
 
   export interface TaskImprovementOnUpdate {
-    task_id: string
+    id: string
     checkProject: boolean
     checkRequirement: boolean
     checkFront: boolean
@@ -368,7 +368,7 @@ export namespace models {
   }
 
   export interface TaskBugOnUpdate {
-    task_id: string
+    id: string
     checkFront: boolean
     checkBack: boolean
     checkTest: boolean

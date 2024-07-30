@@ -153,9 +153,19 @@ export default [
                 }
               },
               {
-                path: ':projectId/iteracoes/:iterationId/tarefa/:taskId/edit',
+                path: ':projectId/iteracoes/:iterationId/nova-tarefa',
+                name: 'iteration-task-new',
+                component: async () => await import('src/views/NewTask/NewTask.vue'),
+                meta: {
+                  title: 'Nova tarefa',
+                  icon: 'table-columns',
+                  sideViewComponent: RecentProjects
+                }
+              },
+              {
+                path: ':projectId/iteracoes/:iterationId/tarefa/:taskId/editar',
                 name: 'iteration-task-edit',
-                component: async () => await import('src/views/Task/Task.vue'),
+                component: async () => await import('src/views/EditTask/EditTask.vue'),
                 meta: {
                   title: 'Editar tarefa',
                   icon: 'table-columns',

@@ -10,6 +10,7 @@ const props = defineProps<{
   title: string
   tasks: Object[]
   listName: string
+  addButton?: Boolean
 }>()
 
 const $taskStore = useTaskStore()
@@ -70,12 +71,25 @@ async function moveTask(evt: any) {
 
 <template>
   <div class="flex flex-col h-fit gap-3 bg-whiteSmoke-900/50 dark:bg-jet-900/50 rounded p-3">
-    <div class="flex gap-2 items-center text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold">
-      <FontAwesomeIcon
-        icon="fa-solid fa-bars-staggered"
-      />
+    <div class="flex gap-2 items-center justify-between text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold">
+      <div class="flex gap-2 items-center">
+        <FontAwesomeIcon
+          icon="fa-solid fa-bars-staggered"
+        />
 
-      {{ title }}
+        {{ title }}
+      </div>
+
+      <button
+        v-show="addButton"
+        title="Nova tarefa"
+        class="text-xs flex text-white justify-evenly items-center bg-lavenderIndigo-900 p-2 rounded-md"
+        @click="$router.push({ name: 'iteration-task-new'})"
+      >
+        <FontAwesomeIcon
+          icon="fa-solid fa-plus"
+        />
+      </button>
     </div>
 
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">

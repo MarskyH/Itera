@@ -51,16 +51,35 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="!onLoad" class="flex gap-3 grow shrink-0 overflow-auto">
-    <IterationTaskList title="A fazer" list-name="A fazer" :tasks="iterationToDoTasks"
-      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-    <IterationTaskList title="Fazendo" list-name="Fazendo" :tasks="iterationDoingTasks"
-      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-    <IterationTaskList title="Feito" list-name="Feito" :tasks="iterationDoneTasks"
-      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-    <IterationTaskList title="Pendente" list-name="Pendente" :tasks="iterationPendingTasks"
-      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-    <IterationTaskList title="Cancelado" list-name="Cancelado" :tasks="iterationCanceledTasks"
-      @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
+  <div
+    v-if="!onLoad"
+    class="flex gap-3 grow shrink-0 overflow-auto"
+  >
+    <IterationTaskList
+      title="A fazer"
+      list-name="A fazer"
+      :tasks="iterationToDoTasks"
+      :add-button="true"
+    />
+    <IterationTaskList
+      title="Fazendo"
+      list-name="Fazendo"
+      :tasks="iterationDoingTasks"
+    />
+    <IterationTaskList
+      title="Feito"
+      list-name="Feito"
+      :tasks="iterationDoneTasks"
+    />
+    <IterationTaskList
+      title="Pendente"
+      list-name="Pendente"
+      :tasks="iterationPendingTasks"
+    />
+    <IterationTaskList
+      title="Cancelado"
+      list-name="Cancelado"
+      :tasks="iterationCanceledTasks"
+    />
   </div>
 </template>
