@@ -33,7 +33,7 @@ const props = defineProps({
     default: false
   },
   value: {
-    type: String,
+    type: [String, Boolean],
     default: '',
     required: false
   },
@@ -56,9 +56,13 @@ const infoTooltipVisible = ref<boolean>(false)
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
+  <div
+    class="flex gap-1"
+    :class="{'flex-row-reverse justify-end': type === 'checkbox', 'flex-col items-start': type !== 'checkbox'}"
+  >
     <span
-      class="flex text-semibold text-sm"
+      class="flex "
+      :class="{'font-bold text-lavenderIndigo-900 dark:text-tropicalIndigo-900 ml-2': type === 'checkbox', 'font-semibold text-sm': type !== 'checkbox'}"
     >
       {{ label }}
       
@@ -77,28 +81,38 @@ const infoTooltipVisible = ref<boolean>(false)
           icon="fa-solid fa-circle-question"
         />
       </button>
-      
     </span>
 
     <input
-      v-if="options.length === 0"
+      v-if="options.length === 0 && type !== 'textarea'"
       v-model="value"
       :validate-on-input="true"
-      :as="type"
+      :type="type"
       :disabled="disabled"
       :placeholder="placeholder"
       class="text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+      :class="{'w-full': type !== 'checkbox'}"
+      @change="() => $emit('change')"
+    />
+
+    <textarea
+      v-if="options.length === 0 && type === 'textarea' && typeof(value) !== 'boolean'"
+      v-model="value"
+      :validate-on-input="true"
+      :disabled="disabled"
+      :placeholder="placeholder"
+      class="w-full text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
       @change="() => $emit('change')"
     />
 
     <select
-      v-else
+      v-if="options.length > 0"
       v-model="value"
       :validate-on-input="true"
       :as="type"
       :disabled="disabled"
       :placeholder="placeholder"
-      class="text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
+      class="w-full text-xs bg-transparent disabled:text-stone-500 disabled:dark:text-stone-400 disabled:bg-stone-200 disabled:dark:bg-stone-800 dark:bg-jet-900 border-stone-300 dark:border-stone-600 border-[1px] outline-0 rounded px-3 py-2 focus:ring-2 focus:ring-periwinkle-900 focus:dark:ring-charcoal-900"
       @change="() => $emit('change')"
     >
       <option

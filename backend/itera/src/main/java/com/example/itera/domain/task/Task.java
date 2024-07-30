@@ -110,14 +110,17 @@ public class Task {
     }
 
     public Boolean updateTaskListName(String oldListName, String newListName) {
-        System.out.println(oldListName + " to " + newListName);
-        return switch (oldListName) {
-            case "A fazer" -> newListName.equals("Fazendo") || newListName.equals("Cancelado");
-            case "Pendente" -> newListName.equals("Fazendo") || newListName.equals("Cancelado");
-            case "Fazendo" ->
-                    newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente");
-            default -> false;
-        };
+        if(oldListName != null && newListName != null){
+            return switch (oldListName) {
+                case "A fazer" -> newListName.equals("Fazendo") || newListName.equals("Cancelado");
+                case "Pendente" -> newListName.equals("Fazendo") || newListName.equals("Cancelado");
+                case "Fazendo" ->
+                        newListName.equals("Feito") || newListName.equals("Cancelado") || newListName.equals("Pendente");
+                default -> false;
+            };
+        }else{
+            return false;
+        }
     }
 }
 

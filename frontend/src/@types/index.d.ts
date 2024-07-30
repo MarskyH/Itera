@@ -331,6 +331,15 @@ export namespace models {
     checkTest: boolean
   }
 
+  export interface TaskRequirementOnUpdate {
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
+
   export interface TaskImprovement {
     id: string
     task_id: string
@@ -341,8 +350,24 @@ export namespace models {
     checkTest: boolean
   }
 
+  export interface TaskImprovementOnUpdate {
+    task_id: string
+    checkProject: boolean
+    checkRequirement: boolean
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
+
   export interface TaskBug {
     id: string
+    task_id: string
+    checkFront: boolean
+    checkBack: boolean
+    checkTest: boolean
+  }
+
+  export interface TaskBugOnUpdate {
     task_id: string
     checkFront: boolean
     checkBack: boolean
@@ -393,6 +418,9 @@ export namespace models {
   export interface TaskForm {
     taskType: string
     assigneies: Assignee[]
+    taskRequirement: TaskRequirementOnUpdate
+    taskImprovement: TaskImprovementOnUpdate
+    taskBug: TaskBugOnUpdate
   }
 }
 
@@ -403,7 +431,7 @@ export interface InputFieldProps {
   type?: string
   required: boolean
   disabled?: boolean
-  value?: string
+  value?: string | boolean
   options?: { value: string; name: string; selected: boolean }[]
   hoverInfo?: string
   mask?: string

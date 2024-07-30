@@ -321,11 +321,11 @@ public class TaskController {
         Map<String, String> response = new HashMap<>();
 
         try {
-            Task task = taskRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
-            if (data.listName() != null && task.updateTaskListName(task.getListName(), data.listName())) {
+            Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+            boolean isListNameValided = task.updateTaskListName(task.getListName(), data.listName());
+            if (data.listName() != null && isListNameValided) {
                 task.setListName(data.listName());
-            }else{
+            }else if (data.listName() != null){
                 response.put("data_id", task.getId());
                 response.put("message", ResponseType.FAIL_UPDATE.getMessage() + " - " + data.listName() + " to " + task.getListName());
                 return ResponseEntity.badRequest().body(response);
