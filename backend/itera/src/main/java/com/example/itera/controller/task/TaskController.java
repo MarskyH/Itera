@@ -394,6 +394,7 @@ public class TaskController {
                     }
                     // Adicione outras atualizações de campos de taskRequirement conforme necessário
                     task.setTaskRequirement(taskRequirement);
+                    taskRequirementRepository.save(taskRequirement);
                 }
             }
             if (data.taskImprovement() != null) {
@@ -417,6 +418,7 @@ public class TaskController {
                     }
                     // Adicione outras atualizações de campos de taskImprovement conforme necessário
                     task.setTaskImprovement(taskImprovement);
+                    taskImprovementRepository.save(taskImprovement);
                 }
             }
             if (data.taskBug() != null) {
@@ -434,6 +436,7 @@ public class TaskController {
                     }
                     // Adicione outras atualizações de campos de taskBug conforme necessário
                     task.setTaskBug(taskBug);
+                    taskBugRepository.save(taskBug);
                 }
             }
             if (data.iteration_id() != null) {
