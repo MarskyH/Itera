@@ -33,7 +33,8 @@ public class Task {
     private Timestamp endDate;
     private Integer orderTask;
     private String listName;
-
+    private Boolean checkCancelled = false;
+    private String  detailsCancelled;
     @Column(name = "task_type")
     private String taskType;
 

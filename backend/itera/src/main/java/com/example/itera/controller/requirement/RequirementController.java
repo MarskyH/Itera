@@ -267,7 +267,7 @@ public class RequirementController {
         }
     }
 
-    private static int getSizeRequirement(String sizeRequirement) {
+    public static int getSizeRequirement(String sizeRequirement) {
         switch (sizeRequirement) {
             case "Pequeno":
                 return 5;

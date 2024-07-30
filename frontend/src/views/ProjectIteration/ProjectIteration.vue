@@ -54,10 +54,8 @@ onMounted(async () => {
   <div v-if="!onLoad" class="flex gap-3 grow shrink-0 overflow-auto">
     <IterationTaskList title="A fazer" list-name="A fazer" :tasks="iterationToDoTasks"
       @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-
     <IterationTaskList title="Fazendo" list-name="Fazendo" :tasks="iterationDoingTasks"
       @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
-
     <IterationTaskList title="Feito" list-name="Feito" :tasks="iterationDoneTasks"
       @title-click="() => $router.push({ name: 'new-iteration-task', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })" />
     <IterationTaskList title="Pendente" list-name="Pendente" :tasks="iterationPendingTasks"

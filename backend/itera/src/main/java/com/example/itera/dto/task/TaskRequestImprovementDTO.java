@@ -3,6 +3,6 @@ package com.example.itera.dto.task;
 
 import java.sql.Timestamp;
 
-public record TaskRequestImprovementDTO(String title, String priority,  String details, String complexity, String effort, Integer sizeTask,Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, String taskimprovement_id, String iteration_id) {
+public record TaskRequestImprovementDTO(String title, String priority,  String details, String complexity, String effort, String sizeTask,Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, String taskimprovement_id, String iteration_id) {
 }
 

@@ -148,6 +148,8 @@ CREATE TABLE task (
     end_date TIMESTAMP,
     list_name VARCHAR(20),
     order_task INTEGER,
+    check_cancelled BOOLEAN,
+    details_cancelled TEXT,
     task_type TEXT,
     task_requirement_id TEXT,
     task_improvement_id TEXT,
