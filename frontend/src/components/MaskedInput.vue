@@ -30,7 +30,7 @@ const props = defineProps({
     default: false
   },
   value: {
-    type: String,
+    type: [String, Boolean],
     default: ''
   },
   mask: {

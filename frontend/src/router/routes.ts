@@ -157,7 +157,7 @@ export default [
                 name: 'iteration-task-edit',
                 component: async () => await import('src/views/Task/Task.vue'),
                 meta: {
-                  title: 'Nova tarefa',
+                  title: 'Editar tarefa',
                   icon: 'table-columns',
                   sideViewComponent: RecentProjects
                 }
