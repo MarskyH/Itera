@@ -49,6 +49,9 @@ import java.util.*;
 @RequestMapping("task")
 public class TaskController {
 
+    int order = 0;
+    String listName = "A fazer";
+
     @Autowired
     IterationRepository iterationRepository;
 
@@ -72,50 +75,61 @@ public class TaskController {
     TeamMemberRepository teamMemberRepository;
 
 
-    @Autowired
-    @Lazy
-    RequirementController requirementController;
-
-    @PostMapping("/type/improvement")
+    @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveTaskImprovement(@RequestBody TaskTaskImprovementRequestDTO data) {
+    public ResponseEntity<?> saveTask(@RequestBody TaskCompleteRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        if( data.task().orderTask() == null){
-            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
+        if(data.orderTask() == null){
+            order = taskRepository.findByIteration(data.iteration_id()).size()+1;
         }else{
-            order =  data.task().orderTask();
+            order = data.orderTask();
+        }
+        if(data.listName() != null){
+            listName = data.listName();
         }
         try {
-            TaskRequestImprovementDTO dataTask = data.task();
-
-            Iteration iterationData = iterationRepository.findById(dataTask.iteration_id()).orElseThrow();
+            Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
             Task taskData = new Task(
-                    dataTask.title(),
-                    dataTask.priority(),
-                    dataTask.details(),
-                    dataTask.complexity(),
-                    dataTask.effort(),
-                    requirementController.getSizeRequirement(dataTask.sizeTask()),
-                    dataTask.startDate(),
-                    dataTask.endDate(),
+                    data.title(),
+                    data.priority(),
+                    data.details(),
+                    data.complexity(),
+                    data.effort(),
+                    data.sizeTask(),
+                    data.startDate(),
+                    data.endDate(),
                     order,
                     listName,
-                    data.task().taskType(),
+                    data.taskType(),
+                    (TaskRequirement) null,
                     (TaskImprovement) null,
+                    (TaskBug) null,
                     iterationData
             );
-            taskRepository.save(taskData); // Salve a Task primeiro
-
-            TaskImprovement taskImprovementData = new TaskImprovement(
-                    taskData
-            );
-            taskImprovementRepository.save(taskImprovementData);
-
-            taskData.setTaskImprovement(taskImprovementData);
             taskRepository.save(taskData);
 
-            if(data.assignees() != null){
-                for (AssigneeRequestDTO assignee : data.assignees()) {
+            if(data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null){
+                TaskRequirement taskRequirementData = new TaskRequirement(taskData);
+                taskData.setTaskRequirement(taskRequirementData);
+                taskRequirementRepository.save(taskRequirementData);
+                response.put("Task_requirement_id", taskRequirementData.getId());
+                taskRepository.save(taskData);
+            }else if(data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null){
+                TaskImprovement taskImprovementData = new TaskImprovement(taskData);
+                taskData.setTaskImprovement(taskImprovementData);
+                taskImprovementRepository.save(taskImprovementData);
+                taskRepository.save(taskData);
+                response.put("Task_improvement_id", taskImprovementData.getId());
+            }else if(data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null){
+                TaskBug taskBugData = new TaskBug(taskData);
+                taskData.setTaskBug(taskBugData);
+                taskBugRepository.save(taskBugData);
+                taskRepository.save(taskData);
+                response.put("Task_bug_id", taskBugData.getId());
+            }
+
+            if(data.assigneies() != null){
+                for (AssigneeRequestDTO assignee : data.assigneies()) {
                     TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
                     Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
                     assigneeRepository.save(assigneeData);
@@ -123,28 +137,20 @@ public class TaskController {
                 }
             }
 
-            response.put("task_id", taskData.getId());
-            response.put("taskImprovement_id", taskImprovementData.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            requirementController.saveRequirement(new RequirementRequestDTO(dataTask.title(), dataTask.details(), dataTask.complexity(), dataTask.priority(), Integer.valueOf(dataTask.effort()), dataTask.sizeTask(), null, iterationData.getId(), iterationData.getProject().getId()));
-
-
+            response.put("task_id:", taskData.getId());
+            response.put("message:", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (UnauthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
         }
     }
 
 
-    int order = 0;
-    String listName = "A fazer";
-
-    @PostMapping
+    /*@PostMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTask(@RequestBody TaskRequestRequirementDTO data) {
         Map<String, String> response = new HashMap<>();
@@ -185,130 +191,8 @@ public class TaskController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
         }
-    }
+    }*/
 
-    @PostMapping("/type/requirement")
-    @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveTaskRequirement(@RequestBody TaskTaskRequirementRequestDTO data) {
-        TaskRequestRequirementDTO dataTask = data.task();
-        Iteration iteration;
-        iteration = iterationRepository.findById(data.task().iteration_id()).orElseThrow(EntityNotFoundException::new);
-        Map<String, String> response = new HashMap<>();
-        if( data.task().orderTask() == null){
-            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
-        }else{
-            order =  data.task().orderTask();
-        }
-        try {
-            Task taskData = new Task(
-                    dataTask.title(),
-                    dataTask.priority(),
-                    dataTask.details(),
-                    dataTask.complexity(),
-                    dataTask.effort(),
-                    dataTask.sizeTask(),
-                    dataTask.startDate(),
-                    dataTask.endDate(),
-                    order,
-                    listName,
-                    data.task().taskType(),
-                    (TaskRequirement) null,
-                    iteration
-            );
-            taskRepository.save(taskData); // Salve a Task primeiro
-
-            TaskRequirement taskRequirementData = new TaskRequirement(
-                    taskData
-            );
-            taskRequirementRepository.save(taskRequirementData);
-
-            taskData.setTaskRequirement(taskRequirementData);
-            taskRepository.save(taskData);
-
-            if(data.assignees() != null){
-                for (AssigneeRequestDTO assignee : data.assignees()) {
-                    TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
-                    assigneeRepository.save(assigneeData);
-                    response.put("Assignee_id", assigneeData.getId());
-                }
-            }
-
-            response.put("task_id", taskData.getId());
-            response.put("taskRequirement_id", taskRequirementData.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
-        }
-    }
-
-
-    @PostMapping("/type/bug")
-    @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveTaskBug(@RequestBody TaskTaskBugRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
-        if( data.task().orderTask() == null){
-            order = taskRepository.findByIteration( data.task().iteration_id()).size()+1;
-        }else{
-            order =  data.task().orderTask();
-        }
-        try {
-            TaskRequestBugDTO dataTask = data.task();
-
-            Iteration iterationData = iterationRepository.findById(dataTask.iteration_id()).orElseThrow();
-            Task taskData = new Task(
-                    dataTask.title(),
-                    dataTask.priority(),
-                    dataTask.details(),
-                    dataTask.complexity(),
-                    dataTask.effort(),
-                    requirementController.getSizeRequirement(dataTask.sizeTask()),
-                    dataTask.startDate(),
-                    dataTask.endDate(),
-                    order,
-                    listName,
-                    data.task().taskType(),
-                    (TaskBug) null,
-                    iterationData
-            );
-            taskRepository.save(taskData);
-
-            TaskBug taskBugData = new TaskBug(
-                    taskData
-            );
-            taskBugRepository.save(taskBugData);
-
-            taskData.setTaskBug(taskBugData);
-            taskRepository.save(taskData);
-            if(data.assignees() != null){
-                for (AssigneeRequestDTO assignee : data.assignees()) {
-                    TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
-                    assigneeRepository.save(assigneeData);
-                    response.put("Assignee_id", assigneeData.getId());
-                }
-            }
-
-
-            response.put("task_id", taskData.getId());
-            response.put("taskBug_id", taskBugData.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
-        }
-    }
 
     @GetMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -445,7 +329,6 @@ public class TaskController {
             }
 
             if (data.assigneies() != null){
-                System.out.println("DATA ASSIGNEE:" + data.assigneies());
                 for (AssigneeResponseDTO assignee : data.assigneies()) {
                     Assignee assigneeData;
                         try{
@@ -511,115 +394,6 @@ public class TaskController {
         return listaTasks;
     }
 
-
-
-    @PutMapping("type/requirement/{id}/check")
-    public ResponseEntity<?> updateTaskRequirementCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            TaskRequirement task = taskRequirementRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.checkProject() != null) {
-                task.setCheckProject(data.checkProject());
-            }
-
-            if (data.checkRequirement() != null) {
-                task.setCheckRequirement(data.checkRequirement());
-            }
-
-            if (data.checkFront() != null) {
-                task.setCheckFront(data.checkFront());
-            }
-
-            if (data.checkBack() != null) {
-                task.setCheckBack(data.checkBack());
-            }
-
-            if (data.checkTest() != null) {
-                task.setCheckTest(data.checkTest());
-            }
-
-            taskRequirementRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PutMapping("type/improvement/{id}/check")
-    public ResponseEntity<?> updateTaskImprovementCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            TaskImprovement task = taskImprovementRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            // Atualizar apenas os campos fornecidos pelo utilizador
-            if (data.checkProject() != null) {
-                task.setCheckProject(data.checkProject());
-            }
-
-            if (data.checkRequirement() != null) {
-                task.setCheckRequirement(data.checkRequirement());
-            }
-
-            if (data.checkFront() != null) {
-                task.setCheckFront(data.checkFront());
-            }
-
-            if (data.checkBack() != null) {
-                task.setCheckBack(data.checkBack());
-            }
-
-            if (data.checkTest() != null) {
-                task.setCheckTest(data.checkTest());
-            }
-
-            taskImprovementRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PutMapping("type/bug/{id}/check")
-    public ResponseEntity<?> updateTaskBugCheck(@PathVariable String id , @RequestBody TaskCheckRequestDTO data) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            TaskBug task = taskBugRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-            if (data.checkFront() != null) {
-                task.setCheckFront(data.checkFront());
-            }
-
-            if (data.checkBack() != null) {
-                task.setCheckBack(data.checkBack());
-            }
-
-            if (data.checkTest() != null) {
-                task.setCheckTest(data.checkTest());
-            }
-
-            taskBugRepository.save(task);
-            response.put("data_id:", task.getId());
-            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         try {

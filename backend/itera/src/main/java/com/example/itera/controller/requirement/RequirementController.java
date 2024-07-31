@@ -6,8 +6,13 @@ import com.example.itera.controller.task.TaskController;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.domain.task.Task;
+import com.example.itera.domain.taskBug.TaskBug;
+import com.example.itera.domain.taskImprovement.TaskImprovement;
+import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
+import com.example.itera.dto.task.TaskCompleteRequestDTO;
 import com.example.itera.dto.task.TaskRequestRequirementDTO;
 import com.example.itera.dto.task.TaskTaskRequirementRequestDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementRequestDTO;
@@ -18,6 +23,7 @@ import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
 import com.example.itera.repository.task.TaskRepository;
+import com.example.itera.repository.taskRequirement.TaskRequirementRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +58,7 @@ public class RequirementController {
     TaskRepository taskRepository;
 
     @Autowired
-    TaskController taskController;
+    TaskRequirementRepository taskRequirementRepository;
 
 
     /**
@@ -240,10 +246,28 @@ public class RequirementController {
     }
 
     private void createTask(Iteration iteration, Requirement requirement) {
-        TaskRequestRequirementDTO taskRequestDTO = new TaskRequestRequirementDTO(requirement.getTitle(),  requirement.getPriority(), requirement.getDetails(), requirement.getComplexity(), requirement.getEffort().toString(), requirement.getSizeRequirement() ,iteration.getStartDate(), iteration.getEndDate(), 0, "A fazer", "Requisito", null, iteration.getId());
-        TaskRequirementRequestDTO taskRequirementRequestDTO = new TaskRequirementRequestDTO( null);
-        TaskTaskRequirementRequestDTO data = new TaskTaskRequirementRequestDTO(taskRequestDTO, taskRequirementRequestDTO , null);
-        taskController.saveTaskRequirement(data);
+        Task taskData = new Task(
+                requirement.getTitle(),
+                requirement.getPriority(),
+                requirement.getDetails(),
+                requirement.getComplexity(),
+                requirement.getEffort().toString(),
+                requirement.getSizeRequirement().toString(),
+                iteration.getStartDate(),
+                iteration.getEndDate(),
+                0,
+                "A fazer",
+                "Requisito",
+                null,
+                null,
+                null,
+                iteration
+        );
+        taskRepository.save(taskData);
+        TaskRequirement taskRequirementData = new TaskRequirement(taskData);
+        taskData.setTaskRequirement(taskRequirementData);
+        taskRepository.save(taskData);
+        taskRequirementRepository.save(taskRequirementData);
     }
 
     @GetMapping("/list/iteration/{iterationId}")

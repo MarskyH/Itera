@@ -28,7 +28,7 @@ public class Task {
     private String details;
     private String complexity;
     private String effort;
-    private Integer sizeTask;
+    private String sizeTask;
     private Timestamp startDate;
     private Timestamp endDate;
     private Integer orderTask;
@@ -62,7 +62,7 @@ public class Task {
     @JsonIgnore
     private Iteration iteration;
 
-    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -78,7 +78,7 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskImprovement taskImprovementData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -94,7 +94,7 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, String details, String complexity, String effort, Integer sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskBug taskBugData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskBug taskBugData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -110,6 +110,24 @@ public class Task {
         this.iteration = iterationData;
     }
 
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, Iteration iterationData) {
+        this.title = title;
+        this.priority = priority;
+        this.details = details;
+        this.complexity = complexity;
+        this.effort = effort;
+        this.sizeTask = sizeTask;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.orderTask = orderTask;
+        this.listName = listName;
+        this.taskType = taskType;
+        this.taskRequirement = taskRequirementData;
+        this.taskImprovement = taskImprovementData;
+        this.taskBug = taskBugData;
+        this.iteration = iterationData;
+    }
+
     public Boolean updateTaskListName(String oldListName, String newListName) {
         if(oldListName != null && newListName != null){
             return switch (oldListName) {
@@ -121,6 +139,19 @@ public class Task {
             };
         }else{
             return false;
+        }
+    }
+
+    public  String getSizeRequirement(String sizeRequirement) {
+        switch (sizeRequirement) {
+            case "5":
+                return "Pequeno";
+            case "10":
+                return "Médio";
+            case "15":
+                return "Grande";
+            default:
+                throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
         }
     }
 }
