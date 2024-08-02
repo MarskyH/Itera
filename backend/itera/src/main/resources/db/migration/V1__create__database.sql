@@ -146,6 +146,7 @@ CREATE TABLE task (
     size_task VARCHAR(255),
     start_date TIMESTAMP,
     end_date TIMESTAMP,
+    progressive_bar INTEGER DEFAULT 0,
     list_name VARCHAR(20),
     order_task INTEGER,
     check_cancelled BOOLEAN,

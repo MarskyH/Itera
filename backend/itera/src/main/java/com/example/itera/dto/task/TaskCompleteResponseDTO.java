@@ -20,6 +20,8 @@ public record TaskCompleteResponseDTO(
         String sizeTask,
         Timestamp startDate,
         Timestamp endDate,
+
+        Integer progressiveBar,
         Integer orderTask,
         Boolean checkCancelled,
         String detailsCancelled,
@@ -44,6 +46,7 @@ public record TaskCompleteResponseDTO(
                 task.getSizeRequirement(task.getSizeTask()),
                 task.getStartDate(),
                 task.getEndDate(),
+                task.getProgressiveBar(),
                 task.getOrderTask(),
                 task.getCheckCancelled(),
                 task.getDetailsCancelled(),

@@ -20,6 +20,7 @@ public record TaskCompleteRequestDTO(
         String sizeTask,
         Timestamp startDate,
         Timestamp endDate,
+        Integer progressiveBar,
         Integer orderTask,
         Boolean checkCancelled,
         String detailsCancelled,

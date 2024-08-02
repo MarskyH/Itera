@@ -14,6 +14,7 @@ import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.pendency.PendencyResponseDTO;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
+import com.example.itera.dto.requirement.RequirementResponseDTO;
 import com.example.itera.dto.task.*;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
@@ -73,6 +74,9 @@ public class TaskController {
     TaskBugRepository taskBugRepository;
     @Autowired
     TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    RequirementRepository requirementRepository;
 
 
     @PostMapping
@@ -263,49 +267,70 @@ public class TaskController {
                 TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskRequirement().id()).orElse(null);
                 contCheck = taskRequirementRepository.getTotalChecksTrueById(taskRequirement.getId());
                 if (taskRequirement != null) {
+                    Requirement requirement = requirementRepository.findByName(task.getTitle());
                     // Atualizar os campos do taskRequirement se existir
                     if (data.taskRequirement().checkProject() != null) {
                         if(data.taskRequirement().checkProject()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckProject(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckProject(false);
                         }
                     }
                     if (data.taskRequirement().checkRequirement() != null) {
                         if(data.taskRequirement().checkRequirement()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckRequirement(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckRequirement(false);
                         }
                     }
                     if (data.taskRequirement().checkFront() != null) {
                         if(data.taskRequirement().checkFront()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckFront(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckFront(false);
                         }
                     }
                     if (data.taskRequirement().checkBack() != null) {
                         if(data.taskRequirement().checkBack()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckBack(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckBack(false);
                         }
                     }
                     if (data.taskRequirement().checkTest() != null) {
                         if(data.taskRequirement().checkTest()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckTest(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckTest(false);
                         }
                     }
@@ -317,49 +342,70 @@ public class TaskController {
             if (data.taskImprovement() != null) {
                 TaskImprovement taskImprovement = taskImprovementRepository.findById(data.taskImprovement().id()).orElse(null);
                 contCheck = taskImprovementRepository.getTotalChecksTrueById(taskImprovement.getId());
+                Requirement requirement = requirementRepository.findByName(task.getTitle());
                 if (taskImprovement != null) {
                     if (data.taskImprovement().checkProject() != null) {
                         if(data.taskImprovement().checkProject()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckProject(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckProject(false);
                         }
                     }
                     if (data.taskImprovement().checkRequirement() != null) {
                         if(data.taskImprovement().checkRequirement()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckRequirement(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckRequirement(false);
                         }
                     }
                     if (data.taskImprovement().checkFront() != null) {
                         if(data.taskImprovement().checkFront()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckFront(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckFront(false);
                         }
                     }
                     if (data.taskImprovement().checkBack() != null) {
                         if(data.taskImprovement().checkBack()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckBack(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckBack(false);
                         }
                     }
                     if (data.taskImprovement().checkTest() != null) {
                         if(data.taskImprovement().checkTest()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckTest(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(progressiveBar);
+                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckTest(false);
                         }
                     }
@@ -374,19 +420,19 @@ public class TaskController {
                 if (taskBug != null) {
                     if (data.taskBug().checkFront() != null) {
                         if(data.taskBug().checkFront()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck+1));
                             taskBug.setCheckFront(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck-1));
                             taskBug.setCheckFront(false);
                         }
                     }
                     if (data.taskBug().checkBack() != null) {
                         if(data.taskBug().checkBack()){
-                            updateProgressiveBar(contAssignee, contCheck+1);
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck+1));
                             taskBug.setCheckBack(true);
                         }else{
-                            updateProgressiveBar(contAssignee, contCheck-1);
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck-1));
                             taskBug.setCheckBack(false);
                         }
                     }
