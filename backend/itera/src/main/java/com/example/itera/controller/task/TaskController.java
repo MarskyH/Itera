@@ -266,8 +266,9 @@ public class TaskController {
                 task.setTaskType(data.taskType());
             }
             if (data.taskRequirement() != null) {
-                TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskRequirement().id()).orElse(null);
+                TaskRequirement taskRequirement = taskRequirementRepository.findById(task.getTaskRequirement().getId()).orElse(null);
                 contCheck = taskRequirementRepository.getTotalChecksTrueById(taskRequirement.getId());
+                System.out.println("CONTCHEK:" + contCheck);
                 if (taskRequirement != null) {
                     Requirement requirement = requirementRepository.findByName(task.getTitle());
                     // Atualizar os campos do taskRequirement se existir
@@ -278,9 +279,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckProject(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckProject(false);
                         }
                     }
@@ -291,9 +289,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckRequirement(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckRequirement(false);
                         }
                     }
@@ -304,9 +299,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckFront(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckFront(false);
                         }
                     }
@@ -317,9 +309,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckBack(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckBack(false);
                         }
                     }
@@ -330,9 +319,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckTest(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskRequirement.setCheckTest(false);
                         }
                     }
@@ -342,7 +328,7 @@ public class TaskController {
                 }
             }
             if (data.taskImprovement() != null) {
-                TaskImprovement taskImprovement = taskImprovementRepository.findById(data.taskImprovement().id()).orElse(null);
+                TaskImprovement taskImprovement = taskImprovementRepository.findById(task.getTaskImprovement().getId()).orElse(null);
                 contCheck = taskImprovementRepository.getTotalChecksTrueById(taskImprovement.getId());
                 Requirement requirement = requirementRepository.findByName(task.getTitle());
                 if (taskImprovement != null) {
@@ -353,9 +339,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckProject(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckProject(false);
                         }
                     }
@@ -366,9 +349,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckRequirement(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckRequirement(false);
                         }
                     }
@@ -379,9 +359,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckFront(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckFront(false);
                         }
                     }
@@ -392,9 +369,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckBack(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckBack(false);
                         }
                     }
@@ -405,9 +379,6 @@ public class TaskController {
                             requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckTest(true);
                         }else{
-                            int progressiveBar = updateProgressiveBar(contAssignee, contCheck-1);
-                            task.setProgressiveBar(progressiveBar);
-                            requirement.setProgressiveBar(progressiveBar);
                             taskImprovement.setCheckTest(false);
                         }
                     }
@@ -417,7 +388,7 @@ public class TaskController {
                 }
             }
             if (data.taskBug() != null) {
-                TaskBug taskBug = taskBugRepository.findById(data.taskBug().id()).orElse(null);
+                TaskBug taskBug = taskBugRepository.findById(task.getTaskBug().getId()).orElse(null);
                 contCheck = taskBugRepository.getTotalChecksTrueById(taskBug.getId());
                 if (taskBug != null) {
                     if (data.taskBug().checkFront() != null) {
@@ -425,7 +396,8 @@ public class TaskController {
                             task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck+1));
                             taskBug.setCheckFront(true);
                         }else{
-                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck-1));
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
+
                             taskBug.setCheckFront(false);
                         }
                     }
@@ -434,16 +406,16 @@ public class TaskController {
                             task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck+1));
                             taskBug.setCheckBack(true);
                         }else{
-                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck-1));
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
+
                             taskBug.setCheckBack(false);
                         }
                     }
                     if (data.taskBug().checkTest() != null) {
                         if (data.taskBug().checkTest()) {
-                            updateProgressiveBar(contAssignee, contCheck + 1);
+                            task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck+1));
                             taskBug.setCheckTest(true);
                         } else {
-                            updateProgressiveBar(contAssignee, contCheck - 1);
                             taskBug.setCheckTest(false);
                         }
                     }
@@ -537,8 +509,12 @@ public class TaskController {
     }
 
     public int updateProgressiveBar(int contAssignee, int contCheck){
-        return contAssignee/contCheck * 100;
+        System.out.println("FUNCAO PROGRESSIVE BAR:" + contAssignee + "/" + contCheck);
+        double percentage = ((double) contCheck / contAssignee) * 100;
+        System.out.println("FUNCAO PROGRESSIVE BAR:" + percentage);
+        return (int) percentage;
     }
+
 }
 
 

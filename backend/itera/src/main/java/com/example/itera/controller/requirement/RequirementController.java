@@ -265,9 +265,9 @@ public class RequirementController {
         );
         taskRepository.save(taskData);
         TaskRequirement taskRequirementData = new TaskRequirement(taskData);
+        taskRequirementRepository.save(taskRequirementData);
         taskData.setTaskRequirement(taskRequirementData);
         taskRepository.save(taskData);
-        taskRequirementRepository.save(taskRequirementData);
     }
 
     @GetMapping("/list/iteration/{iterationId}")
