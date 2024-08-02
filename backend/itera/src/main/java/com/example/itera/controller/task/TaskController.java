@@ -211,6 +211,8 @@ public class TaskController {
 
         try {
             Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+            int contAssignee = assigneeRepository.findByTask(task.getId()).size();
+            int contCheck = 0;
             boolean isListNameValided = task.updateTaskListName(task.getListName(), data.listName());
             if (data.listName() != null && isListNameValided) {
                 task.setListName(data.listName());
@@ -259,22 +261,53 @@ public class TaskController {
             }
             if (data.taskRequirement() != null) {
                 TaskRequirement taskRequirement = taskRequirementRepository.findById(data.taskRequirement().id()).orElse(null);
+                contCheck = taskRequirementRepository.getTotalChecksTrueById(taskRequirement.getId());
                 if (taskRequirement != null) {
                     // Atualizar os campos do taskRequirement se existir
                     if (data.taskRequirement().checkProject() != null) {
-                        taskRequirement.setCheckProject(data.taskRequirement().checkProject());
+                        if(data.taskRequirement().checkProject()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskRequirement.setCheckProject(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskRequirement.setCheckProject(false);
+                        }
                     }
                     if (data.taskRequirement().checkRequirement() != null) {
-                        taskRequirement.setCheckRequirement(data.taskRequirement().checkRequirement());
+                        if(data.taskRequirement().checkRequirement()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskRequirement.setCheckRequirement(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskRequirement.setCheckRequirement(false);
+                        }
                     }
                     if (data.taskRequirement().checkFront() != null) {
-                        taskRequirement.setCheckFront(data.taskRequirement().checkFront());
+                        if(data.taskRequirement().checkFront()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskRequirement.setCheckFront(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskRequirement.setCheckFront(false);
+                        }
                     }
                     if (data.taskRequirement().checkBack() != null) {
-                        taskRequirement.setCheckBack(data.taskRequirement().checkBack());
+                        if(data.taskRequirement().checkBack()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskRequirement.setCheckBack(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskRequirement.setCheckBack(false);
+                        }
                     }
                     if (data.taskRequirement().checkTest() != null) {
-                        taskRequirement.setCheckTest(data.taskRequirement().checkTest());
+                        if(data.taskRequirement().checkTest()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskRequirement.setCheckTest(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskRequirement.setCheckTest(false);
+                        }
                     }
                     // Adicione outras atualizações de campos de taskRequirement conforme necessário
                     task.setTaskRequirement(taskRequirement);
@@ -283,22 +316,52 @@ public class TaskController {
             }
             if (data.taskImprovement() != null) {
                 TaskImprovement taskImprovement = taskImprovementRepository.findById(data.taskImprovement().id()).orElse(null);
+                contCheck = taskImprovementRepository.getTotalChecksTrueById(taskImprovement.getId());
                 if (taskImprovement != null) {
-                    // Atualizar os campos do taskImprovement se existir
                     if (data.taskImprovement().checkProject() != null) {
-                        taskImprovement.setCheckProject(data.taskImprovement().checkProject());
+                        if(data.taskImprovement().checkProject()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskImprovement.setCheckProject(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskImprovement.setCheckProject(false);
+                        }
                     }
                     if (data.taskImprovement().checkRequirement() != null) {
-                        taskImprovement.setCheckRequirement(data.taskImprovement().checkRequirement());
+                        if(data.taskImprovement().checkRequirement()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskImprovement.setCheckRequirement(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskImprovement.setCheckRequirement(false);
+                        }
                     }
                     if (data.taskImprovement().checkFront() != null) {
-                        taskImprovement.setCheckFront(data.taskImprovement().checkFront());
+                        if(data.taskImprovement().checkFront()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskImprovement.setCheckFront(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskImprovement.setCheckFront(false);
+                        }
                     }
                     if (data.taskImprovement().checkBack() != null) {
-                        taskImprovement.setCheckBack(data.taskImprovement().checkBack());
+                        if(data.taskImprovement().checkBack()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskImprovement.setCheckBack(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskImprovement.setCheckBack(false);
+                        }
                     }
                     if (data.taskImprovement().checkTest() != null) {
-                        taskImprovement.setCheckTest(data.taskImprovement().checkTest());
+                        if(data.taskImprovement().checkTest()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskImprovement.setCheckTest(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskImprovement.setCheckTest(false);
+                        }
                     }
                     // Adicione outras atualizações de campos de taskImprovement conforme necessário
                     task.setTaskImprovement(taskImprovement);
@@ -307,16 +370,34 @@ public class TaskController {
             }
             if (data.taskBug() != null) {
                 TaskBug taskBug = taskBugRepository.findById(data.taskBug().id()).orElse(null);
+                contCheck = taskBugRepository.getTotalChecksTrueById(taskBug.getId());
                 if (taskBug != null) {
-                    // Atualizar os campos do taskBug se existir
                     if (data.taskBug().checkFront() != null) {
-                        taskBug.setCheckFront(data.taskBug().checkFront());
+                        if(data.taskBug().checkFront()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskBug.setCheckFront(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskBug.setCheckFront(false);
+                        }
                     }
                     if (data.taskBug().checkBack() != null) {
-                        taskBug.setCheckBack(data.taskBug().checkBack());
+                        if(data.taskBug().checkBack()){
+                            updateProgressiveBar(contAssignee, contCheck+1);
+                            taskBug.setCheckBack(true);
+                        }else{
+                            updateProgressiveBar(contAssignee, contCheck-1);
+                            taskBug.setCheckBack(false);
+                        }
                     }
                     if (data.taskBug().checkTest() != null) {
-                        taskBug.setCheckTest(data.taskBug().checkTest());
+                        if (data.taskBug().checkTest()) {
+                            updateProgressiveBar(contAssignee, contCheck + 1);
+                            taskBug.setCheckTest(true);
+                        } else {
+                            updateProgressiveBar(contAssignee, contCheck - 1);
+                            taskBug.setCheckTest(false);
+                        }
                     }
                     // Adicione outras atualizações de campos de taskBug conforme necessário
                     task.setTaskBug(taskBug);
@@ -405,6 +486,10 @@ public class TaskController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    public int updateProgressiveBar(int contAssignee, int contCheck){
+        return contAssignee/contCheck * 100;
     }
 }
 
