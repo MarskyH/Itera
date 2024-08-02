@@ -17,6 +17,7 @@ public class TaskBug {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    private String requirementId;
     private Boolean checkFront = false;
     private Boolean checkBack = false;
     private Boolean checkTest = false;

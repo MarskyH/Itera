@@ -17,6 +17,7 @@ public class TaskImprovement {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    private String requirementId;
     private Boolean checkProject = false;
     private Boolean checkRequirement = false;
     private Boolean checkFront = false;

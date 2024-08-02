@@ -170,6 +170,7 @@ CREATE TABLE task_requirement (
 
 CREATE TABLE task_improvement (
     id TEXT PRIMARY KEY,
+    requirement_id TEXT,
     check_project BOOLEAN DEFAULT false,
     check_requirement BOOLEAN DEFAULT false,
     check_front BOOLEAN DEFAULT false,
@@ -180,6 +181,7 @@ CREATE TABLE task_improvement (
 
 CREATE TABLE task_bug (
     id TEXT PRIMARY KEY,
+    requirement_id TEXT,
     check_front BOOLEAN DEFAULT false,
     check_back BOOLEAN DEFAULT false,
     check_test BOOLEAN DEFAULT false,

@@ -120,12 +120,14 @@ public class TaskController {
                 taskRepository.save(taskData);
             }else if(data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null){
                 TaskImprovement taskImprovementData = new TaskImprovement(taskData);
+                taskImprovementData.setRequirementId(data.taskImprovement().requirement_id());
                 taskData.setTaskImprovement(taskImprovementData);
                 taskImprovementRepository.save(taskImprovementData);
                 taskRepository.save(taskData);
                 response.put("Task_improvement_id", taskImprovementData.getId());
             }else if(data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null){
                 TaskBug taskBugData = new TaskBug(taskData);
+                taskBugData.setRequirementId(data.taskBug().requirement_id());
                 taskData.setTaskBug(taskBugData);
                 taskBugRepository.save(taskBugData);
                 taskRepository.save(taskData);
