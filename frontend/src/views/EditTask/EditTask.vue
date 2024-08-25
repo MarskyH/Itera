@@ -561,7 +561,7 @@ onMounted(async () => {
               }
             ],
             specificFields: [
-              {
+            {
                 name: "checkRequirement",
                 label: "Requisito",
                 placeholder: "",
@@ -581,7 +581,7 @@ onMounted(async () => {
                 value: getSelectedTeamMemberOption('R') || ''
               },
               {
-                name: "requirementProject",
+                name: "deadlineRequirement",
                 label: "Prazo",
                 placeholder: "Digite o prazo para esta etapa",
                 type: "text",
