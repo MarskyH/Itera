@@ -249,9 +249,8 @@ export const useTaskStore = defineStore('Task', {
               body: taskImprovementForm,
           });
   
-          return response; // Retorna a resposta completa
+          return response;
       } catch (error) {
-          // Tratar erros que ocorrem durante a requisição
           console.error('Error creating task improvement:', error);
           return { status: 500, message: 'Internal Server Error' };
       }
@@ -278,13 +277,18 @@ export const useTaskStore = defineStore('Task', {
         assignees: listAssignees
       }
 
-      const response = await Api.request({
-        method: 'post',
-        route: 'task/type/bug',
-        body: taskBugForm
-      })
+      try {
+        const response = await Api.request({
+            method: 'post',
+            route: 'task',
+            body: taskBugForm,
+        });
 
-      return (response?.status) ? response.status : 500
+        return response;
+    } catch (error) {
+        console.error('Error creating task bug:', error);
+        return { status: 500, message: 'Internal Server Error' };
+    }
     },
 
     async updateTask(id: string, taskData: TaskForm) {
