@@ -54,111 +54,6 @@ const backlogIterarion = ref<Array<any>>([]);
 const teamMembers = ref<TeamMember[]>([])
 
 const formValidations: any = {};
-
-backlogIterarion.value = [
-  {
-    id: "1",
-    title: "Title 1",
-    details: "Details 1",
-    complexity: "High",
-    priority: "Low",
-    effort: 10,
-    sizeRequirement: "Large",
-    progressiveBar: 50
-  },
-  {
-    id: "2",
-    title: "Title 2",
-    details: "Details 2",
-    complexity: "Medium",
-    priority: "High",
-    effort: 20,
-    sizeRequirement: "Medium",
-    progressiveBar: 75
-  },
-  {
-    id: "3",
-    title: "Title 3",
-    details: "Details 3",
-    complexity: "Low",
-    priority: "Medium",
-    effort: 15,
-    sizeRequirement: "Small",
-    progressiveBar: 60
-  },
-  {
-    id: "4",
-    title: "Title 4",
-    details: "Details 4",
-    complexity: "High",
-    priority: "High",
-    effort: 30,
-    sizeRequirement: "Large",
-    progressiveBar: 40
-  },
-  {
-    id: "5",
-    title: "Title 5",
-    details: "Details 5",
-    complexity: "Medium",
-    priority: "Low",
-    effort: 25,
-    sizeRequirement: "Medium",
-    progressiveBar: 90
-  },
-  {
-    id: "6",
-    title: "Title 6",
-    details: "Details 6",
-    complexity: "Low",
-    priority: "Medium",
-    effort: 5,
-    sizeRequirement: "Small",
-    progressiveBar: 20
-  },
-  {
-    id: "7",
-    title: "Title 7",
-    details: "Details 7",
-    complexity: "Medium",
-    priority: "Medium",
-    effort: 18,
-    sizeRequirement: "Large",
-    progressiveBar: 70
-  },
-  {
-    id: "8",
-    title: "Title 8",
-    details: "Details 8",
-    complexity: "High",
-    priority: "High",
-    effort: 22,
-    sizeRequirement: "Medium",
-    progressiveBar: 80
-  },
-  {
-    id: "9",
-    title: "Title 9",
-    details: "Details 9",
-    complexity: "Low",
-    priority: "Low",
-    effort: 12,
-    sizeRequirement: "Small",
-    progressiveBar: 30
-  },
-  {
-    id: "10",
-    title: "Title 10",
-    details: "Details 10",
-    complexity: "Medium",
-    priority: "High",
-    effort: 27,
-    sizeRequirement: "Large",
-    progressiveBar: 60
-  }
-];
-
-
 yup.setLocale(yupErrorMessages);
 
 function getTeamMemberOptions() {
@@ -317,7 +212,7 @@ async function onSubmit(values: any) {
   let taskBug: any = null
 
   if (task.value.taskType === 'Bug') {
-    taskImprovement = {
+    taskBug = {
       id: task.value.taskBug?.id,
       checkFront: values.checkFront,
       checkBack: values.checkBack,

@@ -292,6 +292,9 @@ export const useTaskStore = defineStore('Task', {
     },
 
     async updateTask(id: string, taskData: TaskForm) {
+      if(taskData.taskBug != null){
+        taskData.assignees = taskData.assignees.filter(assignee => assignee.taskStep !== 'P' && assignee.taskStep !== 'R');
+      }
       const response = await Api.request({
         method: 'put',
         route: `/task/${id}`,

@@ -129,6 +129,7 @@ public class TaskController {
                     if(data.taskImprovement().requirement_id() !=  null){
                         taskImprovementData.setRequirementId(data.taskImprovement().requirement_id());
                     }
+                    System.out.println(taskData.getTitle());
                     requirementId = requirementRepository.findByName(taskData.getTitle()).getId();
                     taskImprovementData.setRequirementId(requirementId);
                     taskData.setTaskImprovement(taskImprovementData);
@@ -147,7 +148,7 @@ public class TaskController {
                 }
             } catch (Exception e) {
                 taskRepository.deleteById(taskData.getId());
-                if(requirementId != null && !requirementId.isEmpty()){
+                if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
                     requirementRepository.deleteById(requirementId);
                 }
                 return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage() + " DETAILS: " + e);
@@ -170,7 +171,7 @@ public class TaskController {
             if(taskData != null) {
                 taskRepository.deleteById(taskData.getId());
             }
-            if(requirementId != null && !requirementId.isEmpty()){
+            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
                 requirementRepository.deleteById(requirementId);
             }
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -178,7 +179,7 @@ public class TaskController {
             if(taskData != null) {
                 taskRepository.deleteById(taskData.getId());
             }
-            if(requirementId != null && !requirementId.isEmpty()){
+            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
                 requirementRepository.deleteById(requirementId);
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -186,56 +187,12 @@ public class TaskController {
             if(taskData != null) {
                 taskRepository.deleteById(taskData.getId());
             }
-            if(requirementId != null && !requirementId.isEmpty()){
+            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
                 requirementRepository.deleteById(requirementId);
             }
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
         }
     }
-
-
-    /*@PostMapping
-    @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> saveTask(@RequestBody TaskRequestRequirementDTO data) {
-        Map<String, String> response = new HashMap<>();
-        if(data.orderTask() == null){
-            order = taskRepository.findByIteration(data.iteration_id()).size()+1;
-        }else{
-            order = data.orderTask();
-        }
-        if(data.listName() != null){
-            listName = data.listName();
-        }
-        try {
-            Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
-            TaskRequirement taskRequirementData = new TaskRequirement();
-            Task taskData = new Task(
-                    data.title(),
-                    data.priority(),
-                    data.details(),
-                    data.complexity(),
-                    data.effort(),
-                    data.sizeTask(),
-                    data.startDate(),
-                    data.endDate(),
-                    order,
-                    listName,
-                    data.taskType(),
-                    taskRequirementData,
-                    iterationData
-            );
-            taskRepository.save(taskData);
-            response.put("task_id:", taskData.getId());
-            response.put("message:", ResponseType.SUCCESS_SAVE.getMessage());
-            return ResponseEntity.ok().body(response);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
-        }
-    }*/
 
 
     @GetMapping("/{id}")
@@ -471,7 +428,7 @@ public class TaskController {
                 for (AssigneeResponseDTO assignee : data.assignees()) {
                     Assignee assigneeData;
                         try{
-                            assigneeData = assigneeRepository.findByMemberIdStep(assignee.taskStep(), assignee.member_id());
+                            assigneeData = assigneeRepository.findByMemberIdStep(assignee.taskStep(), assignee.member_id(), task.getId());
                             if(assigneeData == null){
                                 assigneeData = new Assignee();
                             }

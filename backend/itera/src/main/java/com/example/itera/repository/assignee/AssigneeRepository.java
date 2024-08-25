@@ -15,8 +15,8 @@ public interface AssigneeRepository extends JpaRepository<Assignee, String>{
     @Query(value = "SELECT a FROM Assignee a WHERE a.task.id = :id")
     List<AssigneeResponseDTO> findByTask(@Param("id") String id);
 
-    @Query("SELECT a FROM Assignee a WHERE a.taskStep = :taskStep AND a.teamMember.id = :memberId")
-    Assignee findByMemberIdStep(@Param("taskStep") TaskStep taskStep, @Param("memberId") String memberId);
+    @Query("SELECT a FROM Assignee a WHERE a.taskStep = :taskStep AND a.teamMember.id = :memberId AND a.task.id = :taskId")
+    Assignee findByMemberIdStep(@Param("taskStep") TaskStep taskStep, @Param("memberId") String memberId, @Param("taskId") String taskId);
 
 }
 
