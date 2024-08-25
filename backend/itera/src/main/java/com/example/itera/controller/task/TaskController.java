@@ -78,22 +78,27 @@ public class TaskController {
     @Autowired
     RequirementRepository requirementRepository;
 
+    @Autowired
+    RequirementController requirementController;
+
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTask(@RequestBody TaskCompleteRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        if(data.orderTask() == null){
-            order = taskRepository.findByIteration(data.iteration_id()).size()+1;
-        }else{
+        if (data.orderTask() == null) {
+            order = taskRepository.findByIteration(data.iteration_id()).size() + 1;
+        } else {
             order = data.orderTask();
         }
-        if(data.listName() != null){
+        if (data.listName() != null) {
             listName = data.listName();
         }
+        Task taskData = null;
+        String requirementId = null;
         try {
             Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
-            Task taskData = new Task(
+            taskData = new Task(
                     data.title(),
                     data.priority(),
                     data.details(),
@@ -111,31 +116,46 @@ public class TaskController {
                     iterationData
             );
             taskRepository.save(taskData);
-
-            if(data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null){
-                TaskRequirement taskRequirementData = new TaskRequirement(taskData);
-                taskData.setTaskRequirement(taskRequirementData);
-                taskRequirementRepository.save(taskRequirementData);
-                response.put("Task_requirement_id", taskRequirementData.getId());
-                taskRepository.save(taskData);
-            }else if(data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null){
-                TaskImprovement taskImprovementData = new TaskImprovement(taskData);
-                taskImprovementData.setRequirementId(data.taskImprovement().requirement_id());
-                taskData.setTaskImprovement(taskImprovementData);
-                taskImprovementRepository.save(taskImprovementData);
-                taskRepository.save(taskData);
-                response.put("Task_improvement_id", taskImprovementData.getId());
-            }else if(data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null){
-                TaskBug taskBugData = new TaskBug(taskData);
-                taskBugData.setRequirementId(data.taskBug().requirement_id());
-                taskData.setTaskBug(taskBugData);
-                taskBugRepository.save(taskBugData);
-                taskRepository.save(taskData);
-                response.put("Task_bug_id", taskBugData.getId());
+            try {
+                if (data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null) {
+                    TaskRequirement taskRequirementData = new TaskRequirement(taskData);
+                    taskData.setTaskRequirement(taskRequirementData);
+                    taskRequirementRepository.save(taskRequirementData);
+                    response.put("Task_requirement_id", taskRequirementData.getId());
+                    taskRepository.save(taskData);
+                } else if (data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null) {
+                    TaskImprovement taskImprovementData = new TaskImprovement(taskData);
+                    requirementController.saveRequirement(new RequirementRequestDTO(taskData.getTitle(), taskData.getDetails(), taskData.getComplexity(), taskData.getPriority(), Integer.valueOf(taskData.getEffort()), taskData.getSizeTask(), null, iterationData.getId(), iterationData.getProject().getId()));
+                    if(data.taskImprovement().requirement_id() !=  null){
+                        taskImprovementData.setRequirementId(data.taskImprovement().requirement_id());
+                    }
+                    requirementId = requirementRepository.findByName(taskData.getTitle()).getId();
+                    taskImprovementData.setRequirementId(requirementId);
+                    taskData.setTaskImprovement(taskImprovementData);
+                    taskImprovementRepository.save(taskImprovementData);
+                    taskRepository.save(taskData);
+                    response.put("Task_improvement_id", taskImprovementData.getId());
+                } else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null) {
+                    TaskBug taskBugData = new TaskBug(taskData);
+                    if(data.taskBug().requirement_id() !=  null){
+                        taskBugData.setRequirementId(data.taskBug().requirement_id());
+                    }
+                    taskData.setTaskBug(taskBugData);
+                    taskBugRepository.save(taskBugData);
+                    taskRepository.save(taskData);
+                    response.put("Task_bug_id", taskBugData.getId());
+                }
+            } catch (Exception e) {
+                taskRepository.deleteById(taskData.getId());
+                if(requirementId != null && !requirementId.isEmpty()){
+                    requirementRepository.deleteById(requirementId);
+                }
+                return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage() + " DETAILS: " + e);
             }
 
-            if(data.assigneies() != null){
-                for (AssigneeRequestDTO assignee : data.assigneies()) {
+
+            if (data.assignees() != null) {
+                for (AssigneeRequestDTO assignee : data.assignees()) {
                     TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
                     Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
                     assigneeRepository.save(assigneeData);
@@ -143,14 +163,32 @@ public class TaskController {
                 }
             }
 
-            response.put("task_id:", taskData.getId());
-            response.put("message:", ResponseType.SUCCESS_SAVE.getMessage());
+            response.put("task_id", taskData.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (ValidationException e) {
+            if(taskData != null) {
+                taskRepository.deleteById(taskData.getId());
+            }
+            if(requirementId != null && !requirementId.isEmpty()){
+                requirementRepository.deleteById(requirementId);
+            }
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (UnauthorizedException e) {
+            if(taskData != null) {
+                taskRepository.deleteById(taskData.getId());
+            }
+            if(requirementId != null && !requirementId.isEmpty()){
+                requirementRepository.deleteById(requirementId);
+            }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
+            if(taskData != null) {
+                taskRepository.deleteById(taskData.getId());
+            }
+            if(requirementId != null && !requirementId.isEmpty()){
+                requirementRepository.deleteById(requirementId);
+            }
             return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
         }
     }
@@ -429,8 +467,8 @@ public class TaskController {
                 task.setIteration(iteration);
             }
 
-            if (data.assigneies() != null){
-                for (AssigneeResponseDTO assignee : data.assigneies()) {
+            if (data.assignees() != null){
+                for (AssigneeResponseDTO assignee : data.assignees()) {
                     Assignee assigneeData;
                         try{
                             assigneeData = assigneeRepository.findByMemberIdStep(assignee.taskStep(), assignee.member_id());

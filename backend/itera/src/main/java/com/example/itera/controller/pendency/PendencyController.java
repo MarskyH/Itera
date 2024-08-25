@@ -109,6 +109,8 @@ public class PendencyController {
             if (!data.status()) {
                 pendency.setStatus(false);
                 pendency.setEndDate(new Timestamp(new Date().getTime()));
+            }else{
+                pendency.setStatus(true);
             }
 
             pendencyRepository.save(pendency);

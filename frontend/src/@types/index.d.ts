@@ -417,7 +417,7 @@ export namespace models {
 
   export interface TaskForm {
     taskType: string
-    assigneies: Assignee[]
+    assignees: Assignee[]
     taskRequirement: TaskRequirementOnUpdate
     taskImprovement: TaskImprovementOnUpdate
     taskBug: TaskBugOnUpdate

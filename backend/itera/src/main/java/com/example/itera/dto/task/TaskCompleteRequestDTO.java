@@ -30,7 +30,7 @@ public record TaskCompleteRequestDTO(
         TaskImprovementRequestDTO taskImprovement,
         TaskBugRequestDTO taskBug,
         String iteration_id,
-        List<AssigneeRequestDTO> assigneies,
+        List<AssigneeRequestDTO> assignees,
         List<PendencyRequestDTO> pendencies
 ) {
 }

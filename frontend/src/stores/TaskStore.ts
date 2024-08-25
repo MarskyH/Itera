@@ -22,7 +22,7 @@ const taskDefault: Task = {
   title: "",
   details: '',
   complexity: '',
-  effort:'',
+  effort: '',
   sizeTask: 0,
   priority: "",
   startDate: "",
@@ -143,7 +143,7 @@ export const useTaskStore = defineStore('Task', {
           taskImprovement: response.data.taskImprovement,
           taskBug: response.data.taskBug,
           iteration_id: response.data.iteration_id,
-          assignees: response.data.assigneies
+          assignees: response.data.assignees
         }
       }
     },
@@ -215,36 +215,48 @@ export const useTaskStore = defineStore('Task', {
       return (response?.status) ? response.status : 500
     },
 
-    async createTaskImprovement(iterationId: string, taskData: TaskOnCreate, taskImprovementData: TaskImprovementOnCreate, listAssignees: Assignee[]) {
+    async createTaskImprovement(
+      iterationId: string,
+      taskData: TaskOnCreate,
+      taskImprovementData: TaskImprovementOnCreate,
+      listAssignees: Assignee[]
+  ) {
       const taskImprovementCreateData: TaskImprovementOnCreate = {
-        checkProject: taskImprovementData.checkProject,
-        checkRequirement: taskImprovementData.checkRequirement,
-        checkFront: taskImprovementData.checkFront,
-        checkBack: taskImprovementData.checkBack,
-        checkTest: taskImprovementData.checkTest,
-      }
-
+          checkProject: taskImprovementData.checkProject,
+          checkRequirement: taskImprovementData.checkRequirement,
+          checkFront: taskImprovementData.checkFront,
+          checkBack: taskImprovementData.checkBack,
+          checkTest: taskImprovementData.checkTest,
+      };
+  
       const taskImprovementForm: TaskImprovementForm = {
-        title: taskData.title,
-        priority: taskData.priority,
-        details: taskData.details,
-        complexity: taskData.complexity,
-        effort: taskData.effort,
-        sizeTask: taskData.sizeTask,
-        taskType: taskData.taskType,
-        iteration_id: iterationId,
-        taskImprovement: taskImprovementCreateData,
-        assignees: listAssignees
+          title: taskData.title,
+          priority: taskData.priority,
+          details: taskData.details,
+          complexity: taskData.complexity,
+          effort: taskData.effort,
+          sizeTask: taskData.sizeTask,
+          taskType: taskData.taskType,
+          iteration_id: iterationId,
+          taskImprovement: taskImprovementCreateData,
+          assignees: listAssignees,
+      };
+  
+      try {
+          const response = await Api.request({
+              method: 'post',
+              route: 'task',
+              body: taskImprovementForm,
+          });
+  
+          return response; // Retorna a resposta completa
+      } catch (error) {
+          // Tratar erros que ocorrem durante a requisição
+          console.error('Error creating task improvement:', error);
+          return { status: 500, message: 'Internal Server Error' };
       }
-
-      const response = await Api.request({
-        method: 'post',
-        route: 'task',
-        body: taskImprovementForm
-      })
-
-      return (response?.status) ? response.status : 500
-    },
+  },
+  
 
     async createTaskBug(iterationId: string, taskData: TaskOnCreate, taskBugData: TaskBugOnCreate, listAssignees: Assignee[]) {
       const taskBugCreateData: TaskBugOnCreate = {
@@ -274,7 +286,7 @@ export const useTaskStore = defineStore('Task', {
 
       return (response?.status) ? response.status : 500
     },
-    
+
     async updateTask(id: string, taskData: TaskForm) {
       const response = await Api.request({
         method: 'put',
@@ -289,7 +301,7 @@ export const useTaskStore = defineStore('Task', {
       const response = await Api.request({
         method: 'put',
         route: `/task/${id}`,
-        body: {listName: listName}
+        body: { listName: listName }
       })
 
       return response
@@ -299,12 +311,12 @@ export const useTaskStore = defineStore('Task', {
       const response = await Api.request({
         method: 'put',
         route: `/task/${id}`,
-        body: {orderTask: futureIndex + 1}
+        body: { orderTask: futureIndex + 1 }
       })
 
       return response
     },
-    
+
     async deleteTask(id: string) {
       const response = await Api.request({
         method: 'delete',

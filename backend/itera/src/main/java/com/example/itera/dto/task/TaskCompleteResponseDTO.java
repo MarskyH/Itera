@@ -31,11 +31,11 @@ public record TaskCompleteResponseDTO(
         TaskImprovementResponseDTO taskImprovement,
         TaskBugResponseDTO taskBug,
         String iteration_id,
-        List<AssigneeResponseDTO> assigneies,
+        List<AssigneeResponseDTO> assignees,
 
         List<PendencyResponseDTO> pendencies
 ) {
-    public TaskCompleteResponseDTO(Task task, List<AssigneeResponseDTO> assigneies, List<PendencyResponseDTO> pendencies) {
+    public TaskCompleteResponseDTO(Task task, List<AssigneeResponseDTO> assignees, List<PendencyResponseDTO> pendencies) {
         this(
                 task.getId() != null ? task.getId() : "",
                 task.getTitle(),
@@ -56,7 +56,7 @@ public record TaskCompleteResponseDTO(
                 task.getTaskImprovement() != null ? new TaskImprovementResponseDTO(task.getTaskImprovement()) : null,
                 task.getTaskBug() != null ? new TaskBugResponseDTO(task.getTaskBug()) : null,
                 task.getIteration() != null && task.getIteration().getId() != null ? task.getIteration().getId() : "",
-                assigneies,
+                assignees,
                 pendencies
         );
     }

@@ -233,7 +233,7 @@ public class RequirementController {
                 requirement.setIterationId(null);
             }
             repository.save(requirement);
-            response.put("data_id:", requirement.getId());
+            response.put("data_id", requirement.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
         } catch (EntityNotFoundException ex) {
@@ -292,16 +292,12 @@ public class RequirementController {
     }
 
     public static int getSizeRequirement(String sizeRequirement) {
-        switch (sizeRequirement) {
-            case "Pequeno":
-                return 5;
-            case "Médio":
-                return 10;
-            case "Grande":
-                return 15;
-            default:
-                throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
-        }
+        return switch (sizeRequirement) {
+            case "Pequeno", "5" -> 5;
+            case "Médio", "10" -> 10;
+            case "Grande", "15" -> 15;
+            default -> throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
+        };
     }
 
 
