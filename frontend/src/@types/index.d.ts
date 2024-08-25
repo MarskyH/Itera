@@ -279,7 +279,7 @@ export namespace models {
     taskStep: string
     member_id: string
     deadline: number
-    task_id: string
+    task_id?: string
   }
 
   export interface Pendency {
@@ -381,8 +381,8 @@ export namespace models {
     complexity: string
     effort: string
     sizeTask: number
-    startDate: string
-    endDate: string
+    startDate?: string
+    endDate?: string
     taskType: string
     taskrequirement_id?: string
     taskimprovement_id?: string
@@ -400,7 +400,7 @@ export namespace models {
   }
 
   export interface TaskImprovementOnCreate {
-    task_id: string
+    task_id?: string
     checkProject: boolean
     checkRequirement: boolean
     checkFront: boolean
@@ -409,7 +409,7 @@ export namespace models {
   }
 
   export interface TaskBugOnCreate {
-    task_id: string
+    task_id?: string
     checkFront: boolean
     checkBack: boolean
     checkTest: boolean
@@ -485,13 +485,27 @@ export interface TaskRequirementForm {
 }
 
 export interface TaskImprovementForm {
-  task: Task
+  title: string
+  priority: string
+  details: string
+  complexity: string
+  effort: string
+  sizeTask: number
+  taskType: string
+  iteration_id: string
   taskImprovement: TaskImprovement
   assignees: Assignee[]
 }
 
 export interface TaskBugForm {
-  task: Task
+  title: string
+  priority: string
+  details: string
+  complexity: string
+  effort: string
+  sizeTask: number
+  taskType: string
+  iteration_id: string
   taskBug: TaskBug
   assignees: Assignee[]
 }

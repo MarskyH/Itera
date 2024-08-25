@@ -215,25 +215,8 @@ export const useTaskStore = defineStore('Task', {
       return (response?.status) ? response.status : 500
     },
 
-    async createTaskImprovement(iterationId: string, taskData: Task, taskImprovementData: TaskImprovement, listAssignees: Assignee[]) {
-      const taskCreateData: TaskOnCreate = {
-        title: taskData.title,
-        priority: taskData.priority,
-        details: taskData.details,
-        complexity: taskData.complexity,
-        effort: taskData.effort,
-        sizeTask: taskData.sizeTask,
-        startDate: taskData.startDate,
-        endDate: taskData.endDate,
-        taskType: taskData.taskType,
-        taskrequirement_id: taskData.taskrequirement_id,
-        taskimprovement_id: taskData.taskimprovement_id,
-        taskbug_id: taskData.taskbug_id,
-        iteration_id: iterationId,
-      }
-
+    async createTaskImprovement(iterationId: string, taskData: TaskOnCreate, taskImprovementData: TaskImprovementOnCreate, listAssignees: Assignee[]) {
       const taskImprovementCreateData: TaskImprovementOnCreate = {
-        task_id: taskImprovementData.task_id,
         checkProject: taskImprovementData.checkProject,
         checkRequirement: taskImprovementData.checkRequirement,
         checkFront: taskImprovementData.checkFront,
@@ -242,46 +225,43 @@ export const useTaskStore = defineStore('Task', {
       }
 
       const taskImprovementForm: TaskImprovementForm = {
-        task: taskCreateData,
-        taskImprovement: taskImprovementCreateData,
-        assignees: listAssignees
-      }
-
-      const response = await Api.request({
-        method: 'post',
-        route: 'task/type/improvement',
-        body: taskImprovementForm
-      })
-
-      return (response?.status) ? response.status : 500
-    },
-
-    async createTaskBug(iterationId: string, taskData: Task, taskBugData: TaskBug, listAssignees: Assignee[]) {
-      const taskCreateData: TaskOnCreate = {
         title: taskData.title,
         priority: taskData.priority,
         details: taskData.details,
         complexity: taskData.complexity,
         effort: taskData.effort,
         sizeTask: taskData.sizeTask,
-        startDate: taskData.startDate,
-        endDate: taskData.endDate,
         taskType: taskData.taskType,
-        taskrequirement_id: taskData.taskrequirement_id,
-        taskimprovement_id: taskData.taskimprovement_id,
-        taskbug_id: taskData.taskbug_id,
         iteration_id: iterationId,
+        taskImprovement: taskImprovementCreateData,
+        assignees: listAssignees
       }
 
+      const response = await Api.request({
+        method: 'post',
+        route: 'task',
+        body: taskImprovementForm
+      })
+
+      return (response?.status) ? response.status : 500
+    },
+
+    async createTaskBug(iterationId: string, taskData: TaskOnCreate, taskBugData: TaskBugOnCreate, listAssignees: Assignee[]) {
       const taskBugCreateData: TaskBugOnCreate = {
-        task_id: taskBugData.task_id,
         checkFront: taskBugData.checkFront,
         checkBack: taskBugData.checkBack,
         checkTest: taskBugData.checkTest,
       }
 
       const taskBugForm: TaskBugForm = {
-        task: taskCreateData,
+        title: taskData.title,
+        priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
+        taskType: taskData.taskType,
+        iteration_id: iterationId,
         taskBug: taskBugCreateData,
         assignees: listAssignees
       }

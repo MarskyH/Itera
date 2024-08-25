@@ -17,6 +17,9 @@ interface Task extends models.Task { }
 interface TeamMember extends models.TeamMember { }
 interface Assignee extends models.Assignee { }
 interface TaskForm extends models.TaskForm { }
+interface TaskOnCreate extends models.TaskOnCreate { }
+interface TaskImprovementOnCreate extends models.TaskImprovementOnCreate { }
+interface TaskBugOnCreate extends models.TaskBugOnCreate { }
 
 const $taskStore = useTaskStore();
 const $taskTypeStore = useTaskTypeStore();
@@ -292,92 +295,99 @@ let taskTypeValues: { [key: string]: string } = {
 async function onSubmit(values: any) {
   console.log(values)
 
-  let taskRequirement: any = null
+  let taskData: TaskOnCreate = {
+    title: values.title,
+    priority: values.priority,
+    details: values.details,
+    complexity: values.complexity,
+    effort: values.effort,
+    sizeTask: values.size,
+    taskType: values.type,
+    iteration_id: String($route.params.iterationId),
+  }
+  console.log(values.type)
 
-  if(task.value.taskType === 'Requisito') {
-    taskRequirement = {
-      id: task.value.taskRequirement?.id,
+  if(values.type === '2') {
+    let taskImprovement: TaskImprovementOnCreate = {
       checkProject: values.checkProject,
       checkRequirement: values.checkRequirement,
       checkFront: values.checkFront,
       checkBack: values.checkBack,
       checkTest: values.checkTest
     }
+
+    let assigneies: Assignee[] = [
+      {
+        taskStep: 'P',
+        deadline: values.deadlineProject,
+        member_id: values.projectAssignee
+      },
+      {
+        taskStep: 'R',
+        deadline: values.deadlineRequirement,
+        member_id: values.requirementAssignee
+      },
+      {
+        taskStep: 'F',
+        deadline: values.deadlineFront,
+        member_id: values.frontAssignee
+      },
+      {
+        taskStep: 'B',
+        deadline: values.deadlineBack,
+        member_id: values.backAssignee
+      },
+      {
+        taskStep: 'T',
+        deadline: values.deadlineTest,
+        member_id: values.testAssignee
+      },
+    ]
+
+    await $taskStore.createTaskImprovement(taskData.iteration_id, taskData, taskImprovement, assigneies).then((response: any) => {
+      if (response.status === 200) {
+        alert('Salvo com sucesso')
+        $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
+      } else {
+        alert('Erro ao salvar')
+      }
+    })
   }
 
-  let taskImprovement: any = null
-
-  if(task.value.taskType === 'Melhoria') {
-    taskImprovement = {
-      id: task.value.taskImprovement?.id,
-      checkProject: values.checkProject,
-      checkRequirement: values.checkRequirement,
+  if(values.type === '3') {
+    let taskBug: TaskBugOnCreate = {
       checkFront: values.checkFront,
       checkBack: values.checkBack,
       checkTest: values.checkTest
     }
+
+    let assigneies: Assignee[] = [
+      {
+        taskStep: 'F',
+        deadline: values.deadlineFront,
+        member_id: values.frontAssignee
+      },
+      {
+        taskStep: 'B',
+        deadline: values.deadlineBack,
+        member_id: values.backAssignee
+      },
+      {
+        taskStep: 'T',
+        deadline: values.deadlineTest,
+        member_id: values.testAssignee
+      },
+    ]
+
+    await $taskStore.createTaskBug(taskData.iteration_id, taskData, taskBug, assigneies).then((response: any) => {
+      if (response.status === 200) {
+        alert('Salvo com sucesso')
+        $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
+      } else {
+        alert('Erro ao salvar')
+      }
+    })
   }
-
-  let taskBug: any = null
-
-  if(task.value.taskType === 'Bug') {
-    taskImprovement = {
-      id: task.value.taskBug?.id,
-      checkFront: values.checkFront,
-      checkBack: values.checkBack,
-      checkTest: values.checkTest
-    }
-  }
-
-  let assigneies: Assignee[] = [
-    {
-      taskStep: 'P',
-      deadline: values.deadlineProject,
-      member_id: values.projectAssignee,
-      task_id: task.value.id
-    },
-    {
-      taskStep: 'R',
-      deadline: values.deadlineRequirement,
-      member_id: values.requirementAssignee,
-      task_id: task.value.id
-    },
-    {
-      taskStep: 'F',
-      deadline: values.deadlineFront,
-      member_id: values.frontAssignee,
-      task_id: task.value.id
-    },
-    {
-      taskStep: 'B',
-      deadline: values.deadlineBack,
-      member_id: values.backAssignee,
-      task_id: task.value.id
-    },
-    {
-      taskStep: 'T',
-      deadline: values.deadlineTest,
-      member_id: values.testAssignee,
-      task_id: task.value.id
-    },
-  ]
-
-  const taskData: TaskForm = {
-    taskType: taskType[values.type],
-    assigneies,
-    taskRequirement,
-    taskImprovement,
-    taskBug
-  }
-
-  await $taskStore.updateTask(task.value.id, taskData).then((response: any) => {
-    if (response.status === 200) {
-      alert('Salvo com sucesso')
-      $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
-    } else {
-      alert('Erro ao salvar')
-    }
-  })
 }
 
 watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
