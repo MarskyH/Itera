@@ -30,6 +30,7 @@ public class Requirement {
     private Integer contInteration = 0;
     private Integer progressiveBar = 0;
     private Boolean done = false;
+    private Boolean checkCancelled = false;
     private String iterationId = null;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

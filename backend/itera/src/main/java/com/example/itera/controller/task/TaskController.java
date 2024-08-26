@@ -377,6 +377,41 @@ public class TaskController {
     }
 
 
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelTaskById(@PathVariable String id, @RequestBody TaskCancelledRequestDTO data) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+
+            if(data.detailsCancelled() != null){
+                task.setDetailsCancelled(data.detailsCancelled());
+                task.setCheckCancelled(true);
+                task.setListName("Cancelado");
+                task.setProgressiveBar(0);
+                try{
+                    Requirement requirement = requirementRepository.findByName(task.getTitle());
+                    requirement.setProgressiveBar(0);
+                    requirement.setIterationId(null);
+                    requirement.setDone(false);
+                    requirement.setCheckCancelled(true);
+                    requirementRepository.save(requirement);
+                    response.put("requirement", "Requisisto afetado " + requirement.getId() + "-" + requirement.getTitle());
+                }catch (Exception e){
+                    response.put("requirement", "Não se trata de tarefa requisito ou melhoria");
+                }
+            }
+            taskRepository.save(task);
+            response.put("data_id", task.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GetMapping("/iteration/{id}")
     @ResponseStatus(code = HttpStatus.OK)

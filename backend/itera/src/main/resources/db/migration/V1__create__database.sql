@@ -56,6 +56,7 @@ CREATE TABLE public.requirement (
     cont_interation INTEGER DEFAULT 0,
     progressive_bar INTEGER DEFAULT 0,
     done BOOLEAN DEFAULT false,
+    check_cancelled BOOLEAN DEFAULT false,
     iteration_id TEXT, -- Identificador da iteração associada
     project_id TEXT -- Identificador do projeto associado
 
