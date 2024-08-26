@@ -9,7 +9,7 @@ import com.example.itera.domain.project.Project;
 import java.sql.Timestamp;
 
 
-public record BacklogResponseDTO(String id, Integer orderRequirement, String title, String priority, Integer progressiveBar) {
+public record BacklogResponseDTO(String id, Integer orderRequirement, String title, String priority, Integer progressiveBar, Boolean checkCancelled) {
 
 }
 

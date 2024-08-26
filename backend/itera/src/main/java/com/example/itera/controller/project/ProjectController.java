@@ -414,7 +414,7 @@ public class ProjectController {
         for (RequirementResponseDTO requisito : listaRequisitos) {
             Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
             if(r.getIterationId()==null){
-                BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar());
+                BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getCheckCancelled());
                 listaBacklog.add(data);
                 
             }
