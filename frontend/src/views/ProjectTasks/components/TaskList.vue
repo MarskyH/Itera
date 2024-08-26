@@ -99,13 +99,8 @@ async function moveRequirement(evt: any) {
 
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">
-                Responsável
+                Progresso
               </span>
-
-              <span class="text-xs text-stone-500 dark:text-stone-400">
-                {{ element.responsible }}
-              </span>
-
               <ProgressiveBar :progress="element.progressiveBar" />
             </div>
           </ActionGridItem>

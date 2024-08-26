@@ -310,6 +310,7 @@ export namespace models {
     sizeTask: number
     startDate: string
     endDate: string
+    progressiveBar?: number,
     taskType: string
     taskrequirement_id?: string
     taskimprovement_id?: string

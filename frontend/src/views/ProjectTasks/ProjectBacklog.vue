@@ -26,6 +26,7 @@ onMounted(async () => {
     await $iterationStore.fetchIterations(String($route.params.projectId)).then(async () => {
       backlogRequirements.value = $backlogStore.backlogRequirements;
       iterations.value = $iterationStore.iterations;
+      console.log(iterations.value)
       onLoad.value = false
     })
   })
@@ -35,24 +36,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    v-if="!onLoad"
-    class="flex gap-3 grow shrink-0 overflow-auto"
-  >
-    <TaskList
-      title="Backlog"
-      :tasks="backlogRequirements"
-    />
+  <div v-if="!onLoad" class="flex gap-3 grow shrink-0 overflow-auto">
+    <TaskList title="Backlog" :tasks="backlogRequirements" />
 
-    <TaskList
-      v-for="(iteration, index) in iterations"
-      :key="iteration.id"
-      :list-id="iteration.id"
-      :title="`Iteração ${index + 1}`"
-      title-link="project-iteration"
-      :tasks="iteration.requirements"
-      :order="index + 1"
-      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: iteration.id } })"
-    />
+    <TaskList v-for="(iteration, index) in iterations" :key="iteration.id" :list-id="iteration.id"
+      :title="`Iteração ${index + 1}`" title-link="project-iteration" :tasks="iteration.requirements" :order="index + 1"
+      @title-click="() => $router.push({ name: 'project-iteration', params: { iterationId: iteration.id } })" />
   </div>
 </template>

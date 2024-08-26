@@ -27,6 +27,7 @@ const taskDefault: Task = {
   priority: "",
   startDate: "",
   endDate: "",
+  progressiveBar: 0,
   taskType: "",
   taskRequirement: {
     id: '',
@@ -82,6 +83,7 @@ export const useTaskStore = defineStore('Task', {
             sizeTask: elem.taskData.sizeTask,
             startDate: elem.startDate,
             endDate: elem.endDate,
+            progressiveBar: elem.progressiveBar,
             taskType: elem.taskType,
             taskrequirement_id: elem.taskrequirement_id,
             taskimprovement_id: elem.taskimprovement_id,
@@ -111,6 +113,7 @@ export const useTaskStore = defineStore('Task', {
             sizeTask: elem.taskData.sizeTask,
             startDate: elem.taskData.startDate,
             endDate: elem.taskData.endDate,
+            progressiveBar: elem.taskData.progressiveBar,
             taskType: elem.taskData.taskType,
             taskrequirement_id: elem.taskData.taskrequirement_id,
             taskimprovement_id: elem.taskData.taskimprovement_id,
@@ -220,42 +223,42 @@ export const useTaskStore = defineStore('Task', {
       taskData: TaskOnCreate,
       taskImprovementData: TaskImprovementOnCreate,
       listAssignees: Assignee[]
-  ) {
+    ) {
       const taskImprovementCreateData: TaskImprovementOnCreate = {
-          checkProject: taskImprovementData.checkProject,
-          checkRequirement: taskImprovementData.checkRequirement,
-          checkFront: taskImprovementData.checkFront,
-          checkBack: taskImprovementData.checkBack,
-          checkTest: taskImprovementData.checkTest,
+        checkProject: taskImprovementData.checkProject,
+        checkRequirement: taskImprovementData.checkRequirement,
+        checkFront: taskImprovementData.checkFront,
+        checkBack: taskImprovementData.checkBack,
+        checkTest: taskImprovementData.checkTest,
       };
-  
+
       const taskImprovementForm: TaskImprovementForm = {
-          title: taskData.title,
-          priority: taskData.priority,
-          details: taskData.details,
-          complexity: taskData.complexity,
-          effort: taskData.effort,
-          sizeTask: taskData.sizeTask,
-          taskType: taskData.taskType,
-          iteration_id: iterationId,
-          taskImprovement: taskImprovementCreateData,
-          assignees: listAssignees,
+        title: taskData.title,
+        priority: taskData.priority,
+        details: taskData.details,
+        complexity: taskData.complexity,
+        effort: taskData.effort,
+        sizeTask: taskData.sizeTask,
+        taskType: taskData.taskType,
+        iteration_id: iterationId,
+        taskImprovement: taskImprovementCreateData,
+        assignees: listAssignees,
       };
-  
+
       try {
-          const response = await Api.request({
-              method: 'post',
-              route: 'task',
-              body: taskImprovementForm,
-          });
-  
-          return response;
+        const response = await Api.request({
+          method: 'post',
+          route: 'task',
+          body: taskImprovementForm,
+        });
+
+        return response;
       } catch (error) {
-          console.error('Error creating task improvement:', error);
-          return { status: 500, message: 'Internal Server Error' };
+        console.error('Error creating task improvement:', error);
+        return { status: 500, message: 'Internal Server Error' };
       }
-  },
-  
+    },
+
 
     async createTaskBug(iterationId: string, taskData: TaskOnCreate, taskBugData: TaskBugOnCreate, listAssignees: Assignee[]) {
       const taskBugCreateData: TaskBugOnCreate = {
@@ -279,20 +282,20 @@ export const useTaskStore = defineStore('Task', {
 
       try {
         const response = await Api.request({
-            method: 'post',
-            route: 'task',
-            body: taskBugForm,
+          method: 'post',
+          route: 'task',
+          body: taskBugForm,
         });
 
         return response;
-    } catch (error) {
+      } catch (error) {
         console.error('Error creating task bug:', error);
         return { status: 500, message: 'Internal Server Error' };
-    }
+      }
     },
 
     async updateTask(id: string, taskData: TaskForm) {
-      if(taskData.taskBug != null){
+      if (taskData.taskBug != null) {
         taskData.assignees = taskData.assignees.filter(assignee => assignee.taskStep !== 'P' && assignee.taskStep !== 'R');
       }
       const response = await Api.request({

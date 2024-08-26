@@ -31,7 +31,7 @@ public class Task {
     private String sizeTask;
     private Timestamp startDate;
     private Timestamp endDate;
-    private Integer progressiveBar;
+    private Integer progressiveBar = 0;
     private Integer orderTask;
     private String listName;
     private Boolean checkCancelled = false;

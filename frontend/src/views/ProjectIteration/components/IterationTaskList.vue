@@ -13,6 +13,9 @@ const props = defineProps<{
   addButton?: Boolean
 }>()
 
+
+
+
 const $taskStore = useTaskStore()
 
 const $router = useRouter()
@@ -47,6 +50,7 @@ function updateTaskOrder(list: any[], sliceIndex: number) {
 }
 
 async function moveTask(evt: any) {
+  console.log(props.tasks)
   setTimeout(async () => {
     let oldIndex = evt.draggedContext.index
     let newIndex = evt.relatedContext.index
@@ -131,7 +135,7 @@ async function moveTask(evt: any) {
                 {{ element.responsible }}
               </span>
 
-              <ProgressiveBar :progress="0" />
+              <ProgressiveBar :progress="element.progressiveBar" />
             </div>
           </ActionGridItem>
         </template>
