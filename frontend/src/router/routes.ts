@@ -1,6 +1,7 @@
 
 import RecentProjects from 'src/components/RecentProjects.vue'
 import DetailsView from 'src/views/Project/components/DetailsView.vue'
+import TaskPendencies from 'src/views/EditTask/components/TaskPendencies.vue'
 
 export default [
   {
@@ -169,7 +170,7 @@ export default [
                 meta: {
                   title: 'Editar tarefa',
                   icon: 'table-columns',
-                  sideViewComponent: RecentProjects
+                  sideViewComponent: TaskPendencies
                 }
               },
             ]

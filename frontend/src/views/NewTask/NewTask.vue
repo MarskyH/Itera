@@ -357,8 +357,6 @@ let taskTypeValues: { [key: string]: string } = {
 }
 
 async function onSubmit(values: any) {
-  console.log(values)
-
   let taskData: TaskOnCreate = {
     title: values.title,
     priority: values.priority,
@@ -369,7 +367,6 @@ async function onSubmit(values: any) {
     taskType: taskType[values.type],
     iteration_id: String($route.params.iterationId),
   }
-  console.log(values.type)
 
   if (values.type === '2') {
     let taskImprovement: TaskImprovementOnCreate = {
@@ -410,7 +407,6 @@ async function onSubmit(values: any) {
 
     await $taskStore.createTaskImprovement(taskData.iteration_id, taskData, taskImprovement, assignees)
       .then((response: any) => {
-        console.log(response);
         if (response.status === 200) {
           alert('Salvo com sucesso');
           $router.push({
