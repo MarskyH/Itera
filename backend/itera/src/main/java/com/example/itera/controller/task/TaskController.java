@@ -213,9 +213,6 @@ public class TaskController {
         } catch (Exception e) {
             pendencyResponseDTOList = new ArrayList<>();
         }
-        if (!pendencyResponseDTOList.isEmpty()) {
-            return pendencyResponseDTOList;
-        }
         return pendencyResponseDTOList;
     }
 
