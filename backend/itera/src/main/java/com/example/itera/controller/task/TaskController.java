@@ -204,6 +204,13 @@ public class TaskController {
         return new TaskCompleteResponseDTO(task, assigneeResponseDTOList, pendencyResponseDTOList);
     }
 
+    @GetMapping("/{id}/pendencies")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<PendencyResponseDTO> getPendenciesByTaskId(@PathVariable String id) throws ResourceNotFoundException {
+        List<PendencyResponseDTO> pendencyResponseDTOList = pendencyRepository.findByTask(id);
+        return pendencyResponseDTOList;
+    }
+
 
 
     @PutMapping("/{id}")
