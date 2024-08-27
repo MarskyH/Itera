@@ -28,8 +28,28 @@ export const usePendencyStore = defineStore('Pendency', {
     pendencies: []
   }),
 
-
   actions: {
+
+    async fetchPendencies(taskId: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `/task/${taskId}/pendencies`
+      })
+
+      if (response?.status === 200) {
+        this.pendencies = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            title: elem.title,
+            description: elem.description,
+            creationDate: elem.creationDate,
+            endDate: elem.endDate,
+            status: elem.status,
+            task_id: elem.task_id
+          }
+        })
+      }
+    },
 
     async createPendency(pendencyFormData: PendencyForm, taskId: string) {
       const pendencyOnCreateData: PendencyOnCreate = {

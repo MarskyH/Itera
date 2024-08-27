@@ -1,52 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import * as yup from 'yup';
-
-import { Form } from 'vee-validate';
-import yupErrorMessages from 'src/utils/yupErrorMessages';
-import InputField from 'src/views/NewProject/components/InputField.vue';
-import { InputFieldProps, models } from 'src/@types';
+import { onMounted, ref } from 'vue';
+import TaskPendencyForm from 'src/views/EditTask/components/TaskPendencyForm.vue'
 import TaskPendency from 'src/views/EditTask/components/TaskPendency.vue'
+import { models } from 'src/@types';
+import { useRoute } from 'vue-router';
+import { usePendencyStore } from 'src/stores/PendencyStore';
 
-const taskPendenciesForm = ref<any>(null)
+interface Pendency extends models.Pendency { }
+
+const $route = useRoute()
+const $pendencyStore = usePendencyStore()
+
 const onCreateTaskPendency = ref<boolean>(false)
+const taskPendencies = ref<Pendency[]>([])
 
-const inputFields = ref<InputFieldProps[]>([
-  {
-    name: "title",
-    label: "Título",
-    placeholder: "Digite o título da pendência",
-    required: true,
-    validation: yup.string().required().min(3),
-  },
-  {
-    name: "description",
-    label: "Descrição",
-    placeholder: "Digite a descrição da pendência",
-    required: false,
-    validation: yup.string(),
-    type: "textarea"
-  },
-])
+onMounted(async () => {
+  await $pendencyStore.fetchPendencies(String($route.params.taskId))
+})
 
-const formValidations: any = {};
+$pendencyStore.$subscribe(() => {
+  taskPendencies.value = $pendencyStore.pendencies
+})
 
-inputFields.value.forEach((inputField: InputFieldProps) => {
-    formValidations[inputField.name] = inputField.validation;
-  });
-
-const schema = yup.object(formValidations)
-
-yup.setLocale(yupErrorMessages);
-
-async function onSubmit(values: any) {
-  console.log(values)
-}
 
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 overflow-y-auto">
     <div class="flex gap-3 items-center justify-between">
       <div class="flex gap-3 items-center">
         <FontAwesomeIcon
@@ -69,30 +49,16 @@ async function onSubmit(values: any) {
       </button>
     </div>
 
-    <Form
-      v-show="onCreateTaskPendency"
-      ref="taskPendenciesForm"
-      :validation-schema="schema"
-      @submit="onSubmit"
-      class="flex flex-col p-1 gap-5 overflow-auto"
-    >
-      <InputField
-        v-for="inputField in inputFields"
-        v-bind="inputField"
-        :key="inputField.name"
-      />
-
-      <button
-        type="submit"
-        class="flex text-white w-full text-sm font-semibold justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
-      >
-        Salvar
-      </button>
-    </Form>
+    <TaskPendencyForm 
+      v-model:on-create-task-pendency="onCreateTaskPendency"
+    />
 
     <div>
-      <TaskPendency :resolved="false" />
-      <TaskPendency :resolved="true" />
+      <TaskPendency
+        v-for="pendency in taskPendencies"
+        :key="pendency.id"
+        v-bind="pendency"
+      />
     </div>
   </div>
 </template>

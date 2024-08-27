@@ -860,31 +860,56 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Form ref="taskForm" :validation-schema="schema" @submit="onSubmit"
-    class="flex flex-col gap-5 p-5 items-center overflow-auto">
+  <Form
+    ref="taskForm"
+    :validation-schema="schema"
+    @submit="onSubmit"
+    class="flex flex-col gap-5 p-5 items-center overflow-auto"
+  >
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <div v-for="inputField in inputFields.generalFields" :key="inputField.name">
-        <MaskedInput v-if="inputField.mask" v-bind="inputField" />
-        <InputField v-else v-bind="inputField" />
+      <div
+        v-for="inputField in inputFields.generalFields"
+        :key="inputField.name"
+      >
+        <MaskedInput
+          v-if="inputField.mask"
+          v-bind="inputField"
+        />
+        <InputField
+          v-else
+          v-bind="inputField"
+        />
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
-      <div v-for="inputField in inputFields.specificFields" :key="inputField.name"
-        :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }">
-        <MaskedInput v-if="inputField.mask" v-bind="inputField" />
-        <InputField v-else v-bind="inputField" />
+      <div
+        v-for="inputField in inputFields.specificFields"
+        :key="inputField.name"
+        :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+      >
+        <MaskedInput
+          v-if="inputField.mask"
+          v-bind="inputField"
+        />
+        <InputField
+          v-else
+          v-bind="inputField"
+        />
       </div>
     </div>
 
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-        @click="() => $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })">
+        @click="() => $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })"
+      >
         <span>Cancelar</span>
       </button>
-      <button type="submit"
-        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md">
+      <button
+        type="submit"
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+      >
         <span>Salvar</span>
       </button>
     </div>

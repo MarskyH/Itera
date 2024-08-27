@@ -283,7 +283,7 @@ export namespace models {
   }
 
   export interface Pendency {
-    id?: string | null
+    id: string
     title: string
     description: string
     creationDate: string
@@ -303,7 +303,6 @@ export namespace models {
   export interface PendencyForm {
     title: string
     description: string
-    task_id: string
   }
 
   export interface Task {
