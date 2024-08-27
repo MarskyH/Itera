@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,10 +112,16 @@ public class PendencyController {
             if (!data.status()) {
                 pendency.setStatus(false);
                 pendency.setEndDate(new Timestamp(new Date().getTime()));
+                pendencyRepository.save(pendency);
+                Task task = taskRepository.findById(pendency.getTask().getId().orElseThrow(EntityNotFoundException::new);
+                List<Pendency> listPendency = pendencyRepository.findByAllTrue(task.getId().orElseThrow(EntityNotFoundException::new);
+                if(listPendency.isEmpty()){
+                    task.setListName("Fazendo");
+                    taskRepository.save(task);
+                }
             }else{
                 pendency.setStatus(true);
             }
-
             pendencyRepository.save(pendency);
             response.put("data_id:", pendency.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());

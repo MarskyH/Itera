@@ -14,6 +14,9 @@ public interface PendencyRepository extends JpaRepository<Pendency, String>{
 
     @Query(value = "SELECT p FROM Pendency p WHERE p.task.id = :id")
     List<PendencyResponseDTO> findByTask(@Param("id") String id);
+
+    @Query(value = "SELECT p FROM Pendency p WHERE p.task.id = :id AND p.status = true")
+    List<PendencyResponseDTO> findByAllTrue(@Param("id") String id);
 }
 
 
