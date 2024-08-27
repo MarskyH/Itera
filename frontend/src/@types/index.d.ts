@@ -316,6 +316,8 @@ export namespace models {
     sizeTask: number
     startDate: string
     endDate: string
+    checkCancelled: boolean,
+    detailsCancelled: string,
     progressiveBar?: number,
     taskType: string
     taskrequirement_id?: string

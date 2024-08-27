@@ -27,6 +27,8 @@ const taskDefault: Task = {
   priority: "",
   startDate: "",
   endDate: "",
+  checkCancelled: false,
+  detailsCancelled: "",
   progressiveBar: 0,
   taskType: "",
   taskRequirement: {
@@ -55,7 +57,8 @@ const taskDefault: Task = {
     checkTest: false
   },
   iteration_id: "",
-  assignees: []
+  assignees: [],
+  pendencies: [],
 }
 
 export const useTaskStore = defineStore('Task', {
@@ -140,13 +143,16 @@ export const useTaskStore = defineStore('Task', {
           effort: response.data.effort,
           sizeTask: response.data.sizeTask,
           startDate: response.data.startDate,
+          checkCancelled: response.data.checkCancelled,
+          detailsCancelled: response.data.detailsCancelled,
           endDate: response.data.endDate,
           taskType: response.data.taskType,
           taskRequirement: response.data.taskRequirement,
           taskImprovement: response.data.taskImprovement,
           taskBug: response.data.taskBug,
           iteration_id: response.data.iteration_id,
-          assignees: response.data.assignees
+          assignees: response.data.assignees,
+          pendencies: response.data.pendencies
         }
       }
     },
