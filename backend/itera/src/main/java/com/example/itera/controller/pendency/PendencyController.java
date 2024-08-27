@@ -113,8 +113,8 @@ public class PendencyController {
                 pendency.setStatus(false);
                 pendency.setEndDate(new Timestamp(new Date().getTime()));
                 pendencyRepository.save(pendency);
-                Task task = taskRepository.findById(pendency.getTask().getId().orElseThrow(EntityNotFoundException::new);
-                List<Pendency> listPendency = pendencyRepository.findByAllTrue(task.getId().orElseThrow(EntityNotFoundException::new);
+                Task task = taskRepository.findById(pendency.getTask().getId()).orElseThrow(EntityNotFoundException::new);
+                List<Pendency> listPendency = pendencyRepository.findByAllTrue(task.getId());
                 if(listPendency.isEmpty()){
                     task.setListName("Fazendo");
                     taskRepository.save(task);

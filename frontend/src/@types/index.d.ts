@@ -300,6 +300,12 @@ export namespace models {
     task_id: string
   }
 
+  export interface PendencyForm {
+    title: string
+    description: string
+    task_id: string
+  }
+
   export interface Task {
     id: string
     title: string
