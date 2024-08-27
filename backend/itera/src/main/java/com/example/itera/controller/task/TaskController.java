@@ -462,12 +462,16 @@ public class TaskController {
 
     public int updateProgressiveBar(int contAssignee, int contCheck){
         System.out.println("FUNCAO PROGRESSIVE BAR:" + contCheck + "/" + contAssignee);
-        double percentage = ((double) contCheck / contAssignee) * 100;
-        System.out.println("FUNCAO PROGRESSIVE BAR:" + percentage);
-        if(percentage < 100 && contCheck == contAssignee){
-            return 100;
+        if(contAssignee == 0){
+            return 0;
+        }else{
+            double percentage = ((double) contCheck / contAssignee) * 100;
+            System.out.println("FUNCAO PROGRESSIVE BAR:" + percentage);
+            if(percentage < 100 && contCheck == contAssignee){
+                return 100;
+            }
+            return (int) percentage;
         }
-        return (int) percentage;
     }
 
 }

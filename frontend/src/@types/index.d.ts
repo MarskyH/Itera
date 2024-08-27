@@ -326,6 +326,7 @@ export namespace models {
     taskBug?: TaskBug
     iteration_id: string
     assignees: Assignee[]
+    pendencies: Pendency[]
   }
 
   export interface TaskRequirement {
