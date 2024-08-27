@@ -71,6 +71,8 @@ public class PendencyController {
             );
             pendencyData.setCreationDate(new Timestamp(new Date().getTime()));
             pendencyData.setStatus(true);
+            taskData.setListName("Pendente");
+            taskRepository.save(taskData);
             pendencyRepository.save(pendencyData);
             response.put("pendency_id:", pendencyData.getId());
             response.put("task_id:", taskData.getId());
