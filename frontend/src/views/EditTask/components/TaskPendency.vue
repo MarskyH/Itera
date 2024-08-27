@@ -1,9 +1,27 @@
 <script setup lang="ts">
 import { models } from 'src/@types';
+import { usePendencyStore } from 'src/stores/PendencyStore';
 
 interface Pendency extends models.Pendency { }
+interface PendencyOnUpdate extends models.PendencyOnUpdate { }
 
 defineProps<Pendency>()
+
+const $pendencyStore = usePendencyStore()
+
+async function updateTaskPendency(pendencyId: string, taskId: string) {
+  const pendencyData: PendencyOnUpdate = {
+    status: false
+  }
+
+  await $pendencyStore.updatePendency(pendencyId, pendencyData).then(async (response: number) => {
+    if(response === 200) {
+      await $pendencyStore.fetchPendencies(taskId)
+    } else {
+      alert('Erro ao resolver pendência!')
+    }
+  })
+}
 
 </script>
 
@@ -23,7 +41,7 @@ defineProps<Pendency>()
         v-show="status"
         title="Nova tarefa"
         class="text-xs flex text-white justify-evenly items-center bg-emerald-500 p-2 rounded-md"
-        @click="() => {}"
+        @click="() => updateTaskPendency(id, task_id)"
       >
         <FontAwesomeIcon
           icon="fa-solid fa-check"

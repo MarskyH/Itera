@@ -300,6 +300,10 @@ export namespace models {
     task_id: string
   }
 
+  export interface PendencyOnUpdate {
+    status: boolean
+  }
+
   export interface PendencyForm {
     title: string
     description: string

@@ -5,7 +5,7 @@ import { type models } from 'src/@types'
 interface PendencyOnCreate extends models.PendencyOnCreate { }
 interface Pendency extends models.Pendency { }
 interface PendencyForm extends models.PendencyForm { }
-
+interface PendencyOnUpdate extends models.PendencyOnUpdate { }
 
 interface State {
   pendency: Pendency
@@ -68,14 +68,14 @@ export const usePendencyStore = defineStore('Pendency', {
       return (response?.status) !== undefined ? response.status : 500
     },
 
-    async updatePendency(id: string, pendencyData: Pendency) {
+    async updatePendency(id: string, pendencyData: PendencyOnUpdate) {
       const response = await Api.request({
         method: 'put',
         route: `/pendency/${id}`,
         body: pendencyData
       })
 
-      return response?.status === 200
+      return (response?.status) !== undefined ? response.status : 500
     },
   }
 })
