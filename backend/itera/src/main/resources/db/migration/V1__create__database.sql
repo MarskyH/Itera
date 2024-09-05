@@ -201,6 +201,7 @@ CREATE TABLE pendency (
     id TEXT PRIMARY KEY,
     TITLE VARCHAR(100),
     description TEXT,
+    list_name_original TEXT,
     creation_date TIMESTAMP,
     end_date TIMESTAMP,
     status BOOLEAN,

@@ -63,11 +63,19 @@ public class PendencyController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> savePendency(@RequestBody PendencyRequestDTO data) {
         Map<String, String> response = new HashMap<>();
+        String listNameOriginal = "";
         try {
             Task taskData = taskRepository.findById(data.task_id()).orElseThrow();
+            List<Pendency> listPendency = pendencyRepository.findByAllTrue(taskData.getId());
+            if(listPendency.isEmpty()){
+                listNameOriginal = taskData.getListName();
+            }else{
+                listNameOriginal = listPendency.getFirst().getListNameOriginal();
+            }
             Pendency pendencyData = new Pendency(
                     data.title(),
                     data.description(),
+                    listNameOriginal,
                     taskData
             );
             pendencyData.setCreationDate(new Timestamp(new Date().getTime()));
@@ -116,7 +124,7 @@ public class PendencyController {
                 Task task = taskRepository.findById(pendency.getTask().getId()).orElseThrow(EntityNotFoundException::new);
                 List<Pendency> listPendency = pendencyRepository.findByAllTrue(task.getId());
                 if(listPendency.isEmpty()){
-                    task.setListName("Fazendo");
+                    task.setListName(pendency.getListNameOriginal());
                     taskRepository.save(task);
                 }
             }else{

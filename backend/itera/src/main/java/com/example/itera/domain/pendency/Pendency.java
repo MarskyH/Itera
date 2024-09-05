@@ -24,6 +24,8 @@ public class Pendency {
     private String title;
     @Column(name = "description")
     private String description;
+    @Column(name = "list_name_original")
+    private String listNameOriginal;
     @Column(name = "creation_date")
     private Timestamp creationDate;
     @Column(name = "end_date")
@@ -36,9 +38,10 @@ public class Pendency {
     @JsonIgnore
     private Task task;
 
-    public Pendency(String title, String description,Task task){
+    public Pendency(String title, String description, String listNameOriginal, Task task){
         this.title = title;
         this.description = description;
+        this.listNameOriginal = listNameOriginal;
         this.task = task;
     }
 
