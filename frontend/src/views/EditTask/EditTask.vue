@@ -17,9 +17,6 @@ interface Task extends models.Task { }
 interface TeamMember extends models.TeamMember { }
 interface Assignee extends models.Assignee { }
 interface TaskForm extends models.TaskForm { }
-interface TaskRequirement extends models.TaskRequirement { }
-interface TaskImprovement extends models.TaskImprovement { }
-interface TaskBug extends models.TaskBug { }
 
 const $taskStore = useTaskStore();
 const $taskTypeStore = useTaskTypeStore();
@@ -192,6 +189,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Requisito') {
     taskRequirement = {
       id: task.value.taskRequirement?.id,
+      detailsCancelled: values.detailsCancelled,
       checkProject: values.checkProject,
       checkRequirement: values.checkRequirement,
       checkFront: values.checkFront,
@@ -205,6 +203,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Melhoria') {
     taskImprovement = {
       id: task.value.taskImprovement?.id,
+      detailsCancelled: values.detailsCancelled,
       checkProject: values.checkProject,
       checkRequirement: values.checkRequirement,
       checkFront: values.checkFront,
@@ -218,6 +217,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Bug') {
     taskBug = {
       id: task.value.taskBug?.id,
+      detailsCancelled: values.detailsCancelled,
       checkFront: values.checkFront,
       checkBack: values.checkBack,
       checkTest: values.checkTest
@@ -369,7 +369,18 @@ onMounted(async () => {
                 disabled: true,
                 validation: yup.string().required(),
                 value: task.value.details
+              },
+              {
+                name: "detailsCancelled",
+                label: "Cancelamento de Tarefa",
+                placeholder: "Digite o motivo do cancelamento da tarefa",
+                type: "textarea",
+                required: false,
+                disabled: task.value.checkCancelled,
+                validation: yup.string().required(),
+                value: task.value.detailsCancelled
               }
+
             ],
             specificFields: [
               {
@@ -398,7 +409,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : ''
+                value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
               },
               {
                 name: "checkProject",
@@ -426,7 +437,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : ''
+                value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
               },
               {
                 name: "checkFront",
@@ -454,7 +465,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
+                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
               },
               {
                 name: "checkBack",
@@ -482,7 +493,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
+                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
               },
               {
                 name: "checkTest",
@@ -510,7 +521,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
+                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
               }
             ]
           }
@@ -562,6 +573,16 @@ onMounted(async () => {
                 disabled: true,
                 validation: yup.string().required(),
                 value: task.value.details
+              },     
+              {
+                name: "detailsCancelled",
+                label: "Cancelamento de Tarefa",
+                placeholder: "Digite o motivo do cancelamento da tarefa",
+                type: "textarea",
+                required: false,
+                disabled: task.value.checkCancelled,
+                validation: yup.string().required(),
+                value: task.value.detailsCancelled
               }
             ],
             specificFields: [
@@ -591,7 +612,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : ''
+                value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
               },
               {
                 name: "checkProject",
@@ -619,7 +640,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : ''
+                value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
               },
               {
                 name: "checkFront",
@@ -647,7 +668,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
+                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
               },
               {
                 name: "checkBack",
@@ -675,7 +696,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
+                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
               },
               {
                 name: "checkTest",
@@ -703,7 +724,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
+                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
               }
             ]
           }
@@ -755,6 +776,16 @@ onMounted(async () => {
                 disabled: true,
                 validation: yup.string().required(),
                 value: task.value.details
+              },
+              {
+                name: "detailsCancelled",
+                label: "Cancelamento de Tarefa",
+                placeholder: "Digite o motivo do cancelamento da tarefa",
+                type: "textarea",
+                required: false,
+                disabled: task.value.checkCancelled,
+                validation: yup.string().required(),
+                value: task.value.detailsCancelled
               }
             ],
             specificFields: [
@@ -784,7 +815,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : ''
+                value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
               },
               {
                 name: "checkBack",
@@ -812,7 +843,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : ''
+                value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
               },
               {
                 name: "checkTest",
@@ -840,7 +871,7 @@ onMounted(async () => {
                 type: "text",
                 required: false,
                 validation: yup.number(),
-                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : ''
+                value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
               }
             ]
           }
@@ -869,7 +900,7 @@ onMounted(async () => {
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
       <div
         v-for="inputField in inputFields.generalFields"
-        :key="inputField.name"
+        :key="inputField.name"    
       >
         <MaskedInput
           v-if="inputField.mask"
@@ -884,7 +915,24 @@ onMounted(async () => {
 
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
       <div
-        v-for="inputField in inputFields.specificFields"
+        v-for="inputField in inputFields.specificFields.filter((inputField)=> inputField.name !== 'detailsCancelled')"
+        :key="inputField.name"
+        :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+      >
+        <MaskedInput
+          v-if="inputField.mask"
+          v-bind="inputField"
+        />
+        <InputField
+          v-else
+          v-bind="inputField"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-1 w-full gap-5">
+      <div
+        v-for="inputField in inputFields.specificFields.filter((inputField)=> inputField.name === 'detailsCancelled')"
         :key="inputField.name"
         :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
       >
@@ -904,7 +952,7 @@ onMounted(async () => {
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
         @click="() => $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })"
       >
-        <span>Cancelar</span>
+        <span>Voltar</span>
       </button>
       <button
         type="submit"

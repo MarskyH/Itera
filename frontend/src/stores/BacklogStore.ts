@@ -14,7 +14,8 @@ const backlogRequirementDefault = {
   title: "",
   priority: "",
   progressiveBar: 0,
-  orderRequirement: 0
+  orderRequirement: 0,
+  checkCancelled: false
 }
 
 export const useBacklogStore = defineStore('Backlog', {
@@ -42,7 +43,8 @@ export const useBacklogStore = defineStore('Backlog', {
             title: elem.title,
             priority: elem.priority,
             progressiveBar: elem.progressiveBar,
-            orderRequirement: elem.orderRequirement
+            orderRequirement: elem.orderRequirement,
+            checkCancelled: elem.checkCancelled
           }
         })
       }

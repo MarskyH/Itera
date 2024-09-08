@@ -375,7 +375,9 @@ public class TaskController {
                     }
                 }
             }
-
+            if(data.detailsCancelled() != null && !data.detailsCancelled().isBlank()){
+                cancelTaskById(task.getId(), new TaskCancelledRequestDTO(data.detailsCancelled()));
+            }
             taskRepository.save(task);
             response.put("data_id", task.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());

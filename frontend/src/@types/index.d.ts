@@ -98,6 +98,7 @@ export namespace models {
     priority: string
     progressiveBar: number
     orderRequirement: number
+    checkCancelled: boolean
   }
 
   export interface Project {
@@ -346,6 +347,7 @@ export namespace models {
 
   export interface TaskRequirementOnUpdate {
     id: string
+    detailsCancelled: string
     checkProject: boolean
     checkRequirement: boolean
     checkFront: boolean
@@ -365,6 +367,7 @@ export namespace models {
 
   export interface TaskImprovementOnUpdate {
     id: string
+    detailsCancelled: string
     checkProject: boolean
     checkRequirement: boolean
     checkFront: boolean
@@ -382,6 +385,7 @@ export namespace models {
 
   export interface TaskBugOnUpdate {
     id: string
+    detailsCancelled: string
     checkFront: boolean
     checkBack: boolean
     checkTest: boolean

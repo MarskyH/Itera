@@ -310,6 +310,26 @@ export const useTaskStore = defineStore('Task', {
         body: taskData
       })
 
+      if(taskData.taskRequirement.detailsCancelled != null){
+        this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
+      }
+      if( taskData.taskImprovement.detailsCancelled != null ){
+        this.updateTaskCancel(id, taskData.taskImprovement.detailsCancelled)
+      }
+      if(taskData.taskBug.detailsCancelled != null){
+        this.updateTaskCancel(id, taskData.taskBug.detailsCancelled)
+      }
+
+      return response
+    },
+
+    async updateTaskCancel(id: string, detailsCancelled: string) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/task/${id}/cancel`,
+        body: {detailsCancelled: detailsCancelled}
+      })
+
       return response
     },
 

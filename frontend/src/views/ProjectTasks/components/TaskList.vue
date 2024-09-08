@@ -5,11 +5,14 @@ import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
 import { useBacklogStore } from 'src/stores/BacklogStore';
 
+
+
 const props = defineProps<{
   title: string
   tasks: Object[]
   order?: number
   listId?: string
+  disable?: boolean
 }>()
 
 defineEmits(['titleClick'])
@@ -54,6 +57,7 @@ async function moveRequirement(evt: any) {
   }, 500)
 }
 
+
 </script>
 
 <template>
@@ -86,6 +90,7 @@ async function moveRequirement(evt: any) {
             @edit="() => { }"
             @remove="() => { }"
             @side-view-content-change="() => () => { }"
+            :class="{'opacity-50': element.checkCancelled}"
           >
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">
