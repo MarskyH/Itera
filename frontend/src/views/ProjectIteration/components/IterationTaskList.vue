@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import * as yup from 'yup'
 import { ref } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
+import InputField from 'src/views/NewProject/components/InputField.vue'
+import yupErrorMessages from 'src/utils/yupErrorMessages';
+import ActionModal from 'src/components/ActionModal.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTaskStore } from 'src/stores/TaskStore';
+import { InputFieldProps, models} from "src/@types";
+import { usePendencyStore } from 'src/stores/PendencyStore';
+
+interface PendencyForm extends models.PendencyForm { }
 
 const props = defineProps<{
   title: string
@@ -12,6 +20,58 @@ const props = defineProps<{
   listName: string
   addButton?: Boolean
 }>()
+
+const isActionModalOpen = ref<boolean>(false)
+const actionModalTitle = ref<string>('Adicionar')
+const inputFields = ref<InputFieldProps[]>([])
+const formOnLoad = ref<boolean>(true)
+const pendencyForm = ref<any>(null)
+const idTaskInput = ref<string>('')
+const listNameInput = ref<string>('')
+const $pendencyStore = usePendencyStore()
+
+yup.setLocale(yupErrorMessages);
+let formValidations: any = {}
+let schema: any
+
+function createInputPendency(){
+  inputFields.value = [
+  {
+    name: "title",
+    label: "Título",
+    placeholder: "Digite o título da pendência",
+    required: true,
+    validation: yup.string().required().min(5)
+  },
+  {
+    name: "description",
+    label: "Descrição",
+    placeholder: "Digite a descrição da pendência",
+    required: true,
+    validation: yup.string().required().min(20)
+  },
+]
+    
+  inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
+  schema = yup.object(formValidations);    
+  formOnLoad.value = false
+}
+
+function createInputCancel(){
+  inputFields.value = [
+  {
+    name: "detailsCancel",
+    label: "Descrição",
+    placeholder: "Digite o motivo do cancelamento da tarefa",
+    required: true,
+    validation: yup.string().required().min(5)
+  }
+]
+    
+  inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
+  schema = yup.object(formValidations);    
+  formOnLoad.value = false
+}
 
 
 
@@ -37,7 +97,20 @@ function openTaskForm(taskId: string) {
 async function updateTaskList(evt: any) {
   let movingTaskId = evt.draggedContext.element.id
   let taskListName = evt.relatedContext.component.componentData.listName
-
+  listNameInput.value = taskListName
+  if(taskListName === "Pendente"){
+    createInputPendency()
+    actionModalTitle.value = 'Adicionar pendência'
+    idTaskInput.value = movingTaskId
+    formOnLoad.value = false
+    isActionModalOpen.value = true
+  } else if(taskListName === "Cancelado") {
+    createInputCancel()
+    actionModalTitle.value = 'Cancelar tarefa'
+    idTaskInput.value = movingTaskId
+    formOnLoad.value = false
+    isActionModalOpen.value = true
+  }
   await $taskStore.updateTaskListName(movingTaskId, taskListName)
 }
 
@@ -69,6 +142,21 @@ async function moveTask(evt: any) {
       updateTaskOrder(tasksList.value, newIndex)
     }
   }, 500)
+}
+
+
+
+
+function onSubmit(values: any) {
+  if(listNameInput.value === "Pendente"){
+    let pendencyFormValues: PendencyForm = { ...values }
+    alert(`${pendencyFormValues.title} + ${pendencyFormValues.description} + ${values.title} + ${values.description}` )
+    $pendencyStore.createPendency(pendencyFormValues, idTaskInput.value)
+    isActionModalOpen.value = false
+  }else if(listNameInput.value === "Cancelado"){
+    $taskStore.updateTaskCancel(idTaskInput.value, values.detailsCancel)
+    isActionModalOpen.value = false
+  }
 }
 
 </script>
@@ -142,4 +230,50 @@ async function moveTask(evt: any) {
       </draggable>
     </div>
   </div>
+  <Form
+    ref="pendencyForm"
+    :validation-schema="schema"
+    @submit="onSubmit"
+    v-if="!formOnLoad"
+  >
+    <ActionModal
+      v-model="isActionModalOpen"
+      :title="actionModalTitle"
+      icon="clock"
+    >
+      <div class="flex flex-col px-8 py-4 gap-5">
+        <div class="grid grid-cols-2 w-full gap-5">
+          <InputField
+            v-for="(inputField, index) in inputFields"
+            v-show="index < inputFields.length - 1"
+            :key="inputField.name"
+            v-slot="{ field }"
+            :label="inputField.label"
+            :name="inputField.name"
+            :placeholder="inputField.placeholder"
+            :type="inputField.type"
+            :disabled="inputField.disabled"
+            :value="inputField.value"
+            :required="inputField.required"
+            :options="inputField.options"
+            @change="inputField.onChange"
+          >
+            {{ console.log(field.onInput) }}
+          </InputField>
+        </div>
+        
+        <div class="grid grid-cols-1 w-full gap-5">
+          <InputField
+            :key="inputFields[inputFields.length - 1]?.name"
+            :label="inputFields[inputFields.length - 1]?.label"
+            :name="inputFields[inputFields.length - 1]?.name"
+            :placeholder="inputFields[inputFields.length - 1]?.placeholder"
+            :type="inputFields[inputFields.length - 1]?.type"
+            :required="inputFields[inputFields.length - 1]?.required"
+            :options="inputFields[inputFields.length - 1]?.options"
+          />
+        </div>
+      </div>
+    </ActionModal>
+  </Form>
 </template>
