@@ -75,7 +75,7 @@ export const usePendencyStore = defineStore('Pendency', {
         body: pendencyData
       })
 
-      return (response?.status) !== undefined ? response.status : 500
+      return response
     },
   }
 })

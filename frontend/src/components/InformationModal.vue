@@ -4,8 +4,9 @@ defineProps<{
   modelValue: boolean
   title: string
   icon: string
-  confirm?: string,
-  cancel?: string,
+  iconMessage:string
+  message:string
+  confirm?: string
 }>()
 
 defineEmits(['update:modelValue', 'close', 'confirm'])
@@ -43,19 +44,24 @@ defineEmits(['update:modelValue', 'close', 'confirm'])
         <slot />
 
         <div class="flex w-full gap-4 justify-center items-center text-sm">
-          <button
-            class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
-            @click="() => { $emit('update:modelValue', false); $emit('close')}"
-          >
-            {{ cancel !== undefined ? cancel : 'Cancelar' }}
-          </button>
+          <div class="flex gap-4">
+            <FontAwesomeIcon
+              :icon="`fa-solid fa-${iconMessage}`"
+              class="text-lavenderIndigo-900"
+            />
+            <span class="text-sm font-semibold">
+              {{ message }}
+            </span>
+          </div>
+        </div>
 
+        <div class="flex w-full gap-4 justify-center items-center text-sm">
           <button 
             type="submit"
             class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
             @click="() => $emit('confirm')"
           >
-            {{ confirm !== undefined ? confirm : 'Salvar' }}
+            {{ confirm !== undefined ? confirm : 'Fechar' }}
           </button>
         </div>
       </div>
