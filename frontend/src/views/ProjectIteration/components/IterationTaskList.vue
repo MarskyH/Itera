@@ -11,6 +11,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useTaskStore } from 'src/stores/TaskStore';
 import { InputFieldProps, models} from "src/@types";
 import { usePendencyStore } from 'src/stores/PendencyStore';
+import { Form } from 'vee-validate';
 
 interface PendencyForm extends models.PendencyForm { }
 
@@ -31,45 +32,49 @@ const listNameInput = ref<string>('')
 const $pendencyStore = usePendencyStore()
 
 yup.setLocale(yupErrorMessages);
-let formValidations: any = {}
-let schema: any
+const schema = ref<any>(null)
 
 function createInputPendency(){
   inputFields.value = [
-  {
-    name: "title",
-    label: "Título",
-    placeholder: "Digite o título da pendência",
-    required: true,
-    validation: yup.string().required().min(5)
-  },
-  {
-    name: "description",
-    label: "Descrição",
-    placeholder: "Digite a descrição da pendência",
-    required: true,
-    validation: yup.string().required().min(20)
-  },
-]
-    
+    {
+      name: "title",
+      label: "Título",
+      placeholder: "Digite o título da pendência",
+      required: true,
+      validation: yup.string().required().min(5)
+    },
+    {
+      name: "description",
+      label: "Descrição",
+      placeholder: "Digite a descrição da pendência",
+      required: true,
+      validation: yup.string().required().min(20)
+    },
+  ]
+  
+
+  var formValidations: any = {};
   inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
-  schema = yup.object(formValidations);    
+  schema.value = yup.object(formValidations);    
   formOnLoad.value = false
+
+  console.log(formValidations, schema.value)
 }
 
 function createInputCancel(){
   inputFields.value = [
-  {
-    name: "detailsCancel",
-    label: "Descrição",
-    placeholder: "Digite o motivo do cancelamento da tarefa",
-    required: true,
-    validation: yup.string().required().min(5)
-  }
-]
-    
+    {
+      name: "detailsCancel",
+      label: "Descrição",
+      placeholder: "Digite o motivo do cancelamento da tarefa",
+      required: true,
+      validation: yup.string().required().min(5)
+    }
+  ]
+  
+  var formValidations: any = {};
   inputFields.value.forEach(inputField => formValidations[inputField.name] = inputField.validation)
-  schema = yup.object(formValidations);    
+  schema.value = yup.object(formValidations);    
   formOnLoad.value = false
 }
 
@@ -147,10 +152,10 @@ async function moveTask(evt: any) {
 
 
 
-function onSubmit(values: any) {
+async function onSubmit(values: any) {
   if(listNameInput.value === "Pendente"){
     let pendencyFormValues: PendencyForm = { ...values }
-    alert(`${pendencyFormValues.title} + ${pendencyFormValues.description} + ${values.title} + ${values.description}` )
+    
     $pendencyStore.createPendency(pendencyFormValues, idTaskInput.value)
     isActionModalOpen.value = false
   }else if(listNameInput.value === "Cancelado"){
@@ -242,37 +247,11 @@ function onSubmit(values: any) {
       icon="clock"
     >
       <div class="flex flex-col px-8 py-4 gap-5">
-        <div class="grid grid-cols-2 w-full gap-5">
-          <InputField
-            v-for="(inputField, index) in inputFields"
-            v-show="index < inputFields.length - 1"
-            :key="inputField.name"
-            v-slot="{ field }"
-            :label="inputField.label"
-            :name="inputField.name"
-            :placeholder="inputField.placeholder"
-            :type="inputField.type"
-            :disabled="inputField.disabled"
-            :value="inputField.value"
-            :required="inputField.required"
-            :options="inputField.options"
-            @change="inputField.onChange"
-          >
-            {{ console.log(field.onInput) }}
-          </InputField>
-        </div>
-        
-        <div class="grid grid-cols-1 w-full gap-5">
-          <InputField
-            :key="inputFields[inputFields.length - 1]?.name"
-            :label="inputFields[inputFields.length - 1]?.label"
-            :name="inputFields[inputFields.length - 1]?.name"
-            :placeholder="inputFields[inputFields.length - 1]?.placeholder"
-            :type="inputFields[inputFields.length - 1]?.type"
-            :required="inputFields[inputFields.length - 1]?.required"
-            :options="inputFields[inputFields.length - 1]?.options"
-          />
-        </div>
+        <InputField
+          v-for="inputField in inputFields"
+          :key="inputField.name"
+          v-bind="inputField"
+        />
       </div>
     </ActionModal>
   </Form>
