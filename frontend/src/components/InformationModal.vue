@@ -43,7 +43,7 @@ defineEmits(['update:modelValue', 'close', 'confirm'])
         </div>
         <slot />
 
-        <div class="flex w-full gap-4 justify-center items-center text-sm">
+        <div class="flex flex-col w-full gap-4 justify-center items-center text-sm">
           <div class="flex gap-4">
             <FontAwesomeIcon
               :icon="`fa-solid fa-${iconMessage}`"

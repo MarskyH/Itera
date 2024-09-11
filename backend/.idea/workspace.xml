@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="chore: xml">
+    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="fix: pendency get by task id no response">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/pendency/PendencyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/pendency/PendencyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/requirement/RequirementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/requirement/RequirementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/task/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/task/TaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/task/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/domain/task/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/task/TaskCompleteRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/task/TaskCompleteRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/task/TaskCompleteResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/task/TaskCompleteResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/taskBug/TaskBugRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/taskBug/TaskBugRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/taskImprovement/TaskImprovementRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/taskImprovement/TaskImprovementRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/InformationModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/InformationModal.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,9 +21,9 @@
       <list>
         <option value="Interface" />
         <option value="Enum" />
-        <option value="Record" />
         <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -80,30 +71,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.CardapioApplication.executor": "Run",
-    "Application.IteraApplication.executor": "Run",
-    "JUnit.UserRepositoryTest.executor": "Run",
-    "Maven. [install].executor": "Run",
-    "Maven.cardapio [package].executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "refactor-tarefas",
-    "kotlin-language-version-configured": "true",
-    "last_directory_selection": "C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio",
-    "last_opened_file_path": "C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirementProject",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "terminal"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.CardapioApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.IteraApplication.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven. [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.cardapio [package].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;refactor-tarefas&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirementProject&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.example.itera.dto.task" />
       <recent name="com.example.cardapio.user" />
       <recent name="com.example.cardapio.food" />
     </key>
@@ -237,7 +229,55 @@
       <option name="project" value="LOCAL" />
       <updated>1711411994123</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: checkCancelled no backlog">
+      <option name="closed" value="true" />
+      <created>1724704724342</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1724704724342</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix: erro progressivebar">
+      <option name="closed" value="true" />
+      <created>1724783388751</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1724783388751</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: pendency get by task id">
+      <option name="closed" value="true" />
+      <created>1724788904724</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1724788904724</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix: pendency get by task id">
+      <option name="closed" value="true" />
+      <created>1724790027404</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1724790027404</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix: pendency get by task id">
+      <option name="closed" value="true" />
+      <created>1724790196286</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1724790196286</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix: pendency get by task id no response">
+      <option name="closed" value="true" />
+      <created>1724790333911</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1724790333911</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -258,6 +298,26 @@
     <MESSAGE value="feat: inicio dos testes unitários" />
     <MESSAGE value="fix: exposureDegree para Degree" />
     <MESSAGE value="chore: workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: workspace.xml" />
+    <MESSAGE value="feat: checkCancelled no backlog" />
+    <MESSAGE value="fix: erro progressivebar" />
+    <MESSAGE value="feat: pendency get by task id" />
+    <MESSAGE value="fix: pendency get by task id" />
+    <MESSAGE value="fix: pendency get by task id no response" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: pendency get by task id no response" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/requirement/RequirementController.java</url>
+          <line>77</line>
+          <properties class="com.example.itera.controller.requirement.RequirementController" method="saveRequirement">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
