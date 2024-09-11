@@ -6,6 +6,7 @@ import com.example.itera.dto.pendency.PendencyRequestDTO;
 import com.example.itera.dto.pendency.PendencyResponseDTO;
 import com.example.itera.dto.taskBug.TaskBugRequestDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementRequestDTO;
+import com.example.itera.dto.taskPlanning.TaskPlanningRequestDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementRequestDTO;
 
 import java.sql.Timestamp;
@@ -29,6 +30,8 @@ public record TaskCompleteRequestDTO(
         TaskRequirementRequestDTO taskRequirement,
         TaskImprovementRequestDTO taskImprovement,
         TaskBugRequestDTO taskBug,
+
+        TaskPlanningRequestDTO taskPlanning,
         String iteration_id,
         List<AssigneeRequestDTO> assignees,
         List<PendencyRequestDTO> pendencies

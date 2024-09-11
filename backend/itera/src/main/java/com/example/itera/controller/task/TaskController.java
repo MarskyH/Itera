@@ -8,6 +8,7 @@ import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.domain.task.Task;
 import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
+import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
@@ -19,6 +20,7 @@ import com.example.itera.dto.task.*;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
+import com.example.itera.repository.TaskPlanning.TaskPlanningRepository;
 import com.example.itera.repository.assignee.AssigneeRepository;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.pendency.PendencyRepository;
@@ -72,6 +74,9 @@ public class TaskController {
 
     @Autowired
     TaskBugRepository taskBugRepository;
+
+    @Autowired
+    TaskPlanningRepository taskPlanningRepository;
     @Autowired
     TeamMemberRepository teamMemberRepository;
 
@@ -86,18 +91,17 @@ public class TaskController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> saveTask(@RequestBody TaskCompleteRequestDTO data) {
         Map<String, String> response = new HashMap<>();
-        if (data.orderTask() == null) {
-            order = taskRepository.findByIteration(data.iteration_id()).size() + 1;
-        } else {
-            order = data.orderTask();
-        }
-        if (data.listName() != null) {
-            listName = data.listName();
-        }
+        String listName = data.listName() != null ? data.listName() : "A fazer";
         Task taskData = null;
         String requirementId = null;
+
         try {
+            int order = data.orderTask() != null
+                    ? data.orderTask()
+                    : taskRepository.findByIteration(data.iteration_id()).size() + 1;
+
             Iteration iterationData = iterationRepository.findById(data.iteration_id()).orElseThrow();
+
             taskData = new Task(
                     data.title(),
                     data.priority(),
@@ -110,87 +114,116 @@ public class TaskController {
                     order,
                     listName,
                     data.taskType(),
-                    (TaskRequirement) null,
-                    (TaskImprovement) null,
-                    (TaskBug) null,
+                    null,  // TaskRequirement
+                    null,  // TaskImprovement
+                    null,  // TaskBug
+                    null, // taskPlanning
                     iterationData
             );
+
+            // Salvando a task
             taskRepository.save(taskData);
-            try {
-                if (data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null) {
-                    TaskRequirement taskRequirementData = new TaskRequirement(taskData);
-                    taskData.setTaskRequirement(taskRequirementData);
-                    taskRequirementRepository.save(taskRequirementData);
-                    response.put("Task_requirement_id", taskRequirementData.getId());
-                    taskRepository.save(taskData);
-                } else if (data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null) {
-                    TaskImprovement taskImprovementData = new TaskImprovement(taskData);
-                    requirementController.saveRequirement(new RequirementRequestDTO(taskData.getTitle(), taskData.getDetails(), taskData.getComplexity(), taskData.getPriority(), Integer.valueOf(taskData.getEffort()), taskData.getSizeTask(), null, iterationData.getId(), iterationData.getProject().getId()));
-                    if(data.taskImprovement().requirement_id() !=  null){
-                        taskImprovementData.setRequirementId(data.taskImprovement().requirement_id());
-                    }
-                    System.out.println(taskData.getTitle());
-                    requirementId = requirementRepository.findByName(taskData.getTitle()).getId();
-                    taskImprovementData.setRequirementId(requirementId);
-                    taskData.setTaskImprovement(taskImprovementData);
-                    taskImprovementRepository.save(taskImprovementData);
-                    taskRepository.save(taskData);
-                    response.put("Task_improvement_id", taskImprovementData.getId());
-                } else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null) {
-                    TaskBug taskBugData = new TaskBug(taskData);
-                    if(data.taskBug().requirement_id() !=  null){
-                        taskBugData.setRequirementId(data.taskBug().requirement_id());
-                    }
-                    taskData.setTaskBug(taskBugData);
-                    taskBugRepository.save(taskBugData);
-                    taskRepository.save(taskData);
-                    response.put("Task_bug_id", taskBugData.getId());
-                }
-            } catch (Exception e) {
-                taskRepository.deleteById(taskData.getId());
-                if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
-                    requirementRepository.deleteById(requirementId);
-                }
-                return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage() + " DETAILS: " + e);
+
+            // Tratamento de TaskRequirement
+            if (data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null) {
+                TaskRequirement taskRequirementData = new TaskRequirement(taskData);
+                taskData.setTaskRequirement(taskRequirementData);
+                taskRequirementRepository.save(taskRequirementData);
+                taskRepository.save(taskData);
+                response.put("Task_requirement_id", taskRequirementData.getId());
             }
 
+            // Tratamento de TaskImprovement
+            else if (data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null) {
+                TaskImprovement taskImprovementData = new TaskImprovement(taskData);
 
+                // Lógica para salvar Requirement, se necessário
+                if (data.taskImprovement().requirement_id() == null) {
+                    requirementController.saveRequirement(
+                            new RequirementRequestDTO(
+                                    taskData.getTitle(),
+                                    taskData.getDetails(),
+                                    taskData.getComplexity(),
+                                    taskData.getPriority(),
+                                    Integer.valueOf(taskData.getEffort()),
+                                    taskData.getSizeTask(),
+                                    null,
+                                    iterationData.getId(),
+                                    iterationData.getProject().getId()
+                            )
+                    );
+                }
+
+                requirementId = requirementRepository.findByName(taskData.getTitle()).getId();
+                taskImprovementData.setRequirementId(requirementId);
+                taskData.setTaskImprovement(taskImprovementData);
+                taskImprovementRepository.save(taskImprovementData);
+                taskRepository.save(taskData);
+                response.put("Task_improvement_id", taskImprovementData.getId());
+            }
+
+            // Tratamento de TaskBug
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null) {
+                TaskBug taskBugData = new TaskBug(taskData);
+
+                if (data.taskBug().requirement_id() != null) {
+                    taskBugData.setRequirementId(data.taskBug().requirement_id());
+                }
+
+                taskData.setTaskBug(taskBugData);
+                taskBugRepository.save(taskBugData);
+                taskRepository.save(taskData);
+                response.put("Task_bug_id", taskBugData.getId());
+            }
+
+            // Tratamento de TaskPlanning
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() != null) {
+                TaskPlanning taskPlanningData = new TaskPlanning(
+                        taskData,
+                        data.taskPlanning().totalSize(),
+                        data.taskPlanning().totalEffort(),
+                        data.taskPlanning().plannedSpeed(),
+                        data.taskPlanning().projectBacklog(),
+                        data.taskPlanning().projectMembers()
+                );
+                taskPlanningRepository.save(taskPlanningData);
+                taskRepository.save(taskData);
+                response.put("Task_planning_id", taskPlanningData.getId());
+            }
+
+            // Adicionando Assignees, se houver
             if (data.assignees() != null) {
                 for (AssigneeRequestDTO assignee : data.assignees()) {
                     TeamMember memberData = teamMemberRepository.findById(assignee.member_id()).orElseThrow();
-                    Assignee assigneeData = new Assignee(assignee.taskStep(), assignee.deadline(), memberData, taskData);
+                    Assignee assigneeData = new Assignee(
+                            assignee.taskStep(),
+                            assignee.deadline(),
+                            memberData,
+                            taskData
+                    );
                     assigneeRepository.save(assigneeData);
                     response.put("Assignee_id", assigneeData.getId());
                 }
             }
 
+            // Retorna a resposta de sucesso
             response.put("task_id", taskData.getId());
             response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
             return ResponseEntity.ok().body(response);
-        } catch (ValidationException e) {
-            if(taskData != null) {
-                taskRepository.deleteById(taskData.getId());
-            }
-            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
-                requirementRepository.deleteById(requirementId);
-            }
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (UnauthorizedException e) {
-            if(taskData != null) {
-                taskRepository.deleteById(taskData.getId());
-            }
-            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
-                requirementRepository.deleteById(requirementId);
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+
         } catch (Exception e) {
-            if(taskData != null) {
-                taskRepository.deleteById(taskData.getId());
-            }
-            if(requirementId != null && !requirementId.isEmpty() && !requirementId.isBlank()){
-                requirementRepository.deleteById(requirementId);
-            }
-            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+            handleTaskError(taskData, requirementId);
+            return ResponseEntity.internalServerError().body("Error saving task: " + e.getMessage());
+        }
+    }
+
+    // Método auxiliar para tratar rollback
+    private void handleTaskError(Task taskData, String requirementId) {
+        if (taskData != null) {
+            taskRepository.deleteById(taskData.getId());
+        }
+        if (requirementId != null && !requirementId.isBlank()) {
+            requirementRepository.deleteById(requirementId);
         }
     }
 

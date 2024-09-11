@@ -3,6 +3,7 @@ package com.example.itera.domain.task;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
+import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -56,6 +57,12 @@ public class Task {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private TaskBug taskBug = null;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_planning_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private TaskPlanning taskPlanning = null;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
@@ -111,7 +118,7 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, TaskPlanning taskPlanningData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -126,6 +133,7 @@ public class Task {
         this.taskRequirement = taskRequirementData;
         this.taskImprovement = taskImprovementData;
         this.taskBug = taskBugData;
+        this.taskPlanning = taskPlanningData;
         this.iteration = iterationData;
     }
 
