@@ -1,8 +1,7 @@
 package com.example.itera.domain.taskPlanning;
-
 import com.example.itera.domain.task.Task;
-import com.example.itera.dto.project.BacklogResponseDTO;
-import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
+import com.example.itera.dto.project.BacklogRequestDTO;
+import com.example.itera.dto.teamMember.TeamMemberRequestDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
@@ -24,13 +23,11 @@ public class TaskPlanning {
     private Integer totalEffort;
     private Double plannedSpeed;
 
-    @Convert(converter = BacklogConverter.class)
-    @Column(columnDefinition = "TEXT") // Armazena o JSON como texto no banco
-    private String projectBacklog; // Armazena o BacklogResponseDTO como JSON
-
-    @Convert(converter = TeamMemberConverter.class)
     @Column(columnDefinition = "TEXT")
-    private String projectMembers; // Armazena o TeamMemberResponseDTO como JSON
+    private String projectBacklog; // Armazena o BacklogRequestDTO como JSON
+
+    @Column(columnDefinition = "TEXT")
+    private String projectMembers; // Armazena o TeamMemberRequestDTO como JSON
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
@@ -40,30 +37,40 @@ public class TaskPlanning {
         this.task = task;
     }
 
-    public TaskPlanning(Task task, Integer totalSize, Integer totalEffort, Double plannedSpeed, List<BacklogResponseDTO> projectBacklog, List<TeamMemberResponseDTO> projectMembers) {
+    public TaskPlanning(Task task, Integer totalSize, Integer totalEffort, Double plannedSpeed, List<BacklogRequestDTO> projectBacklog, List<TeamMemberRequestDTO> projectMembers) {
         this.task = task;
         this.totalSize = totalSize;
         this.totalEffort = totalEffort;
         this.plannedSpeed = plannedSpeed;
-        this.projectBacklog = convertBacklogToJson(projectBacklog);
-        this.projectMembers = convertMembersToJson(projectMembers);
+        this.projectBacklog = convertToJson(projectBacklog);  // Converter lista para JSON
+        this.projectMembers = convertToJson(projectMembers);  // Converter lista para JSON
     }
 
-    private String convertBacklogToJson(List<BacklogResponseDTO> backlog) {
-        // Serializa a lista de BacklogResponseDTO como JSON
+    // Método para converter a lista de objetos em JSON
+    private <T> String convertToJson(List<T> list) {
         try {
-            return new ObjectMapper().writeValueAsString(backlog);
+            return new ObjectMapper().writeValueAsString(list);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Erro ao converter Backlog para JSON", e);
+            throw new RuntimeException("Erro ao converter lista para JSON", e);
         }
     }
 
-    private String convertMembersToJson(List<TeamMemberResponseDTO> members) {
-        // Serializa a lista de TeamMemberResponseDTO como JSON
+    // Método para converter JSON de volta para uma lista de objetos
+    private <T> List<T> convertFromJson(String json, Class<T[]> clazz) {
         try {
-            return new ObjectMapper().writeValueAsString(members);
+            T[] array = new ObjectMapper().readValue(json, clazz);
+            return List.of(array); // Converte array para lista
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Erro ao converter Membros para JSON", e);
+            throw new RuntimeException("Erro ao converter JSON para lista", e);
         }
+    }
+
+    // Métodos auxiliares para uso posterior (ao carregar os dados):
+    public List<BacklogRequestDTO> getProjectBacklogAsList() {
+        return convertFromJson(this.projectBacklog, BacklogRequestDTO[].class);
+    }
+
+    public List<TeamMemberRequestDTO> getProjectMembersAsList() {
+        return convertFromJson(this.projectMembers, TeamMemberRequestDTO[].class);
     }
 }

@@ -125,7 +125,7 @@ public class TaskController {
             taskRepository.save(taskData);
 
             // Tratamento de TaskRequirement
-            if (data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null) {
+            if (data.taskRequirement() != null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() == null) {
                 TaskRequirement taskRequirementData = new TaskRequirement(taskData);
                 taskData.setTaskRequirement(taskRequirementData);
                 taskRequirementRepository.save(taskRequirementData);
@@ -134,7 +134,7 @@ public class TaskController {
             }
 
             // Tratamento de TaskImprovement
-            else if (data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null) {
+            else if (data.taskRequirement() == null && data.taskImprovement() != null && data.taskBug() == null && data.taskPlanning() == null) {
                 TaskImprovement taskImprovementData = new TaskImprovement(taskData);
 
                 // Lógica para salvar Requirement, se necessário
@@ -163,7 +163,7 @@ public class TaskController {
             }
 
             // Tratamento de TaskBug
-            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null) {
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null && data.taskPlanning() == null) {
                 TaskBug taskBugData = new TaskBug(taskData);
 
                 if (data.taskBug().requirement_id() != null) {
