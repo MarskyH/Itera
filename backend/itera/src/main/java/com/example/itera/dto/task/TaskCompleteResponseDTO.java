@@ -3,6 +3,7 @@ package com.example.itera.dto.task;
 import com.example.itera.domain.task.Task;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.pendency.PendencyResponseDTO;
+import com.example.itera.dto.taskPlanning.TaskPlanningResponseDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementResponseDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementResponseDTO;
 import com.example.itera.dto.taskBug.TaskBugResponseDTO;
@@ -30,6 +31,8 @@ public record TaskCompleteResponseDTO(
         TaskRequirementResponseDTO taskRequirement,
         TaskImprovementResponseDTO taskImprovement,
         TaskBugResponseDTO taskBug,
+
+        TaskPlanningResponseDTO taskPlanning,
         String iteration_id,
         List<AssigneeResponseDTO> assignees,
 
@@ -55,6 +58,7 @@ public record TaskCompleteResponseDTO(
                 task.getTaskRequirement() != null ? new TaskRequirementResponseDTO(task.getTaskRequirement()) : null,
                 task.getTaskImprovement() != null ? new TaskImprovementResponseDTO(task.getTaskImprovement()) : null,
                 task.getTaskBug() != null ? new TaskBugResponseDTO(task.getTaskBug()) : null,
+                task.getTaskPlanning() != null ? new TaskPlanningResponseDTO(task.getTaskPlanning()) : null,
                 task.getIteration() != null && task.getIteration().getId() != null ? task.getIteration().getId() : "",
                 assignees,
                 pendencies

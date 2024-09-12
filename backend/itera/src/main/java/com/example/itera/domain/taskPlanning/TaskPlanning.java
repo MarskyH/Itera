@@ -23,16 +23,15 @@ public class TaskPlanning {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private Integer totalSize;
-    private Integer totalEffort;
-    private Double plannedSpeed;
+    private Integer totalSize = 0;
+    private Integer totalEffort = 0;
+    private Double plannedSpeed = 0.0;
 
     @Column(columnDefinition = "TEXT")
-    private String projectBacklog; // Armazena o BacklogRequestDTO como JSON
+    private String projectBacklog;
 
     @Column(columnDefinition = "TEXT")
-    private String projectMembers; // Armazena o TeamMemberRequestDTO como JSON
-
+    private String projectMembers;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id")
     private Task task;
@@ -80,8 +79,29 @@ public class TaskPlanning {
         return convertFromJson(this.projectMembers, TeamMemberPlanningResponseDTO[].class);
     }
 
+    public String setProjectBacklogAsJson(List<BacklogResponseDTO> lista) {
+        return convertToJson(lista);
+    }
 
+    public String setProjectMembersAsJson(List<TeamMemberPlanningResponseDTO> lista) {
+        return convertToJson(lista);
+    }
 
+    public Integer getEffortCalculation(List<BacklogResponseDTO> lista){
+        int effort = 0;
+        for(BacklogResponseDTO item : lista){
+            effort += item.effort();
+        }
+        return effort;
+    }
+
+    public Integer getSizeCalculation(List<BacklogResponseDTO> lista){
+        int size = 0;
+        for(BacklogResponseDTO item : lista){
+            size += item.sizeRequirement();
+        }
+        return size;
+    }
 }
 
 

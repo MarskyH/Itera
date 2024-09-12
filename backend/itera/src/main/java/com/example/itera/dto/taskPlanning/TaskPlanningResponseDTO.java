@@ -2,9 +2,13 @@ package com.example.itera.dto.taskPlanning;
 
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.dto.project.BacklogResponseDTO;
+import com.example.itera.dto.project.ProjectResponseDTO;
+import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.task.TaskResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberIdsResponseDTO;
+import com.example.itera.dto.teamMember.TeamMemberPlanningResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
+import com.example.itera.dto.user.UserResponseDTO;
 import com.example.itera.repository.user.UserRepository;
 import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.project.ProjectRepository;
@@ -27,7 +31,7 @@ public record TaskPlanningResponseDTO(
         Integer totalEffort,
         Double plannedSpeed,
         List<BacklogResponseDTO> projectBacklog,
-        List<TeamMemberResponseDTO> projectMembers,
+        List<TeamMemberPlanningResponseDTO> projectMembers,
         TaskResponseDTO task
 ) {
     @Autowired
@@ -51,11 +55,11 @@ public record TaskPlanningResponseDTO(
     }
 
     // Função para desserializar e completar os membros da equipe
-    private static List<TeamMemberResponseDTO> completeTeamMembers(String jsonTeamMembers) {
+    private static List<TeamMemberPlanningResponseDTO> completeTeamMembers(String jsonTeamMembers) {
         // Desserializa o JSON para uma lista de TeamMemberIdsDTO (com apenas os IDs)
         List<TeamMemberIdsResponseDTO> teamMembersWithIds = deserializeJson(jsonTeamMembers, new TypeReference<>() {});
 
-        List<TeamMemberResponseDTO> completeTeamMembers = new ArrayList<>();
+        List<TeamMemberPlanningResponseDTO> completeTeamMembers = new ArrayList<>();
         for (TeamMemberIdsResponseDTO memberWithIds : teamMembersWithIds) {
             System.out.println("TESTE: " + memberWithIds);
             System.out.println("TESTE: " + memberWithIds.dedicatedHours());
@@ -70,13 +74,13 @@ public record TaskPlanningResponseDTO(
             Project project = projectRepository.findById(memberWithIds.project_id()).orElseThrow();
 
             // Cria o DTO com os objetos completos
-            TeamMemberResponseDTO completeMember = new TeamMemberResponseDTO(
+            TeamMemberPlanningResponseDTO completeMember = new TeamMemberPlanningResponseDTO(
                     memberWithIds.id(),
                     memberWithIds.hourlyRate(),
                     memberWithIds.dedicatedHours(),
-                    user,  // Objeto User completo
-                    role,  // Objeto Role completo
-                    project  // Objeto Project completo
+                    new UserResponseDTO(user),  // Objeto User completo
+                    new RoleResponseDTO(role),  // Objeto Role completo
+                    new ProjectResponseDTO(project)  // Objeto Project completo
             );
 
             completeTeamMembers.add(completeMember);

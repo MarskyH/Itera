@@ -401,6 +401,22 @@ public class TaskController {
                 }
             }
 
+            if(data.taskPlanning() != null){
+                TaskPlanning taskPlanning = taskPlanningRepository.findById(task.getTaskPlanning().getId()).orElse(null);
+                if(taskPlanning != null){
+                    taskPlanning.setTotalSize(taskPlanning.getSizeCalculation(taskPlanning.getProjectBacklogAsList()));
+                    taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
+                    taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
+
+                    if(data.taskPlanning().projectBacklog() != null){
+                        taskPlanning.setProjectBacklog(taskPlanning.setProjectBacklogAsJson(data.taskPlanning().projectBacklog()));
+                    }
+                    if(data.taskPlanning().projectMembers() != null){
+                        taskPlanning.setProjectMembers(taskPlanning.setProjectMembersAsJson(data.taskPlanning().projectMembers()));
+                    }
+                }
+            }
+
             if (data.iteration_id() != null) {
                 Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
                 task.setIteration(iteration);
