@@ -13,6 +13,5 @@ public record TaskPlanningRequestDTO(
         Integer totalEffort,
         Double plannedSpeed,
         List<BacklogResponseDTO> projectBacklog,
-        List<TeamMemberPlanningResponseDTO> projectMembers,
-        String taskId
+        List<TeamMemberPlanningResponseDTO> projectMembers
 ) {}

@@ -1,5 +1,6 @@
 package com.example.itera.controller.project;
 
+import com.example.itera.controller.task.TaskController;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.requirement.Requirement;
 import com.example.itera.dto.iteration.IterationRequirementResponseDTO;
@@ -7,6 +8,9 @@ import com.example.itera.dto.iteration.IterationResponseDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
 import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
+import com.example.itera.dto.task.TaskCompleteRequestDTO;
+import com.example.itera.dto.taskPlanning.TaskPlanningRequestDTO;
+import com.example.itera.dto.taskPlanning.TaskPlanningResponseDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.domain.project.Project;
@@ -58,6 +62,9 @@ public class ProjectController {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    TaskController taskController;
     @Autowired
     RoleRepository roleRepository;
 
@@ -247,6 +254,7 @@ public class ProjectController {
         //Cria iterações se necessário
         if(iterationRepository.findByProject(project.getId()).isEmpty()){
             createIterations(project.getId());
+            createTaskPlanning(project.getId());
         }
 
         return new ProjectResponseDTO(project);
@@ -514,6 +522,14 @@ public class ProjectController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public void createTaskPlanning(String projectId){
+        List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
+        for (IterationResponseDTO iteration : iterations){
+            taskController.saveTask(new TaskCompleteRequestDTO("Planejamento da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Planejamento", null, null, null,
+                    new TaskPlanningRequestDTO(0, 0, 0.0, null, null), iteration.id(), null, null));
         }
     }
 }

@@ -404,16 +404,15 @@ public class TaskController {
             if(data.taskPlanning() != null){
                 TaskPlanning taskPlanning = taskPlanningRepository.findById(task.getTaskPlanning().getId()).orElse(null);
                 if(taskPlanning != null){
-                    taskPlanning.setTotalSize(taskPlanning.getSizeCalculation(taskPlanning.getProjectBacklogAsList()));
-                    taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
-                    taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
-
                     if(data.taskPlanning().projectBacklog() != null){
                         taskPlanning.setProjectBacklog(taskPlanning.setProjectBacklogAsJson(data.taskPlanning().projectBacklog()));
                     }
                     if(data.taskPlanning().projectMembers() != null){
                         taskPlanning.setProjectMembers(taskPlanning.setProjectMembersAsJson(data.taskPlanning().projectMembers()));
                     }
+                    taskPlanning.setTotalSize(taskPlanning.getSizeCalculation(taskPlanning.getProjectBacklogAsList()));
+                    taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
+                    taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
                 }
             }
 
@@ -559,40 +558,43 @@ public class TaskController {
     }
 
     public  List<TeamMemberPlanningResponseDTO> completeTeamMembers(List<TeamMemberPlanningResponseDTO> members) {
-        List<TeamMemberPlanningResponseDTO> completeTeamMembers = new ArrayList<>();
+        if(members != null) {
+            List<TeamMemberPlanningResponseDTO> completeTeamMembers = new ArrayList<>();
 
-        for (TeamMemberPlanningResponseDTO member : members) {
-            TeamMember memberBD = teamMemberRepository.findById(member.id()).orElseThrow();
+            for (TeamMemberPlanningResponseDTO member : members) {
+                TeamMember memberBD = teamMemberRepository.findById(member.id()).orElseThrow();
 
-            // Obtenha o UserResponseDTO correspondente ao usuário
-            UserResponseDTO userDTO = userRepository.findById(memberBD.getUser().getId())
-                    .map(UserResponseDTO::new) // Converte o User para UserResponseDTO
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                // Obtenha o UserResponseDTO correspondente ao usuário
+                UserResponseDTO userDTO = userRepository.findById(memberBD.getUser().getId())
+                        .map(UserResponseDTO::new) // Converte o User para UserResponseDTO
+                        .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Obtenha o RoleResponseDTO correspondente ao papel
-            RoleResponseDTO roleDTO = roleRepository.findById(memberBD.getRole().getId())
-                    .map(RoleResponseDTO::new) // Converte o Role para RoleResponseDTO
-                    .orElseThrow(() -> new RuntimeException("Role not found"));
+                // Obtenha o RoleResponseDTO correspondente ao papel
+                RoleResponseDTO roleDTO = roleRepository.findById(memberBD.getRole().getId())
+                        .map(RoleResponseDTO::new) // Converte o Role para RoleResponseDTO
+                        .orElseThrow(() -> new RuntimeException("Role not found"));
 
-            // Obtenha o ProjectResponseDTO correspondente ao projeto
-            ProjectResponseDTO projectDTO = projectRepository.findById(memberBD.getProject().getId())
-                    .map(ProjectResponseDTO::new) // Converte o Project para ProjectResponseDTO
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
+                // Obtenha o ProjectResponseDTO correspondente ao projeto
+                ProjectResponseDTO projectDTO = projectRepository.findById(memberBD.getProject().getId())
+                        .map(ProjectResponseDTO::new) // Converte o Project para ProjectResponseDTO
+                        .orElseThrow(() -> new RuntimeException("Project not found"));
 
-            // Crie o TeamMemberResponseDTO com os DTOs
-            TeamMemberPlanningResponseDTO dto = new TeamMemberPlanningResponseDTO(
-                    member.id(),
-                    member.hourlyRate(),
-                    member.dedicatedHours(),
-                    userDTO,
-                    roleDTO,
-                    projectDTO
-            );
+                // Crie o TeamMemberResponseDTO com os DTOs
+                TeamMemberPlanningResponseDTO dto = new TeamMemberPlanningResponseDTO(
+                        member.id(),
+                        member.hourlyRate(),
+                        member.dedicatedHours(),
+                        userDTO,
+                        roleDTO,
+                        projectDTO
+                );
 
-            completeTeamMembers.add(dto);
+                completeTeamMembers.add(dto);
+            }
+            return completeTeamMembers;
+        }else{
+            return new ArrayList<>();
         }
-
-        return completeTeamMembers;
     }
 
 

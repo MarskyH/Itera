@@ -51,8 +51,10 @@ public class TaskPlanning {
 
     // Método para converter a lista de objetos em JSON
     private <T> String convertToJson(List<T> list) {
+        if (list == null) {
+            return "[]"; // Retorna um JSON vazio
+        }
         list.forEach(Hibernate::initialize);
-        System.out.println(list);
         try {
             return new ObjectMapper().writeValueAsString(list);
         } catch (JsonProcessingException e) {
