@@ -1,5 +1,6 @@
 package com.example.itera.domain.taskPlanning;
 
+import com.example.itera.dto.teamMember.TeamMemberPlanningResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberRequestDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,10 +13,10 @@ import java.io.IOException;
 import java.util.List;
 
 @Converter
-public class TeamMemberConverter implements AttributeConverter<List<TeamMemberRequestDTO>, String> {
+public class TeamMemberConverter implements AttributeConverter<List<TeamMemberPlanningResponseDTO>, String> {
 
     @Override
-    public String convertToDatabaseColumn(List<TeamMemberRequestDTO> members) {
+    public String convertToDatabaseColumn(List<TeamMemberPlanningResponseDTO> members) {
         try {
             return new ObjectMapper().writeValueAsString(members);
         } catch (JsonProcessingException e) {
@@ -24,9 +25,9 @@ public class TeamMemberConverter implements AttributeConverter<List<TeamMemberRe
     }
 
     @Override
-    public List<TeamMemberRequestDTO> convertToEntityAttribute(String membersJson) {
+    public List<TeamMemberPlanningResponseDTO> convertToEntityAttribute(String membersJson) {
         try {
-            return new ObjectMapper().readValue(membersJson, new TypeReference<List<TeamMemberRequestDTO>>() {});
+            return new ObjectMapper().readValue(membersJson, new TypeReference<List<TeamMemberPlanningResponseDTO>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Erro ao converter JSON para Membros", e);
         }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "users")
 @Entity(name = "users")
 @Getter
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,6 +38,13 @@ public class User implements UserDetails {
         this.login = login;
         this.email = email;
         this.password = password;
+        this.userRole = userRole;
+    }
+
+    public User(String name, String email, String login, UserRole userRole) {
+        this.name = name;
+        this.login = login;
+        this.email = email;
         this.userRole = userRole;
     }
 

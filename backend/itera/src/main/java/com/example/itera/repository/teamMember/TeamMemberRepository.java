@@ -14,6 +14,8 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, String>{
 
     @Query(value = "SELECT t FROM TeamMember t WHERE t.project.id = :id")
     List<TeamMember> findAllByProjectId(@Param("id") String id);
+
+
 }
 
 

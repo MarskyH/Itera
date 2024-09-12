@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.util.List;
 
 @Converter
-public class BacklogConverter implements AttributeConverter<List<BacklogRequestDTO>, String> {
+public class BacklogConverter implements AttributeConverter<List<BacklogResponseDTO>, String> {
 
     @Override
-    public String convertToDatabaseColumn(List<BacklogRequestDTO> backlog) {
+    public String convertToDatabaseColumn(List<BacklogResponseDTO> backlog) {
         try {
             return new ObjectMapper().writeValueAsString(backlog);
         } catch (JsonProcessingException e) {
@@ -25,9 +25,9 @@ public class BacklogConverter implements AttributeConverter<List<BacklogRequestD
     }
 
     @Override
-    public List<BacklogRequestDTO> convertToEntityAttribute(String backlogJson) {
+    public List<BacklogResponseDTO> convertToEntityAttribute(String backlogJson) {
         try {
-            return new ObjectMapper().readValue(backlogJson, new TypeReference<List<BacklogRequestDTO>>() {});
+            return new ObjectMapper().readValue(backlogJson, new TypeReference<List<BacklogResponseDTO>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Erro ao converter JSON para Backlog", e);
         }

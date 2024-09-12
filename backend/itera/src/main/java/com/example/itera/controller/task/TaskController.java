@@ -4,36 +4,43 @@ package com.example.itera.controller.task;
 import com.example.itera.controller.requirement.RequirementController;
 import com.example.itera.domain.Assignee.Assignee;
 import com.example.itera.domain.iteration.Iteration;
+import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.domain.role.Role;
 import com.example.itera.domain.task.Task;
 import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.teamMember.TeamMember;
+import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.pendency.PendencyResponseDTO;
+import com.example.itera.dto.project.ProjectResponseDTO;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
-import com.example.itera.dto.requirement.RequirementResponseDTO;
+import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.task.*;
+import com.example.itera.dto.teamMember.TeamMemberPlanningResponseDTO;
+import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
+import com.example.itera.dto.user.UserResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
-import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.TaskPlanning.TaskPlanningRepository;
 import com.example.itera.repository.assignee.AssigneeRepository;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.pendency.PendencyRepository;
+import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
+import com.example.itera.repository.role.RoleRepository;
 import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.taskBug.TaskBugRepository;
 import com.example.itera.repository.taskImprovement.TaskImprovementRepository;
 import com.example.itera.repository.taskRequirement.TaskRequirementRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
+import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +86,15 @@ public class TaskController {
     TaskPlanningRepository taskPlanningRepository;
     @Autowired
     TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     @Autowired
     RequirementRepository requirementRepository;
@@ -184,8 +200,9 @@ public class TaskController {
                         data.taskPlanning().totalEffort(),
                         data.taskPlanning().plannedSpeed(),
                         data.taskPlanning().projectBacklog(),
-                        data.taskPlanning().projectMembers()
+                        completeTeamMembers(data.taskPlanning().projectMembers())
                 );
+                taskData.setTaskPlanning(taskPlanningData);
                 taskPlanningRepository.save(taskPlanningData);
                 taskRepository.save(taskData);
                 response.put("Task_planning_id", taskPlanningData.getId());
@@ -479,6 +496,7 @@ public class TaskController {
             TaskRequirement taskRequirement = new TaskRequirement();
             TaskImprovement taskImprovement = new TaskImprovement();
             TaskBug taskBug = new TaskBug();
+            TaskPlanning taskPlanning = new TaskPlanning();
             if(dataTask.getTaskRequirement()!= null){
                 taskRequirement = dataTask.getTaskRequirement();
             }
@@ -488,7 +506,10 @@ public class TaskController {
             if(dataTask.getTaskBug()!= null){
                 taskBug = dataTask.getTaskBug();
             }
-            TaskListResponseDTO item = new TaskListResponseDTO(dataTask, taskRequirement, taskImprovement, taskBug);
+            if(dataTask.getTaskPlanning() != null){
+                taskPlanning = dataTask.getTaskPlanning();
+            }
+            TaskListResponseDTO item = new TaskListResponseDTO(dataTask, taskRequirement, taskImprovement, taskBug, taskPlanning);
             listaTasks.add(item);
         }
         return listaTasks;
@@ -520,6 +541,46 @@ public class TaskController {
             return (int) percentage;
         }
     }
+
+    public  List<TeamMemberPlanningResponseDTO> completeTeamMembers(List<TeamMemberPlanningResponseDTO> members) {
+        List<TeamMemberPlanningResponseDTO> completeTeamMembers = new ArrayList<>();
+
+        for (TeamMemberPlanningResponseDTO member : members) {
+            TeamMember memberBD = teamMemberRepository.findById(member.id()).orElseThrow();
+
+            // Obtenha o UserResponseDTO correspondente ao usuário
+            UserResponseDTO userDTO = userRepository.findById(memberBD.getUser().getId())
+                    .map(UserResponseDTO::new) // Converte o User para UserResponseDTO
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Obtenha o RoleResponseDTO correspondente ao papel
+            RoleResponseDTO roleDTO = roleRepository.findById(memberBD.getRole().getId())
+                    .map(RoleResponseDTO::new) // Converte o Role para RoleResponseDTO
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+
+            // Obtenha o ProjectResponseDTO correspondente ao projeto
+            ProjectResponseDTO projectDTO = projectRepository.findById(memberBD.getProject().getId())
+                    .map(ProjectResponseDTO::new) // Converte o Project para ProjectResponseDTO
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+
+            // Crie o TeamMemberResponseDTO com os DTOs
+            TeamMemberPlanningResponseDTO dto = new TeamMemberPlanningResponseDTO(
+                    member.id(),
+                    member.hourlyRate(),
+                    member.dedicatedHours(),
+                    userDTO,
+                    roleDTO,
+                    projectDTO
+            );
+
+            completeTeamMembers.add(dto);
+        }
+
+        return completeTeamMembers;
+    }
+
+
+
 
 }
 
