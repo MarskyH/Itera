@@ -31,8 +31,7 @@ public record TaskPlanningResponseDTO(
         Integer totalEffort,
         Double plannedSpeed,
         List<BacklogResponseDTO> projectBacklog,
-        List<TeamMemberPlanningResponseDTO> projectMembers,
-        TaskResponseDTO task
+        List<TeamMemberPlanningResponseDTO> projectMembers
 ) {
     @Autowired
     static UserRepository userRepository;
@@ -49,8 +48,7 @@ public record TaskPlanningResponseDTO(
                 taskPlanning.getTotalEffort(),
                 taskPlanning.getPlannedSpeed(),
                 deserializeJson(taskPlanning.getProjectBacklog(), new TypeReference<>() {}),
-                deserializeJson(taskPlanning.getProjectMembers(), new TypeReference<>() {}),
-                taskPlanning.getTask() != null ? new TaskResponseDTO(taskPlanning.getTask()) : null
+                deserializeJson(taskPlanning.getProjectMembers(), new TypeReference<>() {})
         );
     }
 

@@ -92,10 +92,12 @@ export namespace models {
   }
 
   export interface BacklogRequirement {
-    id?: number
+    id?: string
     idRequirement: string
     title: string
     priority: string
+    effort: number,
+    sizeRequirement: number,
     progressiveBar: number
     orderRequirement: number
     checkCancelled: boolean
@@ -165,6 +167,15 @@ export namespace models {
     user_id: string
     role_id: string
     project_id: string
+  }
+
+  export interface TeamMemberPlanning{
+    id: string
+    hourlyRate: number
+    dedicatedHours: number
+    user?: UserMemberModel
+    role?: Role
+    project?: Project
   }
 
   export interface RiskOnCreate {
@@ -327,9 +338,11 @@ export namespace models {
     taskrequirement_id?: string
     taskimprovement_id?: string
     taskbug_id?: string
+    taskplanning_id?: string
     taskRequirement?: TaskRequirement,
     taskImprovement?: TaskImprovement
     taskBug?: TaskBug
+    taskPlanning?: TaskPlanning
     iteration_id: string
     assignees: Assignee[]
     pendencies: Pendency[]
@@ -391,6 +404,24 @@ export namespace models {
     checkTest: boolean
   }
 
+  export interface TaskPlanning {
+    id: string,
+		totalSize: number,
+    totalEffort: number,
+    plannedSpeed: number,
+    projectBacklog:BacklogRequirement[],
+    projectMembers:TeamMemberPlanning[]
+  }
+
+  export interface TaskPlanningOnUpdate {
+    id: string,
+		totalSize: number,
+    totalEffort: number,
+    plannedSpeed: number,
+    projectBacklog:BacklogRequirement[],
+    projectMembers:TeamMemberPlanning[]
+  }
+
   export interface TaskOnCreate {
     title: string
     priority: string
@@ -433,11 +464,14 @@ export namespace models {
   }
 
   export interface TaskForm {
+    startDate?: string
+    endDate?: string
     taskType: string
     assignees: Assignee[]
     taskRequirement: TaskRequirementOnUpdate
     taskImprovement: TaskImprovementOnUpdate
     taskBug: TaskBugOnUpdate
+    taskPlanning: TaskPlanningOnUpdate
   }
 }
 

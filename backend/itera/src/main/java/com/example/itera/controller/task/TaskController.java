@@ -412,7 +412,12 @@ public class TaskController {
                     }
                     taskPlanning.setTotalSize(taskPlanning.getSizeCalculation(taskPlanning.getProjectBacklogAsList()));
                     taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
-                    taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
+
+                    if(taskPlanning.getTotalEffort() != 0 && taskPlanning.getTotalSize() != 0){
+                        taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
+                    }else{
+                        taskPlanning.setPlannedSpeed(0.0);
+                    }
                 }
             }
 

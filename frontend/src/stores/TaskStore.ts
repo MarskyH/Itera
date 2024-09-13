@@ -6,9 +6,7 @@ interface Task extends models.Task { }
 interface TaskOnCreate extends models.TaskOnCreate { }
 interface TaskRequirement extends models.TaskRequirement { }
 interface TaskRequirementOnCreate extends models.TaskRequirementOnCreate { }
-interface TaskImprovement extends models.TaskImprovement { }
 interface TaskImprovementOnCreate extends models.TaskImprovementOnCreate { }
-interface TaskBug extends models.TaskBug { }
 interface TaskBugOnCreate extends models.TaskBugOnCreate { }
 interface TaskForm extends models.TaskForm { }
 
@@ -56,6 +54,14 @@ const taskDefault: Task = {
     checkBack: false,
     checkTest: false
   },
+  taskPlanning:{
+    id: '',
+		totalSize: 0,
+    totalEffort: 0,
+    plannedSpeed: 0.0,
+    projectBacklog:[],
+    projectMembers:[]
+  },
   iteration_id: "",
   assignees: [],
   pendencies: [],
@@ -91,6 +97,7 @@ export const useTaskStore = defineStore('Task', {
             taskrequirement_id: elem.taskrequirement_id,
             taskimprovement_id: elem.taskimprovement_id,
             taskbug_id: elem.taskbug_id,
+            taskplanning_id: elem.taskplanning_id,
             iteration_id: elem.iteration_id,
           }
         })
@@ -121,6 +128,7 @@ export const useTaskStore = defineStore('Task', {
             taskrequirement_id: elem.taskData.taskrequirement_id,
             taskimprovement_id: elem.taskData.taskimprovement_id,
             taskbug_id: elem.taskData.taskbug_id,
+            taskplanning_id: elem.taskData.taskplanning_id,
             iteration_id: elem.taskData.iteration_id,
           }
         })
@@ -150,6 +158,7 @@ export const useTaskStore = defineStore('Task', {
           taskRequirement: response.data.taskRequirement,
           taskImprovement: response.data.taskImprovement,
           taskBug: response.data.taskBug,
+          taskPlanning: response.data.taskPlanning,
           iteration_id: response.data.iteration_id,
           assignees: response.data.assignees,
           pendencies: response.data.pendencies
@@ -301,23 +310,28 @@ export const useTaskStore = defineStore('Task', {
     },
 
     async updateTask(id: string, taskData: TaskForm) {
+      console.log(taskData)
+
       if (taskData.taskBug != null) {
         taskData.assignees = taskData.assignees.filter(assignee => assignee.taskStep !== 'P' && assignee.taskStep !== 'R');
       }
+
       const response = await Api.request({
         method: 'put',
         route: `/task/${id}`,
         body: taskData
       })
 
-      if(taskData.taskRequirement.detailsCancelled != null){
-        this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
-      }
-      if( taskData.taskImprovement.detailsCancelled != null ){
-        this.updateTaskCancel(id, taskData.taskImprovement.detailsCancelled)
-      }
-      if(taskData.taskBug.detailsCancelled != null){
-        this.updateTaskCancel(id, taskData.taskBug.detailsCancelled)
+      if(taskData.taskPlanning == null){
+        if(taskData.taskRequirement.detailsCancelled != null){
+          this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
+        }
+        if( taskData.taskImprovement.detailsCancelled != null ){
+          this.updateTaskCancel(id, taskData.taskImprovement.detailsCancelled)
+        }
+        if(taskData.taskBug.detailsCancelled != null){
+          this.updateTaskCancel(id, taskData.taskBug.detailsCancelled)
+        }
       }
 
       return response

@@ -152,13 +152,16 @@ public class Task {
     }
 
     public  String getSizeRequirement(String sizeRequirement) {
-        System.out.println(sizeRequirement);
-        return switch (sizeRequirement) {
-            case "5", "Pequeno" -> "Pequeno";
-            case "10", "Médio" -> "Médio";
-            case "15", "Grande" -> "Grande";
-            default -> throw new IllegalArgumentException("Tamanho de Requisito inválido: " + sizeRequirement);
-        };
+        if (sizeRequirement != null){
+            return switch (sizeRequirement) {
+                case "5", "Pequeno" -> "Pequeno";
+                case "10", "Médio" -> "Médio";
+                case "15", "Grande" -> "Grande";
+                default -> "0";
+            };
+        }else{
+            return "";
+        }
     }
 }
 
