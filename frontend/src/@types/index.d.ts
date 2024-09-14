@@ -343,6 +343,7 @@ export namespace models {
     taskImprovement?: TaskImprovement
     taskBug?: TaskBug
     taskPlanning?: TaskPlanning
+    taskReview?: TaskReview
     iteration_id: string
     assignees: Assignee[]
     pendencies: Pendency[]
@@ -413,6 +414,7 @@ export namespace models {
     projectMembers:TeamMemberPlanning[]
   }
 
+
   export interface TaskPlanningOnUpdate {
     id: string,
 		totalSize: number,
@@ -420,6 +422,34 @@ export namespace models {
     plannedSpeed: number,
     projectBacklog:BacklogRequirement[],
     projectMembers:TeamMemberPlanning[]
+  }
+
+  export interface TaskReview {
+    id: string
+		totalSize: number
+    totalEffort: number
+    completedSpeed: number
+    iterationBacklog:BacklogRequirement[]
+    completedScope:BacklogRequirement[]
+    participatingMembers:TeamMemberPlanning[]
+    checkHumanResources: boolean
+    checkSpeed: boolean
+    checkScope: boolean
+    checkRisks: boolean
+  }
+
+  export interface TaskReviewOnUpdate {
+    id: string
+		totalSize: number
+    totalEffort: number
+    completedSpeed: number
+    iterationBacklog:BacklogRequirement[]
+    completedScope:BacklogRequirement[]
+    participatingMembers:TeamMemberPlanning[]
+    checkHumanResources: boolean
+    checkSpeed: boolean
+    checkScope: boolean
+    checkRisks: boolean
   }
 
   export interface TaskOnCreate {
@@ -472,6 +502,7 @@ export namespace models {
     taskImprovement: TaskImprovementOnUpdate
     taskBug: TaskBugOnUpdate
     taskPlanning: TaskPlanningOnUpdate
+    taskReview:TaskReviewOnUpdate
   }
 }
 

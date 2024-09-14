@@ -30,6 +30,7 @@ const $functionalRequirementStore = useFunctionalRequirementStore();
 const $route = useRoute()
 const $router = useRouter()
 const isTaskPlanning = ref<boolean>(false)
+const isTaskReview = ref<boolean>(false)
 const taskDefault: Task = {
   id: "",
   title: "",
@@ -133,11 +134,7 @@ function getStepChecksByTaskType(step: string, taskType: string) {
 
 function getCheckBacklogByTaskPlanning(id: string): boolean {
   let projectBacklogTaskPlanning = task.value.taskPlanning?.projectBacklog
-  console.log(task.value.taskPlanning)
   if(projectBacklogTaskPlanning !== undefined){
-    console.log(id)
-    console.log(projectBacklogTaskPlanning)
-    console.log(projectBacklogTaskPlanning.some(backlog => backlog.id === id))
     return projectBacklogTaskPlanning.some(backlog => backlog.id === id);
   }
   return false
@@ -155,12 +152,14 @@ const inputFieldsRequirement = ref<{ generalFields: InputFieldProps[], specificF
 const inputFieldsImprovement = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[] }>({ generalFields: [], specificFields: [] });
 const inputFieldsBug = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[] }>({ generalFields: [], specificFields: [] });
 const inputFieldsPlanning = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields : InputFieldProps[],  membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogFields: [], membersFields: []});
+const inputFieldsReview = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogIterationFields : InputFieldProps[], backlogCompletedFields : InputFieldProps[], membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogIterationFields: [], backlogCompletedFields:[], membersFields: []});
 
-let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields?: InputFieldProps[]} } = {
+let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[]} } = {
   '1': inputFieldsRequirement.value,
   '2': inputFieldsImprovement.value,
   '3': inputFieldsBug.value,
-  '4': inputFieldsPlanning.value
+  '4': inputFieldsPlanning.value,
+  '5': inputFieldsReview.value,
 }
 
 const schema = ref<any>(() => {
@@ -191,6 +190,10 @@ function setTaskFormByType() {
   if(type === 'Planejamento' || type === '4'){
     isTaskPlanning.value = true
   }
+  
+  if(type === 'Revisão' || type === '5'){
+    isTaskReview.value = true
+  }
 
   typeInputFields.forEach((inputField) => {
     formValidations[inputField.name] = inputField.validation;
@@ -212,29 +215,42 @@ async function setTaskTypes() {
 async function setBacklogIteration() {
   await $functionalRequirementStore.fetchFunctionalRequirementsByIteration(String($route.params.iterationId)).then(() => {
     backlogIterarion.value = $functionalRequirementStore.functionalRequirements;
+    let index = 0
+    console.log(backlogIterarion.value)
+    backlogIterarion.value.forEach((element)=>{
+      console.log(element.title)
+      inputFieldsReview.value.backlogIterationFields[index] = {
+        name: ""+element.id,
+        label: element.title,
+        placeholder: "",
+        type: "span",
+        required: false,
+        validation: yup.string(),
+        disabled: true
+      }
+      index++
+    })
+    index = 0
+    if (task.value.taskReview !== undefined) {
+        task.value.taskReview?.completedScope.forEach((element) => {
+          inputFieldsReview.value.backlogCompletedFields[index] = {
+            name: "" + (element.id !== undefined ? element.id : ''),
+            label: element.title || '',
+            placeholder: "",
+            type: "span",
+            required: false,
+            validation: yup.string(),
+            disabled: true
+          };
+          index++;
+        });
+      }
   });
 }
 
 async function setBacklogProject() {
     await $functionalRequirementStore.fetchFunctionalRequirements(String($route.params.projectId)).then(async () => {
     backlogRequirements.value =  $functionalRequirementStore.functionalRequirements
-  /*await $backlogStore.fetchBacklog(String($route.params.projectId)).then(async () => {
-   
-    backlogRequirements.value = $backlogStore.backlogRequirements;
-    task.value.taskPlanning?.projectBacklog.forEach((item) => {
-      console.log("For no item:" + item.title);
-      
-      // Verifica se o item atual já está em backlogRequirements
-      const existsInBacklog = backlogRequirements.value.some(backlog => backlog.id === item.id);
-      
-      // Se o item não existir em backlogRequirements, adiciona ao backlogIteration
-      if (!existsInBacklog) {
-        backlogRequirements.value.push(item);
-        console.log("Adicionou: " + item.title);
-      } else {
-        console.log("Item já existe: " + item.title);
-      }
-});*/
     let index = 0
     backlogRequirements.value.forEach((element)=>{
       inputFieldsPlanning.value.backlogFields[index] = {
@@ -267,6 +283,19 @@ async function setTeamMembers() {
       }
       index++
     })
+    index = 0
+    teamMembers.value.forEach((element)=>{
+      inputFieldsReview.value.membersFields[index] = {
+        name: ""+element.id,
+        label: element.user.name,
+        placeholder: "",
+        type: "checkbox",
+        required: false,
+        validation: yup.string(),
+        value: getCheckMemberByTaskPlanning(element.id !== undefined ? element.id : '', task.value.taskPlanning?.projectMembers !== undefined ? task.value.taskPlanning?.projectMembers : [])
+      }
+      index++
+    })
   })
   
 }
@@ -276,14 +305,16 @@ let taskType: { [key: string]: string } = {
   '1': 'Requisito',
   '2': 'Melhoria',
   '3': 'Bug',
-  '4': 'Planejamento'
+  '4': 'Planejamento',
+  '5': 'Revisão'
 }
 
 let taskTypeValues: { [key: string]: string } = {
   'Requisito': '1',
   'Melhoria': '2',
   'Bug': '3',
-  'Planejamento': '4'
+  'Planejamento': '4',
+  'Revisão': '5'
 }
 
 async function onSubmit(values: any) {
@@ -398,6 +429,11 @@ async function onSubmit(values: any) {
     assignees = []
 }
 
+  let taskReview: any = null
+  if (task.value.taskType === 'Revisão'){
+    console.log('revisao')
+  }
+
   const taskData: TaskForm = {
     startDate: values.startDate !== undefined ? toISODate(values.startDate) : undefined,
     endDate: values.endDate !== undefined ? toISODate(values.endDate) : undefined,
@@ -406,6 +442,7 @@ async function onSubmit(values: any) {
     taskRequirement,
     taskImprovement,
     taskPlanning,
+    taskReview,
     taskBug
   }
 
@@ -433,8 +470,8 @@ watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
 
 onMounted(async () => {
   await setTaskTypes().then(async () => {
-    await setBacklogIteration().then(async () => {
-      await setTask().then(async () => {
+    await setTask().then(async () => {
+      await setBacklogIteration().then(async () => {
         await setBacklogProject().then(async ()=>{
           await setTeamMembers().then(async () => {
             inputFields.value = {
@@ -457,7 +494,8 @@ onMounted(async () => {
                     { value: "1", name: "Requisito", selected: task.value.taskType === "Requisito" },
                     { value: "2", name: "Melhoria", selected: task.value.taskType === "Melhoria" },
                     { value: "3", name: "Bug", selected: task.value.taskType === "Bug" },
-                    { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"}
+                    { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"},
+                    { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"}
                   ],
                   required: true,
                   value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
@@ -524,7 +562,7 @@ onMounted(async () => {
                   type: "textarea",
                   required: false,
                   disabled: task.value.checkCancelled,
-                  validation: yup.string().required(),
+                  validation: yup.string(),
                   value: task.value.detailsCancelled
                 }
 
@@ -1077,10 +1115,69 @@ onMounted(async () => {
               backlogFields: inputFieldsPlanning.value.backlogFields,
               membersFields: inputFieldsPlanning.value.membersFields
             }
+
+            inputFieldsReview.value = {
+              generalFields: [],
+              specificFields: [
+              {
+                  name: "startDate",
+                  label: "Data inicial",
+                  placeholder: "Data inicial",
+                  type: "text",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
+                },
+                {
+                  name: "endDate",
+                  label: "Data final",
+                  placeholder: "Data final",
+                  type: "text",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
+                },
+              {
+                  name: "totalSize",
+                  label: "Tamanho total concluído",
+                  placeholder: "Tamanho total concluído",
+                  type: "text",
+                  required: false,
+                  validation: yup.number(),
+                  value: task.value.taskReview?.totalSize === undefined ? '0' : String(task.value.taskReview?.totalSize),
+                  disabled: true
+                },
+                {
+                  name: "totalEffort",
+                  label: "Esforço total concluído",
+                  placeholder: "Esforço total concluído",
+                  type: "text",
+                  required: false,
+                  validation: yup.number(),
+                  value: task.value.taskReview?.totalEffort === undefined ? '0' : String(task.value.taskReview?.totalEffort),
+                  disabled: true
+                },      
+                {
+                  name: "completedSpeed",
+                  label: "Velocidade concluída",
+                  placeholder: "Velocidade total concluída",
+                  type: "text",
+                  required: false,
+                  validation: yup.number(),
+                  value: task.value.taskReview?.completedSpeed === undefined ? '0' : String(task.value.taskReview?.completedSpeed),
+                  disabled: true
+                },
+              ],
+              backlogIterationFields: inputFieldsReview.value.backlogIterationFields,
+              backlogCompletedFields: inputFieldsReview.value.backlogCompletedFields,
+              membersFields: inputFieldsPlanning.value.membersFields
+            }
+
             typeTaskForm['1'] = inputFieldsRequirement.value
             typeTaskForm['2'] = inputFieldsImprovement.value
             typeTaskForm['3'] = inputFieldsBug.value
             typeTaskForm['4'] = inputFieldsPlanning.value
+            typeTaskForm['5'] = inputFieldsReview.value
           })
         });
       })
@@ -1158,6 +1255,69 @@ onMounted(async () => {
         <span class="font-bold">Recursos Humanos</span>
         <div
           v-for="inputField in inputFieldsPlanning.membersFields"
+          :key="inputField.name"
+          :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
+      </div>
+    </div>
+    <div 
+      v-if="isTaskReview"
+      class="grid grid-cols-2 lg:grid-cols-2 w-full gap-5">
+      <div class="flex flex-col space-y-5">
+        <span class="font-bold">Backlog da iteração</span>
+        <div
+          v-for="inputField in inputFieldsReview.backlogIterationFields"
+          :key="inputField.name"
+          :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col space-y-5">
+        <span class="font-bold">Escopo concluído</span>
+
+        <!-- Verifica se inputFieldsReview.backlogCompletedFields está vazio -->
+        <p v-if="inputFieldsReview.backlogCompletedFields.length === 0">
+          Não foram encontrados requisitos com status de concluído
+        </p>
+
+        <!-- Renderiza os campos se a lista não estiver vazia -->
+        <div
+          v-else
+          v-for="inputField in inputFieldsReview.backlogCompletedFields"
+          :key="inputField.name"
+          :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col space-y-5">
+        <span class="font-bold">Recursos Humanos</span>
+        <div
+          v-for="inputField in inputFieldsReview.membersFields"
           :key="inputField.name"
           :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
         >

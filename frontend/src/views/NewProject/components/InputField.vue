@@ -61,8 +61,8 @@ const infoTooltipVisible = ref<boolean>(false)
     :class="{'flex-row-reverse justify-end': type === 'checkbox', 'flex-col items-start': type !== 'checkbox'}"
   >
     <span
-      class="flex "
-      :class="{'font-bold text-lavenderIndigo-900 dark:text-tropicalIndigo-900 ml-2': type === 'checkbox', 'font-semibold text-sm': type !== 'checkbox'}"
+      class="flex"
+      :class="{'font-bold text-lavenderIndigo-900 dark:text-tropicalIndigo-900 ml-2': type === 'checkbox' || type === 'span', 'font-semibold text-sm': type !== 'checkbox' && type !== 'span'}"
     >
       {{ label }}
       
@@ -83,8 +83,13 @@ const infoTooltipVisible = ref<boolean>(false)
       </button>
     </span>
 
+    <!-- Renderiza apenas o texto se o tipo for 'span', com a mesma cor do checkbox -->
+    <span v-if="type === 'span'" class="font-bold text-lavenderIndigo-900 dark:text-tropicalIndigo-900 ml-2">
+      {{ value }}
+    </span>
+
     <input
-      v-if="options.length === 0 && type !== 'textarea'"
+      v-else-if="options.length === 0 && type !== 'textarea'"
       v-model="value"
       :validate-on-input="true"
       :type="type"
@@ -96,7 +101,7 @@ const infoTooltipVisible = ref<boolean>(false)
     />
 
     <textarea
-      v-if="options.length === 0 && type === 'textarea' && typeof(value) !== 'boolean'"
+      v-else-if="options.length === 0 && type === 'textarea' && typeof(value) !== 'boolean'"
       v-model="value"
       :validate-on-input="true"
       :disabled="disabled"
@@ -106,7 +111,7 @@ const infoTooltipVisible = ref<boolean>(false)
     />
 
     <select
-      v-if="options.length > 0"
+      v-else-if="options.length > 0"
       v-model="value"
       :validate-on-input="true"
       :as="type"
@@ -169,3 +174,4 @@ const infoTooltipVisible = ref<boolean>(false)
     </div>
   </div>
 </template>
+

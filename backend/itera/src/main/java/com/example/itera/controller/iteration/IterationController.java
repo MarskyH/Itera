@@ -129,32 +129,28 @@ public class IterationController {
     public List<RequirementResponseDTO> getRequirementsByIterationId(@PathVariable String id){
         List<RequirementResponseDTO> requirements = requirementRepository.findByIteration(id);
         List<RequirementResponseDTO> requirementsDone = requirementRepository.findByIterationCompleted(id);
+        Iteration iteration = repository.findById(id).orElseThrow();
 
         try{
             List<BacklogResponseDTO> listaBacklogIteration = new ArrayList<>();
             List<BacklogResponseDTO> listaBacklogCompleted = new ArrayList<>();
             for (RequirementResponseDTO requisito : requirements) {
                 Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
-                if(r.getIterationId()==null){
-                    BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
-                    listaBacklogIteration.add(data);
-                }
+                BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
+                listaBacklogIteration.add(data);
             }
             for (RequirementResponseDTO requisito : requirementsDone) {
                 Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
-                if(r.getIterationId()==null){
-                    BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
-                    listaBacklogCompleted.add(data);
-                }
+                BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
+                listaBacklogCompleted.add(data);
             }
             TaskResponseDTO taskData = taskRepository.findByIterationTaskType(id, "Revisão");
-            taskController.updateTaskById(taskData.id(), new TaskCompleteResponseDTO(new Task(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                    new TaskReview(taskData, null, null, null, listaBacklogIteration, listaBacklogCompleted, null, null, null, null, null)
-            ), null, null));
-
-
+            Task task = new Task(taskData);
+            taskController.updateTaskById(taskData.id(), new TaskCompleteResponseDTO(new Task(
+                    new TaskReview(0, 0, 0.0, listaBacklogIteration, listaBacklogCompleted, null, true, true, true, true)
+                    ,iteration), null, null));
         }catch (Exception e){
-
+            System.out.println("ERRO:" + e);
         }
         return requirements;
     }

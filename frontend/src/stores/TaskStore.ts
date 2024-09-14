@@ -62,6 +62,19 @@ const taskDefault: Task = {
     projectBacklog:[],
     projectMembers:[]
   },
+  taskReview:{
+    id: '',
+		totalSize: 0, 
+    totalEffort: 0, 
+    completedSpeed: 0.0, 
+    iterationBacklog:[],
+    completedScope:[],
+    participatingMembers:[],
+    checkHumanResources: true,
+    checkSpeed: true, 
+    checkScope: true,
+    checkRisks: true
+  },
   iteration_id: "",
   assignees: [],
   pendencies: [],
@@ -98,6 +111,7 @@ export const useTaskStore = defineStore('Task', {
             taskimprovement_id: elem.taskimprovement_id,
             taskbug_id: elem.taskbug_id,
             taskplanning_id: elem.taskplanning_id,
+            taskreview_id: elem.taskreview_id,
             iteration_id: elem.iteration_id,
           }
         })
@@ -129,6 +143,7 @@ export const useTaskStore = defineStore('Task', {
             taskimprovement_id: elem.taskData.taskimprovement_id,
             taskbug_id: elem.taskData.taskbug_id,
             taskplanning_id: elem.taskData.taskplanning_id,
+            taskreview_id: elem.taskData.taskreview_id,
             iteration_id: elem.taskData.iteration_id,
           }
         })
@@ -159,6 +174,7 @@ export const useTaskStore = defineStore('Task', {
           taskImprovement: response.data.taskImprovement,
           taskBug: response.data.taskBug,
           taskPlanning: response.data.taskPlanning,
+          taskReview: response.data.taskReview,
           iteration_id: response.data.iteration_id,
           assignees: response.data.assignees,
           pendencies: response.data.pendencies

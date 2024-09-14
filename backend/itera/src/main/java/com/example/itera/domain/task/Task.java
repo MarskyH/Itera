@@ -6,6 +6,7 @@ import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
 import com.example.itera.domain.taskReview.TaskReview;
+import com.example.itera.dto.task.TaskResponseDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -145,7 +146,24 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7, Object o8, Object o9, Object o10, Object o11, Object o12, Object o13, Object o14, TaskReview taskReview) {
+    public Task(TaskReview taskReviewData, Iteration iteration) {
+        this.taskReview = taskReviewData;
+        this.iteration = iteration;
+    }
+
+    public Task(TaskResponseDTO taskData) {
+        this.id = taskData.id();
+        this.title = taskData.title();
+        this.priority = taskData.priority();
+        this.details = taskData.details();
+        this.complexity = taskData.complexity();
+        this.effort = taskData.effort();
+        this.sizeTask = taskData.sizeTask();
+        this.startDate = taskData.startDate();
+        this.endDate = taskData.endDate();
+        this.orderTask = taskData.orderTask();
+        this.listName = taskData.listName();
+        this.taskType = taskData.taskType();
     }
 
     public Boolean updateTaskListName(String oldListName, String newListName) {

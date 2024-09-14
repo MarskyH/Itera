@@ -64,7 +64,6 @@ public class TaskReview {
 
     public TaskReview(Integer totalSize, Integer totalEffort, Double completedSpeed, List<BacklogResponseDTO> iterationBacklog, List<BacklogResponseDTO> completedScope, List<TeamMemberPlanningResponseDTO> participatingMembers,
                       Boolean checkHumanResources, Boolean checkScope, Boolean checkSpeed, Boolean checkRisks) {
-        this.task = task;
         this.totalSize = totalSize;
         this.totalEffort = totalEffort;
         this.completedSpeed = completedSpeed;
