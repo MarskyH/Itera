@@ -5,6 +5,7 @@ import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
+import com.example.itera.domain.taskReview.TaskReview;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -64,6 +65,12 @@ public class Task {
     @JsonIgnore
     private TaskPlanning taskPlanning = null;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_review_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private TaskReview taskReview = null;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -118,7 +125,7 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, TaskPlanning taskPlanningData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, TaskPlanning taskPlanningData, TaskReview taskReviewData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -134,7 +141,11 @@ public class Task {
         this.taskImprovement = taskImprovementData;
         this.taskBug = taskBugData;
         this.taskPlanning = taskPlanningData;
+        this.taskReview = taskReviewData;
         this.iteration = iterationData;
+    }
+
+    public Task(Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7, Object o8, Object o9, Object o10, Object o11, Object o12, Object o13, Object o14, TaskReview taskReview) {
     }
 
     public Boolean updateTaskListName(String oldListName, String newListName) {

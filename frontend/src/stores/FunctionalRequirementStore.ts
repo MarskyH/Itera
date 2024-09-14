@@ -30,6 +30,7 @@ export const useFunctionalRequirementStore = defineStore('FunctionalRequirement'
 
   actions: {
     async fetchFunctionalRequirements(projectId: string) {
+     
       const response = await Api.request({
         method: 'get',
         route: `project/${projectId}/requirements`

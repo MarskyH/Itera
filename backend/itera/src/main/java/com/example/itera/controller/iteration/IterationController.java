@@ -1,29 +1,33 @@
 package com.example.itera.controller.iteration;
 
 
+import com.example.itera.controller.task.TaskController;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.project.Project;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.domain.task.Task;
+import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.dto.iteration.IterationRequestDTO;
 import com.example.itera.dto.iteration.IterationResponseDTO;
+import com.example.itera.dto.project.BacklogResponseDTO;
 import com.example.itera.dto.requirement.RequirementRequestDTO;
 import com.example.itera.dto.requirement.RequirementResponseDTO;
+import com.example.itera.dto.task.TaskCompleteResponseDTO;
+import com.example.itera.dto.task.TaskResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository.requirement.RequirementRepository;
+import com.example.itera.repository.task.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Responsável por fornecer endpoints para manipulação de iterações
@@ -45,6 +49,12 @@ public class IterationController {
 
     @Autowired
     RequirementRepository requirementRepository;
+
+    @Autowired
+    TaskController taskController;
+    @Autowired
+    TaskRepository taskRepository;
+
 
     /**
      * Endpoint responsável por cadastrar um requisito funcional.
@@ -118,6 +128,34 @@ public class IterationController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<RequirementResponseDTO> getRequirementsByIterationId(@PathVariable String id){
         List<RequirementResponseDTO> requirements = requirementRepository.findByIteration(id);
+        List<RequirementResponseDTO> requirementsDone = requirementRepository.findByIterationCompleted(id);
+
+        try{
+            List<BacklogResponseDTO> listaBacklogIteration = new ArrayList<>();
+            List<BacklogResponseDTO> listaBacklogCompleted = new ArrayList<>();
+            for (RequirementResponseDTO requisito : requirements) {
+                Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
+                if(r.getIterationId()==null){
+                    BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
+                    listaBacklogIteration.add(data);
+                }
+            }
+            for (RequirementResponseDTO requisito : requirementsDone) {
+                Requirement r = requirementRepository.findById(requisito.id()).orElseThrow();
+                if(r.getIterationId()==null){
+                    BacklogResponseDTO data = new BacklogResponseDTO(r.getId(), r.getOrderRequirement(), r.getTitle(), r.getPriority(), r.getProgressiveBar(), r.getEffort(), r.getSizeRequirement(), r.getCheckCancelled());
+                    listaBacklogCompleted.add(data);
+                }
+            }
+            TaskResponseDTO taskData = taskRepository.findByIterationTaskType(id, "Revisão");
+            taskController.updateTaskById(taskData.id(), new TaskCompleteResponseDTO(new Task(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    new TaskReview(taskData, null, null, null, listaBacklogIteration, listaBacklogCompleted, null, null, null, null, null)
+            ), null, null));
+
+
+        }catch (Exception e){
+
+        }
         return requirements;
     }
 

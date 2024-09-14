@@ -157,6 +157,7 @@ CREATE TABLE task (
     task_improvement_id TEXT,
     task_bug_id TEXT,
     task_planning_id TEXT,
+    task_review_id TEXT,
     iteration_id TEXT
 );
 
@@ -199,6 +200,22 @@ CREATE TABLE task_planning (
     project_members TEXT,
     task_id TEXT
 );
+
+CREATE TABLE task_review(
+    id TEXT PRIMARY KEY,
+    total_size INTEGER,
+    total_effort INTEGER,
+    completed_speed DOUBLE PRECISION,
+    iteration_backlog TEXT,
+    completed_scope TEXT,
+    participating_members TEXT,
+    check_scope BOOLEAN,
+    check_human_resources BOOLEAN,
+    check_speed BOOLEAN,
+    check_risks BOOLEAN,
+    task_id TEXT
+);
+
 
 CREATE TABLE assignee (
     id TEXT PRIMARY KEY,
@@ -320,6 +337,12 @@ ON DELETE CASCADE;
 ALTER TABLE task
 ADD CONSTRAINT fk_task_task_planning
 FOREIGN KEY (task_planning_id) REFERENCES task_planning(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_task_review
+FOREIGN KEY (task_review_id) REFERENCES task_review(id)
 ON DELETE CASCADE;
 
 -- Adicionando chave estrangeira para assignee

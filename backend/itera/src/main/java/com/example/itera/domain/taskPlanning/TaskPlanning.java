@@ -64,6 +64,9 @@ public class TaskPlanning {
 
     // Método para converter JSON de volta para uma lista de objetos
     private <T> List<T> convertFromJson(String json, Class<T[]> clazz) {
+        if (json == null) {
+            return List.of(); // Retorna um JSON vazio
+        }
         try {
             T[] array = new ObjectMapper().readValue(json, clazz);
             return List.of(array); // Converte array para lista

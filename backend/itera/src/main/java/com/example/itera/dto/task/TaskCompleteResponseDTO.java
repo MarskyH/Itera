@@ -1,12 +1,14 @@
 package com.example.itera.dto.task;
 
 import com.example.itera.domain.task.Task;
+import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
 import com.example.itera.dto.pendency.PendencyResponseDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningResponseDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementResponseDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementResponseDTO;
 import com.example.itera.dto.taskBug.TaskBugResponseDTO;
+import com.example.itera.dto.taskReview.TaskReviewResponseDTO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -33,6 +35,8 @@ public record TaskCompleteResponseDTO(
         TaskBugResponseDTO taskBug,
 
         TaskPlanningResponseDTO taskPlanning,
+
+        TaskReviewResponseDTO taskReview,
         String iteration_id,
         List<AssigneeResponseDTO> assignees,
 
@@ -59,6 +63,7 @@ public record TaskCompleteResponseDTO(
                 task.getTaskImprovement() != null ? new TaskImprovementResponseDTO(task.getTaskImprovement()) : null,
                 task.getTaskBug() != null ? new TaskBugResponseDTO(task.getTaskBug()) : null,
                 task.getTaskPlanning() != null ? new TaskPlanningResponseDTO(task.getTaskPlanning()) : null,
+                task.getTaskReview() != null ? new TaskReviewResponseDTO(task.getTaskReview()) : null,
                 task.getIteration() != null && task.getIteration().getId() != null ? task.getIteration().getId() : "",
                 assignees,
                 pendencies

@@ -12,6 +12,7 @@ import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
+import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
@@ -37,6 +38,7 @@ import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.taskBug.TaskBugRepository;
 import com.example.itera.repository.taskImprovement.TaskImprovementRepository;
 import com.example.itera.repository.taskRequirement.TaskRequirementRepository;
+import com.example.itera.repository.taskReview.TaskReviewRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -84,6 +86,9 @@ public class TaskController {
 
     @Autowired
     TaskPlanningRepository taskPlanningRepository;
+
+    @Autowired
+    TaskReviewRepository taskReviewRepository;
     @Autowired
     TeamMemberRepository teamMemberRepository;
 
@@ -134,6 +139,7 @@ public class TaskController {
                     null,  // TaskImprovement
                     null,  // TaskBug
                     null, // taskPlanning
+                    null, // tasReview
                     iterationData
             );
 
@@ -206,6 +212,26 @@ public class TaskController {
                 taskPlanningRepository.save(taskPlanningData);
                 taskRepository.save(taskData);
                 response.put("Task_planning_id", taskPlanningData.getId());
+            }
+
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() == null && data.taskReview() != null) {
+                TaskReview taskReviewData = new TaskReview(
+                        taskData,
+                        data.taskReview().totalSize(),
+                        data.taskReview().totalEffort(),
+                        data.taskReview().completedSpeed(),
+                        data.taskReview().iterationBacklog(),
+                        data.taskReview().completedScope(),
+                        data.taskReview().participatingMembers(),
+                        data.taskReview().checkHumanResources(),
+                        data.taskReview().checkScope(),
+                        data.taskReview().checkSpeed(),
+                        data.taskReview().checkRisks()
+                );
+                taskData.setTaskReview(taskReviewData);
+                taskReviewRepository.save(taskReviewData);
+                taskRepository.save(taskData);
+                response.put("Task_review_id", taskReviewData.getId());
             }
 
             // Adicionando Assignees, se houver
@@ -347,6 +373,9 @@ public class TaskController {
                     task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
                     Requirement requirement = requirementRepository.findByName(task.getTitle());
                     requirement.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
+                    if(requirement.getProgressiveBar() == 100){
+                        requirement.setDone(true);
+                    }
                     requirementRepository.save(requirement);
                     taskRepository.save(task);
                 }
@@ -376,6 +405,9 @@ public class TaskController {
                     task.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
                     Requirement requirement = requirementRepository.findByName(task.getTitle());
                     requirement.setProgressiveBar(updateProgressiveBar(contAssignee, contCheck));
+                    if(requirement.getProgressiveBar() == 100){
+                        requirement.setDone(true);
+                    }
                     requirementRepository.save(requirement);
                     taskRepository.save(task);
                 }
@@ -421,6 +453,44 @@ public class TaskController {
                 }
             }
 
+            if(data.taskReview() != null){
+                TaskReview taskReview = taskReviewRepository.findById(task.getTaskReview().getId()).orElse(null);
+                if(taskReview != null){
+
+                    if(data.taskReview().participatingMembers() != null){
+                        taskReview.setParticipatingMembers(taskReview.setParticipatingMembersAsJson(data.taskReview().participatingMembers()));
+                    }
+                    if (taskReview.getCheckHumanResources() != null && !taskReview.getCheckHumanResources().equals(data.taskReview().checkHumanResources())) {
+                        taskReview.setCheckHumanResources(data.taskReview().checkHumanResources());
+                    }
+
+                    if (taskReview.getCheckScope() != null && !taskReview.getCheckScope().equals(data.taskReview().checkScope())) {
+                        taskReview.setCheckScope(data.taskReview().checkScope());
+                    }
+
+                    if (taskReview.getCheckSpeed() != null && !taskReview.getCheckSpeed().equals(data.taskReview().checkSpeed())) {
+                        taskReview.setCheckSpeed(data.taskReview().checkSpeed());
+                    }
+
+                    if (taskReview.getCheckRisks() != null && !taskReview.getCheckRisks().equals(data.taskReview().checkRisks())) {
+                        taskReview.setCheckRisks(data.taskReview().checkRisks());
+                    }
+
+                    if (data.taskReview().iterationBacklog() != null) {
+                        taskReview.setIterationBacklog(taskReview.setIterationBacklogAsJson(data.taskReview().iterationBacklog()));
+                    }
+                    if (data.taskReview().completedScope() != null) {
+                        taskReview.setCompletedScope(taskReview.setCompletedScopeAsJson(data.taskReview().completedScope()));
+                    }
+                    taskReview.setTotalSize(taskReview.getSizeCalculation(taskReview.getCompletedScopelogAsList()));
+                    taskReview.setTotalEffort(taskReview.getEffortCalculation(taskReview.getCompletedScopelogAsList()));
+                    if (taskReview.getTotalEffort() != 0 && taskReview.getTotalSize() != 0) {
+                        taskReview.setCompletedSpeed((double) taskReview.getTotalSize() / taskReview.getTotalEffort());
+                    } else {
+                        taskReview.setCompletedSpeed(0.0);
+                    }
+                }
+            }
             if (data.iteration_id() != null) {
                 Iteration iteration = iterationRepository.findById(data.iteration_id()).orElseThrow();
                 task.setIteration(iteration);
@@ -549,12 +619,10 @@ public class TaskController {
     }
 
     public int updateProgressiveBar(int contAssignee, int contCheck){
-        System.out.println("FUNCAO PROGRESSIVE BAR:" + contCheck + "/" + contAssignee);
         if(contAssignee == 0){
             return 0;
         }else{
             double percentage = ((double) contCheck / contAssignee) * 100;
-            System.out.println("FUNCAO PROGRESSIVE BAR:" + percentage);
             if(percentage < 100 && contCheck == contAssignee){
                 return 100;
             }
