@@ -133,18 +133,18 @@ function getStepChecksByTaskType(step: string, taskType: string) {
 
 function getCheckBacklogByTaskPlanning(id: string): boolean {
   let projectBacklogTaskPlanning = task.value.taskPlanning?.projectBacklog
+  console.log(task.value.taskPlanning)
   if(projectBacklogTaskPlanning !== undefined){
+    console.log(id)
+    console.log(projectBacklogTaskPlanning)
+    console.log(projectBacklogTaskPlanning.some(backlog => backlog.id === id))
     return projectBacklogTaskPlanning.some(backlog => backlog.id === id);
   }
   return false
   
 }
 
-async function getCheckMemberByTaskPlanning(id: string): Promise<boolean> {
-  while (task.value.taskPlanning?.projectMembers === undefined) {
-    await new Promise(resolve => setTimeout(resolve, 1000)); 
-  }
-  const projectMemberTaskPlanning = task.value.taskPlanning?.projectMembers;
+function getCheckMemberByTaskPlanning(id: string, projectMemberTaskPlanning: {id: string }[]): boolean {
   return projectMemberTaskPlanning.some(member => member.id === id);
 }
 
@@ -156,7 +156,7 @@ const inputFieldsImprovement = ref<{ generalFields: InputFieldProps[], specificF
 const inputFieldsBug = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[] }>({ generalFields: [], specificFields: [] });
 const inputFieldsPlanning = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields : InputFieldProps[],  membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogFields: [], membersFields: []});
 
-let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[]} } = {
+let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields?: InputFieldProps[]} } = {
   '1': inputFieldsRequirement.value,
   '2': inputFieldsImprovement.value,
   '3': inputFieldsBug.value,
@@ -180,7 +180,6 @@ async function setTask() {
 }
 
 function setTaskFormByType() {
-  console.log("Entrou em setTaskFormByType")
   let removeFields = Object.keys(formValidations).filter((key: string) => key !== 'title' && key !== 'type')
   removeFields.forEach((field: string) => {
     delete formValidations[field]
@@ -206,16 +205,13 @@ function setTaskFormByType() {
 async function setTaskTypes() {
   await $taskTypeStore.fetchTaskTypes().then(() => {
     taskTypesOptions.value = $taskTypeStore.types;
-    console.log('Entrou em setTaskTypes' +  taskTypesOptions.value.length)
   });
 
 }
 
 async function setBacklogIteration() {
-  
   await $functionalRequirementStore.fetchFunctionalRequirementsByIteration(String($route.params.iterationId)).then(() => {
     backlogIterarion.value = $functionalRequirementStore.functionalRequirements;
-    console.log('Entrou em setBacklogIteration' +  backlogIterarion.value.length)
   });
 }
 
@@ -256,44 +252,38 @@ async function setBacklogProject() {
 }
 
 async function setTeamMembers() {
-  await $teamMemberStore.fetchTeamMembers(String($route.params.projectId)).then(async () => {
-    teamMembers.value = $teamMemberStore.teamMembers;
-    let index = 0;
-
-    for (const element of teamMembers.value) {
-      const memberId = element.id !== undefined ? element.id : '';
-
+  await $teamMemberStore.fetchTeamMembers(String($route.params.projectId)).then(() => {
+    teamMembers.value = $teamMemberStore.teamMembers
+    let index = 0
+    teamMembers.value.forEach((element)=>{
       inputFieldsPlanning.value.membersFields[index] = {
-        name: "" + memberId,
+        name: ""+element.id,
         label: element.user.name,
         placeholder: "",
         type: "checkbox",
         required: false,
         validation: yup.string(),
-        value: false // Inicialmente falso
-      };
-      inputFieldsPlanning.value.membersFields[index].value = await getCheckMemberByTaskPlanning(memberId);
-      index++;
-    }
-  });
+        value: getCheckMemberByTaskPlanning(element.id !== undefined ? element.id : '', task.value.taskPlanning?.projectMembers !== undefined ? task.value.taskPlanning?.projectMembers : [])
+      }
+      index++
+    })
+  })
+  
 }
-
 
 
 let taskType: { [key: string]: string } = {
   '1': 'Requisito',
   '2': 'Melhoria',
   '3': 'Bug',
-  '4': 'Planejamento',
-  '5': 'Revisão'
+  '4': 'Planejamento'
 }
 
 let taskTypeValues: { [key: string]: string } = {
   'Requisito': '1',
   'Melhoria': '2',
   'Bug': '3',
-  'Planejamento': '4',
-  'Revisão': '5'
+  'Planejamento': '4'
 }
 
 async function onSubmit(values: any) {
@@ -443,10 +433,10 @@ watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
 
 onMounted(async () => {
   await setTaskTypes().then(async () => {
-    await setTask().then(async () => {
-      await setBacklogIteration().then(async () => {
-        await setTeamMembers().then(async () => {
-          await setBacklogProject().then(async ()=>{
+    await setBacklogIteration().then(async () => {
+      await setTask().then(async () => {
+        await setBacklogProject().then(async ()=>{
+          await setTeamMembers().then(async () => {
             inputFields.value = {
               generalFields: [
                 {
@@ -467,8 +457,7 @@ onMounted(async () => {
                     { value: "1", name: "Requisito", selected: task.value.taskType === "Requisito" },
                     { value: "2", name: "Melhoria", selected: task.value.taskType === "Melhoria" },
                     { value: "3", name: "Bug", selected: task.value.taskType === "Bug" },
-                    { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"},
-                    { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"}
+                    { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"}
                   ],
                   required: true,
                   value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
@@ -1092,21 +1081,15 @@ onMounted(async () => {
             typeTaskForm['2'] = inputFieldsImprovement.value
             typeTaskForm['3'] = inputFieldsBug.value
             typeTaskForm['4'] = inputFieldsPlanning.value
-
-            console.log(task.value.taskType)
-            if (task.value.taskType) {
-              console.log('entrou para fazer ' + task.value.taskType )
-              setTaskFormByType()
-            }
           })
         });
       })
     });
   })
 
-  
-
-
+  if (task.value.taskType) {
+    setTaskFormByType()
+  }
 });
 </script>
 
