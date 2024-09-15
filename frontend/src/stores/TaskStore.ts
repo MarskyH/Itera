@@ -338,7 +338,7 @@ export const useTaskStore = defineStore('Task', {
         body: taskData
       })
 
-      if(taskData.taskPlanning == null){
+      if(taskData.taskPlanning == null && taskData.taskReview == null){
         if(taskData.taskRequirement.detailsCancelled != null){
           this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
         }

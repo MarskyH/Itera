@@ -292,7 +292,7 @@ async function setTeamMembers() {
         type: "checkbox",
         required: false,
         validation: yup.string(),
-        value: getCheckMemberByTaskPlanning(element.id !== undefined ? element.id : '', task.value.taskPlanning?.projectMembers !== undefined ? task.value.taskPlanning?.projectMembers : [])
+        value: getCheckMemberByTaskPlanning(element.id !== undefined ? element.id : '', task.value.taskReview?.participatingMembers !== undefined ? task.value.taskReview?.participatingMembers : [])
       }
       index++
     })
@@ -348,7 +348,6 @@ async function onSubmit(values: any) {
   }
 
   let taskBug: any = null
-
   if (task.value.taskType === 'Bug') {
     taskBug = {
       id: task.value.taskBug?.id,
@@ -395,7 +394,6 @@ async function onSubmit(values: any) {
   ]
 
   let taskPlanning: any = null
-
   if (task.value.taskType === 'Planejamento') {
     let projectBacklogSelected:BacklogRequirement[] = []
     let membersSelected: TeamMember [] = []
@@ -431,7 +429,27 @@ async function onSubmit(values: any) {
 
   let taskReview: any = null
   if (task.value.taskType === 'Revisão'){
-    console.log('revisao')
+    let membersSelected: TeamMember [] = []
+    let indexMember = 0
+    teamMembers.value.forEach((element)=>{
+      if(element.id !== undefined){
+        if(values[element.id] === true){
+          membersSelected[indexMember] = element
+          indexMember++
+        }
+      }
+    })
+    console.log(values)
+    taskReview = {
+      id: task.value.taskReview?.id,
+      participatingMembers: membersSelected,
+      checkHumanResources: values.checkHumanResources,
+      checkSpeed: values.checkSpeed,
+      checkScope: values.checkScope,
+      checkRisks: values.checkRisks,
+    }
+    console.log(taskReview)
+    assignees = []
   }
 
   const taskData: TaskForm = {
@@ -1167,10 +1185,46 @@ onMounted(async () => {
                   value: task.value.taskReview?.completedSpeed === undefined ? '0' : String(task.value.taskReview?.completedSpeed),
                   disabled: true
                 },
+                {
+                  name: "checkHumanResources",
+                  label: "Recursos humanos de acordo?",
+                  placeholder: "",
+                  type: "checkbox",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.taskReview?.checkHumanResources === undefined ? true : Boolean(task.value.taskReview?.checkHumanResources),
+                },
+                {
+                  name: "checkSpeed",
+                  label: "Velocidade concluída de acordo?",
+                  placeholder: "",
+                  type: "checkbox",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.taskReview?.checkSpeed === undefined ? true : Boolean(task.value.taskReview?.checkSpeed),
+                },
+                {
+                  name: "checkScope",
+                  label: "Escopo concluído de acordo?",
+                  placeholder: "",
+                  type: "checkbox",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.taskReview?.checkScope === undefined ? true : Boolean(task.value.taskReview?.checkScope),
+                },
+                {
+                  name: "checkRisks",
+                  label: "Riscos de acordo?",
+                  placeholder: "",
+                  type: "checkbox",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.taskReview?.checkRisks === undefined ? true : Boolean(task.value.taskReview?.checkRisks),
+                },
               ],
               backlogIterationFields: inputFieldsReview.value.backlogIterationFields,
               backlogCompletedFields: inputFieldsReview.value.backlogCompletedFields,
-              membersFields: inputFieldsPlanning.value.membersFields
+              membersFields: inputFieldsReview.value.membersFields
             }
 
             typeTaskForm['1'] = inputFieldsRequirement.value
@@ -1212,7 +1266,6 @@ onMounted(async () => {
         />
       </div>
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 w-full gap-5">
       <div
         v-for="inputField in inputFields.specificFields.filter((inputField)=> inputField.name !== 'detailsCancelled')"
@@ -1229,8 +1282,11 @@ onMounted(async () => {
         />
       </div>
     </div>
-
-    
+    <div class="w-full flex flex-col items-start">
+      <p v-if="isTaskReview" class="text-left">
+        Marque ou desmarque as checkbox se os itens estão ou não de acordo. Por padrão todos estarão marcados.
+      </p>
+    </div>
     <div 
       v-if="isTaskPlanning"
       class="grid grid-cols-2 lg:grid-cols-2 w-full gap-5">

@@ -52,35 +52,6 @@ public record TaskPlanningResponseDTO(
         );
     }
 
-    // Função para desserializar e completar os membros da equipe
-    private static List<TeamMemberPlanningResponseDTO> completeTeamMembers(String jsonTeamMembers) {
-        // Desserializa o JSON para uma lista de TeamMemberIdsDTO (com apenas os IDs)
-        List<TeamMemberIdsResponseDTO> teamMembersWithIds = deserializeJson(jsonTeamMembers, new TypeReference<>() {});
-
-        List<TeamMemberPlanningResponseDTO> completeTeamMembers = new ArrayList<>();
-        for (TeamMemberIdsResponseDTO memberWithIds : teamMembersWithIds) {
-            // Busca os objetos completos pelos IDs
-            User user = userRepository.findById(memberWithIds.user_id()).orElseThrow();
-            Role role = roleRepository.findById(memberWithIds.role_id()).orElseThrow();
-            Project project = projectRepository.findById(memberWithIds.project_id()).orElseThrow();
-
-            // Cria o DTO com os objetos completos
-            TeamMemberPlanningResponseDTO completeMember = new TeamMemberPlanningResponseDTO(
-                    memberWithIds.id(),
-                    memberWithIds.hourlyRate(),
-                    memberWithIds.dedicatedHours(),
-                    new UserResponseDTO(user),  // Objeto User completo
-                    new RoleResponseDTO(role),  // Objeto Role completo
-                    new ProjectResponseDTO(project)  // Objeto Project completo
-            );
-
-            completeTeamMembers.add(completeMember);
-        }
-
-        return completeTeamMembers;
-    }
-
-
     // Função para desserializar JSON
     private static <T> List<T> deserializeJson(String json, TypeReference<List<T>> typeReference) {
         if (json == null || json.isEmpty()) {

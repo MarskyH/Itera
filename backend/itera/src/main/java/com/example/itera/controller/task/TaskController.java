@@ -450,6 +450,8 @@ public class TaskController {
                     }else{
                         taskPlanning.setPlannedSpeed(0.0);
                     }
+                    task.setTaskPlanning(taskPlanning);
+                    taskPlanningRepository.save(taskPlanning);
                 }
             }
 
@@ -489,6 +491,9 @@ public class TaskController {
                     } else {
                         taskReview.setCompletedSpeed(0.0);
                     }
+
+                    task.setTaskReview(taskReview);
+                    taskReviewRepository.save(taskReview);
                 }
             }
             if (data.iteration_id() != null) {
