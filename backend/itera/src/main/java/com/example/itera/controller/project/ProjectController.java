@@ -11,6 +11,7 @@ import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
 import com.example.itera.dto.task.TaskCompleteRequestDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningRequestDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningResponseDTO;
+import com.example.itera.dto.taskRetrospective.TaskRetrospectiveRequestDTO;
 import com.example.itera.dto.taskReview.TaskReviewRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
@@ -257,6 +258,7 @@ public class ProjectController {
             createIterations(project.getId());
             createTaskPlanning(project.getId());
             createTaskReview(project.getId());
+            createTaskRetrospective(project.getId());
         }
 
         return new ProjectResponseDTO(project);
@@ -531,7 +533,7 @@ public class ProjectController {
         List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
         for (IterationResponseDTO iteration : iterations){
             taskController.saveTask(new TaskCompleteRequestDTO("Planejamento da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Planejamento", null, null, null,
-                    new TaskPlanningRequestDTO(0, 0, 0.0, null, null), null, iteration.id(), null, null));
+                    new TaskPlanningRequestDTO(0, 0, 0.0, null, null), null, null, iteration.id(), null, null));
         }
     }
 
@@ -539,7 +541,14 @@ public class ProjectController {
         List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
         for (IterationResponseDTO iteration : iterations){
             taskController.saveTask(new TaskCompleteRequestDTO("Revisão da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Revisão", null, null, null,
-                    null, new TaskReviewRequestDTO(0, 0, 0.0, null, null, null, true, true, true, true), iteration.id(), null, null));
+                    null, new TaskReviewRequestDTO(0, 0, 0.0, null, null, null, true, true, true, true), null, iteration.id(), null, null));
+        }
+    }
+    public void createTaskRetrospective(String projectId){
+        List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
+        for (IterationResponseDTO iteration : iterations){
+            taskController.saveTask(new TaskCompleteRequestDTO("Retrospectiva da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Retrospectiva", null, null, null,
+                    null, null, new TaskRetrospectiveRequestDTO("", "", "", null), iteration.id(), null, null));
         }
     }
 }

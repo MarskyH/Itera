@@ -344,6 +344,7 @@ export namespace models {
     taskBug?: TaskBug
     taskPlanning?: TaskPlanning
     taskReview?: TaskReview
+    taskRetrospective?: TaskRetrospective
     iteration_id: string
     assignees: Assignee[]
     pendencies: Pendency[]
@@ -452,6 +453,23 @@ export namespace models {
     checkRisks: boolean
   }
 
+  export interface TaskRetrospective {
+    id: string,
+		strengths: string,
+    weaknesses: string,
+    improvements: string,
+    participants:TeamMemberPlanning[]
+  }
+
+
+  export interface TaskRetrospectiveOnUpdate {
+    id: string,
+		strengths: string,
+    weaknesses: string,
+    improvements: string,
+    participants:TeamMemberPlanning[]
+  }
+
   export interface TaskOnCreate {
     title: string
     priority: string
@@ -503,6 +521,7 @@ export namespace models {
     taskBug: TaskBugOnUpdate
     taskPlanning: TaskPlanningOnUpdate
     taskReview:TaskReviewOnUpdate
+    taskRetrospective: TaskRetrospectiveOnUpdate
   }
 }
 

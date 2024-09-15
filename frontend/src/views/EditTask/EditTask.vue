@@ -31,6 +31,7 @@ const $route = useRoute()
 const $router = useRouter()
 const isTaskPlanning = ref<boolean>(false)
 const isTaskReview = ref<boolean>(false)
+const isTaskRetrospective = ref<boolean>(false)
 const taskDefault: Task = {
   id: "",
   title: "",
@@ -153,6 +154,7 @@ const inputFieldsImprovement = ref<{ generalFields: InputFieldProps[], specificF
 const inputFieldsBug = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[] }>({ generalFields: [], specificFields: [] });
 const inputFieldsPlanning = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields : InputFieldProps[],  membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogFields: [], membersFields: []});
 const inputFieldsReview = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogIterationFields : InputFieldProps[], backlogCompletedFields : InputFieldProps[], membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogIterationFields: [], backlogCompletedFields:[], membersFields: []});
+const inputFieldsRetrospective = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [],  membersFields: []});
 
 let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[]} } = {
   '1': inputFieldsRequirement.value,
@@ -160,6 +162,7 @@ let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificF
   '3': inputFieldsBug.value,
   '4': inputFieldsPlanning.value,
   '5': inputFieldsReview.value,
+  '6': inputFieldsRetrospective.value
 }
 
 const schema = ref<any>(() => {
@@ -193,6 +196,10 @@ function setTaskFormByType() {
   
   if(type === 'Revisão' || type === '5'){
     isTaskReview.value = true
+  }
+
+  if(type === 'Retrospectiva' || type === '6'){
+    isTaskRetrospective.value = true
   }
 
   typeInputFields.forEach((inputField) => {
@@ -296,6 +303,19 @@ async function setTeamMembers() {
       }
       index++
     })
+    index = 0
+    teamMembers.value.forEach((element)=>{
+      inputFieldsRetrospective.value.membersFields[index] = {
+        name: ""+element.id,
+        label: element.user.name,
+        placeholder: "",
+        type: "checkbox",
+        required: false,
+        validation: yup.string(),
+        value: getCheckMemberByTaskPlanning(element.id !== undefined ? element.id : '', task.value.taskRetrospective?.participants !== undefined ? task.value.taskRetrospective?.participants : [])
+      }
+      index++
+    })
   })
   
 }
@@ -306,7 +326,8 @@ let taskType: { [key: string]: string } = {
   '2': 'Melhoria',
   '3': 'Bug',
   '4': 'Planejamento',
-  '5': 'Revisão'
+  '5': 'Revisão',
+  '6': 'Retrospectiva'
 }
 
 let taskTypeValues: { [key: string]: string } = {
@@ -314,7 +335,8 @@ let taskTypeValues: { [key: string]: string } = {
   'Melhoria': '2',
   'Bug': '3',
   'Planejamento': '4',
-  'Revisão': '5'
+  'Revisão': '5',
+  'Retrospectiva': '6' 
 }
 
 async function onSubmit(values: any) {
@@ -452,6 +474,28 @@ async function onSubmit(values: any) {
     assignees = []
   }
 
+  let taskRetrospective: any = null
+  if (task.value.taskType === 'Retrospectiva'){
+    let membersSelected: TeamMember [] = []
+    let indexMember = 0
+    teamMembers.value.forEach((element)=>{
+      if(element.id !== undefined){
+        if(values[element.id] === true){
+          membersSelected[indexMember] = element
+          indexMember++
+        }
+      }
+    })
+    taskRetrospective = {
+      id: task.value.taskReview?.id,
+      participants: membersSelected,
+      strengths: values.strengths,
+      weaknesses: values.weaknesses,
+      improvements: values.improvements
+    }
+    assignees = []
+  }
+
   const taskData: TaskForm = {
     startDate: values.startDate !== undefined ? toISODate(values.startDate) : undefined,
     endDate: values.endDate !== undefined ? toISODate(values.endDate) : undefined,
@@ -459,9 +503,10 @@ async function onSubmit(values: any) {
     assignees,
     taskRequirement,
     taskImprovement,
+    taskBug,
     taskPlanning,
     taskReview,
-    taskBug
+    taskRetrospective
   }
 
   await $taskStore.updateTask(task.value.id, taskData).then((response: any) => {
@@ -513,7 +558,8 @@ onMounted(async () => {
                     { value: "2", name: "Melhoria", selected: task.value.taskType === "Melhoria" },
                     { value: "3", name: "Bug", selected: task.value.taskType === "Bug" },
                     { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"},
-                    { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"}
+                    { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"},
+                    { value: "6", name: "Retrospectiva", selected: task.value.taskType === "Retrospectiva"}
                   ],
                   required: true,
                   value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
@@ -1227,11 +1273,66 @@ onMounted(async () => {
               membersFields: inputFieldsReview.value.membersFields
             }
 
+            inputFieldsRetrospective.value = {
+              generalFields: [],
+              specificFields: [
+              {
+                  name: "startDate",
+                  label: "Data inicial",
+                  placeholder: "Data inicial",
+                  type: "text",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
+                },
+                {
+                  name: "endDate",
+                  label: "Data final",
+                  placeholder: "Data final",
+                  type: "text",
+                  required: false,
+                  validation: yup.string(),
+                  value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
+                },
+                {
+                  name: "strengths",
+                  label: "Pontos fortes",
+                  placeholder: "Digite aqui os pontos fortes desta iteração",
+                  type: "textarea",
+                  required: false,
+                  disabled: task.value.checkCancelled,
+                  validation: yup.string().required(),
+                  value: task.value.taskRetrospective?.strengths === undefined ? '' : String(task.value.taskRetrospective?.strengths)
+                },
+                {
+                  name: "weaknesses",
+                  label: "Pontos fracos",
+                  placeholder: "Digite aqui os pontos fracos desta iteração",
+                  type: "textarea",
+                  required: false,
+                  validation: yup.string().required(),
+                  value: task.value.taskRetrospective?.weaknesses === undefined ? '' : String(task.value.taskRetrospective?.weaknesses)
+                },
+                {
+                  name: "improvements",
+                  label: "Pontos de melhoria",
+                  placeholder: "Digite aqui os pontos a serem melhorados desta iteração",
+                  type: "textarea",
+                  required: false,
+                  validation: yup.string().required(),
+                  value: task.value.taskRetrospective?.improvements === undefined ? '' : String(task.value.taskRetrospective?.improvements)
+                },
+          
+              ],
+              membersFields: inputFieldsRetrospective.value.membersFields
+            }
+
             typeTaskForm['1'] = inputFieldsRequirement.value
             typeTaskForm['2'] = inputFieldsImprovement.value
             typeTaskForm['3'] = inputFieldsBug.value
             typeTaskForm['4'] = inputFieldsPlanning.value
             typeTaskForm['5'] = inputFieldsReview.value
+            typeTaskForm['6'] = inputFieldsRetrospective.value
           })
         });
       })
@@ -1374,6 +1475,27 @@ onMounted(async () => {
         <span class="font-bold">Recursos Humanos</span>
         <div
           v-for="inputField in inputFieldsReview.membersFields"
+          :key="inputField.name"
+          :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
+        >
+          <MaskedInput
+            v-if="inputField.mask"
+            v-bind="inputField"
+          />
+          <InputField
+            v-else
+            v-bind="inputField"
+          />
+        </div>
+      </div>
+    </div>
+    <div 
+      v-if="isTaskRetrospective"
+      class="grid grid-cols-2 lg:grid-cols-2 w-full gap-5">
+      <div class="flex flex-col space-y-5">
+        <span class="font-bold">Recursos Humanos</span>
+        <div
+          v-for="inputField in inputFieldsRetrospective.membersFields"
           :key="inputField.name"
           :class="{ 'col-span-2': inputField.name === 'detail' || inputField.type === 'checkbox' }"
         >

@@ -1,5 +1,7 @@
 package com.example.itera.dto.task;
 
+import com.example.itera.domain.task.Task;
+import com.example.itera.domain.taskRetrospective.TaskRetrospective;
 import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.dto.assignee.AssigneeRequestDTO;
 import com.example.itera.dto.assignee.AssigneeResponseDTO;
@@ -9,6 +11,7 @@ import com.example.itera.dto.taskBug.TaskBugRequestDTO;
 import com.example.itera.dto.taskImprovement.TaskImprovementRequestDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningRequestDTO;
 import com.example.itera.dto.taskRequirement.TaskRequirementRequestDTO;
+import com.example.itera.dto.taskRetrospective.TaskRetrospectiveRequestDTO;
 import com.example.itera.dto.taskReview.TaskReviewRequestDTO;
 
 import java.sql.Timestamp;
@@ -36,6 +39,8 @@ public record TaskCompleteRequestDTO(
         TaskPlanningRequestDTO taskPlanning,
 
         TaskReviewRequestDTO taskReview,
+
+        TaskRetrospectiveRequestDTO taskRetrospective,
         String iteration_id,
         List<AssigneeRequestDTO> assignees,
         List<PendencyRequestDTO> pendencies
