@@ -2,9 +2,9 @@
 CREATE TABLE public.activity (
     id TEXT PRIMARY KEY, -- Identificador único da atividade
     title VARCHAR(30), -- Título da atividade
-    description VARCHAR(255), -- Descrição da atividade
+    description TEXT, -- Descrição da atividade
     type VARCHAR(20), -- Tipo da atividade
-    risk_id TEXT, -- Identificador de risco associado
+    priority VARCHAR(30), -- Identificador de risco associado
     project_id TEXT -- Identificador de projeto associado
 );
 
@@ -257,10 +257,6 @@ ALTER TABLE public.requirement
 ADD CONSTRAINT FK_requirement_project
 FOREIGN KEY (project_id) REFERENCES project(id)
 ON DELETE CASCADE;
-
-ALTER TABLE public.activity
-ADD CONSTRAINT FK_activity_risk
-FOREIGN KEY (risk_id) REFERENCES risk(id);
 
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_project

@@ -6,14 +6,20 @@ import com.example.itera.domain. risk.Risk;
 import com.example.itera.dto.activity.ActivityRequestDTO;
 import com.example.itera.dto.activity.ActivityResponseDTO;
 import com.example.itera.dto.risk.RiskResponseDTO;
+import com.example.itera.enumeration.ResponseType;
+import com.example.itera.exception.UnauthorizedException;
 import com.example.itera.repository.activity.ActivityRepository;
 import com.example.itera.repository.project.ProjectRepository;
 import com.example.itera.repository. risk.RiskRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import java.util.List;
@@ -33,27 +39,31 @@ public class ActivityController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping
-    public void saveActivity(@RequestBody ActivityRequestDTO data){
-        // Fetch the Risk entity from the database
-        Risk risk =  riskRepository.findById(data.risk_id()).orElseThrow(() -> new EntityNotFoundException("Risk not found"));
-
-        // Fetch the Risk and Project entity from the database
-        Project project = projectRepository.findById(data.project_id()).orElseThrow(() -> new EntityNotFoundException("Project not found"));
-
-        // Set the fetched Risk and Project entity in the Activity object
-        Activity activityData = new Activity(data.title(), data.description(), data.type(), risk, project);
-
-        // Save the Activity object
-        repository.save(activityData);
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?>  saveActivity(@RequestBody ActivityRequestDTO data){
+        Map<String, String> response = new HashMap<>();
+        try{
+            Project projectData = projectRepository.findById(data.project_id()).orElseThrow();
+            // Set the fetched Risk and Project entity in the Activity object
+            Activity activityData = new Activity(data.title(), data.description(), data.type(), data.priority(), projectData);
+            repository.save(activityData);
+            response.put("project_id:", projectData.getId());
+            response.put("activity_id:", activityData.getId());
+            response.put("message", ResponseType.SUCCESS_SAVE.getMessage());
+            return ResponseEntity.ok().body(response);
+            // Save the Activity object
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ResponseType.FAIL_SAVE.getMessage());
+        }
     }
 
-    @GetMapping("/project/{id}")
-    public List<ActivityResponseDTO> getActionProject(@PathVariable String id){
-        List<ActivityResponseDTO> activityList = repository.findByProjectId(id).stream().toList();
-        return activityList;
-    }
 
     @GetMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
     public ActivityResponseDTO getActivityById(@PathVariable String id) {
         Activity activity = repository.findById(id).orElseThrow();
         if (activity != null) {
@@ -65,20 +75,24 @@ public class ActivityController {
 
 
     @PutMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> updateActivity(@PathVariable String id, @RequestBody ActivityRequestDTO data) {
         try {
             Activity activityExistente = repository.findById(id).orElseThrow(EntityNotFoundException::new);
             Activity activityNova = new Activity(data);
 
-            // Atualizar a entidade usando o construtor
-            activityExistente = new Activity(
-                    activityExistente.getId(),
-                    activityNova.getTitle(),
-                    activityNova.getDescription(),
-                    activityNova.getType(),
-                    activityExistente.getRisk(),
-                    activityExistente.getProject()
-            );
+            if(!data.title().isEmpty() && !data.title().isBlank()){
+                activityExistente.setTitle(data.title());
+            }
+            if(!data.description().isEmpty() && !data.description().isBlank()){
+                activityExistente.setDescription(data.description());
+            }
+            if(!data.type().isEmpty() && !data.type().isBlank()){
+                activityExistente.setType(data.type());
+            }
+            if(!data.priority().isEmpty() && !data.priority().isBlank()){
+                activityExistente.setPriority(data.type());
+            }
 
             repository.save(activityExistente);
 

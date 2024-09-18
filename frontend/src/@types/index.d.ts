@@ -91,6 +91,22 @@ export namespace models {
     accountNonExpired: boolean
   }
 
+  export interface Activity{
+    id?: string
+    title: string
+    description: string
+    priority: string
+    type: string
+  }
+
+  export interface ActivityOnCreate{
+    title: string
+    description: string
+    priority: string
+    type: string
+    project_id: string
+  }
+
   export interface BacklogRequirement {
     id?: string
     idRequirement: string
@@ -523,6 +539,13 @@ export namespace models {
     taskReview:TaskReviewOnUpdate
     taskRetrospective: TaskRetrospectiveOnUpdate
   }
+
+  export interface ActivityForm {
+    title: string
+    priority: string
+    description: string
+    type: string
+  }
 }
 
 export interface InputFieldProps {
@@ -562,6 +585,8 @@ export interface RiskForm {
   description: string
   type: string
 }
+
+
 
 export interface FunctionalRequirementForm {
   title: string

@@ -6,32 +6,40 @@ import * as yup from 'yup';
 import { useRoute, useRouter } from 'vue-router';
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import InputField from 'src/views/NewProject/components/InputField.vue';
-import { InputFieldProps, models, TaskRequirementForm } from 'src/@types';
+import { InputFieldProps, models} from 'src/@types';
 import MaskedInput from 'src/components/MaskedInput.vue';
 import { useTaskTypeStore } from "src/stores/TaskTypeStore";
 import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementStore";
 import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useTaskStore } from "src/stores/TaskStore";
-import { useBacklogStore } from "src/stores/BacklogStore";
-import ProjectBacklog from "../ProjectTasks/ProjectBacklog.vue";
+import { usePriorityStore } from "src/stores/PriorityStore";
+import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
+import { useActivityStore } from "src/stores/ActivtyStore"
+import ActionModal from "src/components/ActionModal.vue";
 
 interface Task extends models.Task { }
 interface TeamMember extends models.TeamMember { }
 interface Assignee extends models.Assignee { }
 interface TaskForm extends models.TaskForm { }
+interface ActivityForm extends models.ActivityForm {}
 interface BacklogRequirement extends models.BacklogRequirement { }
+interface Priority extends models.Priority { }
+interface RiskActionType extends models.RiskActionType { }
 
 const getCurrentDate = formatDate(new Date().toISOString());
 const $taskStore = useTaskStore();
 const $taskTypeStore = useTaskTypeStore();
 const $teamMemberStore = useTeamMemberStore()
-const $backlogStore = useBacklogStore()
 const $functionalRequirementStore = useFunctionalRequirementStore();
+const $priorityStore = usePriorityStore()
+const $activityStore = useActivityStore()
+const $riskActionTypeStore = useRiskActionTypeStore()
 const $route = useRoute()
 const $router = useRouter()
 const isTaskPlanning = ref<boolean>(false)
 const isTaskReview = ref<boolean>(false)
 const isTaskRetrospective = ref<boolean>(false)
+const isActionModalOpen = ref<boolean>(false)
 const taskDefault: Task = {
   id: "",
   title: "",
@@ -55,12 +63,18 @@ const taskDefault: Task = {
 }
 const task = ref<Task>({ ...taskDefault })
 const taskForm = ref<any>(null)
+const activityForm = ref<any>(null)
 const taskTypesOptions = ref<Array<any>>([]);
 const backlogIterarion = ref<Array<any>>([]);
 const backlogRequirements = ref<Array<any>>([])
 const teamMembers = ref<TeamMember[]>([])
 const formValidations: any = {};
+const priorityOptions = ref<Priority[]>([])
+const riskActionTypeOptions = ref<RiskActionType[]>([])
+
+
 yup.setLocale(yupErrorMessages);
+
 
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -146,6 +160,20 @@ function getCheckMemberByTaskPlanning(id: string, projectMemberTaskPlanning: {id
   return projectMemberTaskPlanning.some(member => member.id === id);
 }
 
+const setSelectOptions = (options: { id: number; name: string }[]) => {
+  return options.length > 0 ? options.map((option: { id: number; name: string }) => {
+    return {
+      value: option.name,
+      name: option.name,
+      selected: false
+    }
+  }) : []
+}
+
+function openModal(){
+  isActionModalOpen.value = true
+}
+
 
 
 const inputFields = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[] }>({ generalFields: [], specificFields: [] });
@@ -155,6 +183,7 @@ const inputFieldsBug = ref<{ generalFields: InputFieldProps[], specificFields: I
 const inputFieldsPlanning = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogFields : InputFieldProps[],  membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogFields: [], membersFields: []});
 const inputFieldsReview = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], backlogIterationFields : InputFieldProps[], backlogCompletedFields : InputFieldProps[], membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [], backlogIterationFields: [], backlogCompletedFields:[], membersFields: []});
 const inputFieldsRetrospective = ref<{ generalFields: InputFieldProps[], specificFields: InputFieldProps[], membersFields : InputFieldProps[]}>({ generalFields: [], specificFields: [],  membersFields: []});
+const inputFieldsActivty = ref<{ generalFields: InputFieldProps[]}>({generalFields: []});
 
 let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificFields: InputFieldProps[]} } = {
   '1': inputFieldsRequirement.value,
@@ -164,6 +193,7 @@ let typeTaskForm: { [key: string]: { generalFields: InputFieldProps[], specificF
   '5': inputFieldsReview.value,
   '6': inputFieldsRetrospective.value
 }
+
 
 const schema = ref<any>(() => {
   let allInputFields: InputFieldProps[] = inputFields.value.generalFields.concat(inputFields.value.specificFields)
@@ -320,6 +350,17 @@ async function setTeamMembers() {
   
 }
 
+async function setOptions() {
+  await $riskActionTypeStore.fetchRiskActionTypes().then(() => {
+    riskActionTypeOptions.value = $riskActionTypeStore.riskActionTypes
+  })
+  await $priorityStore.fetchPriorities().then(()=>{
+    priorityOptions.value = $priorityStore.priorities
+  })
+}
+
+
+
 
 let taskType: { [key: string]: string } = {
   '1': 'Requisito',
@@ -461,7 +502,7 @@ async function onSubmit(values: any) {
         }
       }
     })
-    console.log(values)
+
     taskReview = {
       id: task.value.taskReview?.id,
       participatingMembers: membersSelected,
@@ -519,6 +560,29 @@ async function onSubmit(values: any) {
   })
 }
 
+async function onSubmitActivity(values: any) {
+  let projectId = String($route.params.projectId)
+  let activityFormData : ActivityForm = {
+    title: values.activityTitle,
+    priority: values.activityPriority,
+    type: values.activityActionType,
+    description: values.activityDescription
+  }
+  await $activityStore.createActivity(activityFormData, projectId).then((response: any)=>{
+    console.log(response)
+    if (response === 200) {
+      alert('Salvo com sucesso')
+      isActionModalOpen.value = false
+    } else {
+      alert('Erro ao salvar')
+      isActionModalOpen.value = false
+    }
+  })
+}
+
+
+
+
 watch(() => taskForm.value?.values.backlog, (newBacklogId) => {
   const selectedBacklog = backlogIterarion.value.find(backlog => backlog.id === newBacklogId);
   if (selectedBacklog) {
@@ -537,802 +601,844 @@ onMounted(async () => {
       await setBacklogIteration().then(async () => {
         await setBacklogProject().then(async ()=>{
           await setTeamMembers().then(async () => {
-            inputFields.value = {
-              generalFields: [
-                {
-                  name: "title",
-                  label: "Título da tarefa",
-                  placeholder: "Digite o título da tarefa",
-                  required: true,
-                  validation: yup.string().required().min(5),
-                  value: task.value.title,
-                  disabled: true
-                },
-                {
-                  name: "type",
-                  label: "Tipo da tarefa",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: [
-                    { value: "1", name: "Requisito", selected: task.value.taskType === "Requisito" },
-                    { value: "2", name: "Melhoria", selected: task.value.taskType === "Melhoria" },
-                    { value: "3", name: "Bug", selected: task.value.taskType === "Bug" },
-                    { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"},
-                    { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"},
-                    { value: "6", name: "Retrospectiva", selected: task.value.taskType === "Retrospectiva"}
-                  ],
-                  required: true,
-                  value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
-                  validation: yup.string().required(),
-                  onChange: setTaskFormByType,
-                  disabled: true
-                },
-              ],
-              specificFields: []
-            };
+            await setOptions().then(async () =>{
+              inputFields.value = {
+                generalFields: [
+                  {
+                    name: "title",
+                    label: "Título da tarefa",
+                    placeholder: "Digite o título da tarefa",
+                    required: true,
+                    validation: yup.string().required().min(5),
+                    value: task.value.title,
+                    disabled: true
+                  },
+                  {
+                    name: "type",
+                    label: "Tipo da tarefa",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: [
+                      { value: "1", name: "Requisito", selected: task.value.taskType === "Requisito" },
+                      { value: "2", name: "Melhoria", selected: task.value.taskType === "Melhoria" },
+                      { value: "3", name: "Bug", selected: task.value.taskType === "Bug" },
+                      { value: "4", name: "Planejamento", selected: task.value.taskType === "Planejamento"},
+                      { value: "5", name: "Revisão", selected: task.value.taskType === "Revisão"},
+                      { value: "6", name: "Retrospectiva", selected: task.value.taskType === "Retrospectiva"}
+                    ],
+                    required: true,
+                    value: task.value.taskType ? taskTypeValues[task.value.taskType] : '',
+                    validation: yup.string().required(),
+                    onChange: setTaskFormByType,
+                    disabled: true
+                  },
+                ],
+                specificFields: []
+              };
 
-            inputFieldsRequirement.value = {
-              generalFields: [
-                {
-                  name: "priority",
-                  label: "Prioridade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.priority
-                },
-                {
-                  name: "complexity",
-                  label: "Complexidade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.complexity
-                },
-                {
-                  name: "effort",
-                  label: "Esforço",
-                  placeholder: "Digite o valor do esforço",
-                  required: true,
-                  disabled: true,
-                  validation: yup.number().required().min(1),
-                  value: task.value.effort
-                },
-                {
-                  name: "size",
-                  label: "Tamanho",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.sizeTask.toString()
-                },
-                {
-                  name: "detail",
-                  label: "Detalhamento",
-                  placeholder: "Digite o detalhamento da tarefa",
-                  type: "textarea",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.details
-                },
-                {
-                  name: "detailsCancelled",
-                  label: "Cancelamento de Tarefa",
-                  placeholder: "Digite o motivo do cancelamento da tarefa",
-                  type: "textarea",
-                  required: false,
-                  disabled: task.value.checkCancelled,
-                  validation: yup.string(),
-                  value: task.value.detailsCancelled
-                }
+              inputFieldsRequirement.value = {
+                generalFields: [
+                  {
+                    name: "priority",
+                    label: "Prioridade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.priority
+                  },
+                  {
+                    name: "complexity",
+                    label: "Complexidade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.complexity
+                  },
+                  {
+                    name: "effort",
+                    label: "Esforço",
+                    placeholder: "Digite o valor do esforço",
+                    required: true,
+                    disabled: true,
+                    validation: yup.number().required().min(1),
+                    value: task.value.effort
+                  },
+                  {
+                    name: "size",
+                    label: "Tamanho",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.sizeTask.toString()
+                  },
+                  {
+                    name: "detail",
+                    label: "Detalhamento",
+                    placeholder: "Digite o detalhamento da tarefa",
+                    type: "textarea",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.details
+                  },
+                  {
+                    name: "detailsCancelled",
+                    label: "Cancelamento de Tarefa",
+                    placeholder: "Digite o motivo do cancelamento da tarefa",
+                    type: "textarea",
+                    required: false,
+                    disabled: task.value.checkCancelled,
+                    validation: yup.string(),
+                    value: task.value.detailsCancelled
+                  }
 
-              ],
-              specificFields: [
-                {
-                  name: "checkRequirement",
-                  label: "Requisito",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('R', task.value.taskType)
-                },
-                {
-                  name: "requirementAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('R') || ''
-                },
-                {
-                  name: "deadlineRequirement",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
-                },
-                {
-                  name: "checkProject",
-                  label: "Projeto",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('P', task.value.taskType)
-                },
-                {
-                  name: "projectAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('P') || ''
-                },
-                {
-                  name: "deadlineProject",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
-                },
-                {
-                  name: "checkFront",
-                  label: "Front-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('F', task.value.taskType)
-                },
-                {
-                  name: "frontAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('F') || ''
-                },
-                {
-                  name: "deadlineFront",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
-                },
-                {
-                  name: "checkBack",
-                  label: "Back-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('B', task.value.taskType)
-                },
-                {
-                  name: "backAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('B') || ''
-                },
-                {
-                  name: "deadlineBack",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
-                },
-                {
-                  name: "checkTest",
-                  label: "Testes",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('T', task.value.taskType)
-                },
-                {
-                  name: "testAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('T') || ''
-                },
-                {
-                  name: "deadlineTest",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
-                }
-              ]
-            }
+                ],
+                specificFields: [
+                  {
+                    name: "checkRequirement",
+                    label: "Requisito",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('R', task.value.taskType)
+                  },
+                  {
+                    name: "requirementAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('R') || ''
+                  },
+                  {
+                    name: "deadlineRequirement",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
+                  },
+                  {
+                    name: "checkProject",
+                    label: "Projeto",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('P', task.value.taskType)
+                  },
+                  {
+                    name: "projectAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('P') || ''
+                  },
+                  {
+                    name: "deadlineProject",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
+                  },
+                  {
+                    name: "checkFront",
+                    label: "Front-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('F', task.value.taskType)
+                  },
+                  {
+                    name: "frontAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('F') || ''
+                  },
+                  {
+                    name: "deadlineFront",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
+                  },
+                  {
+                    name: "checkBack",
+                    label: "Back-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('B', task.value.taskType)
+                  },
+                  {
+                    name: "backAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('B') || ''
+                  },
+                  {
+                    name: "deadlineBack",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
+                  },
+                  {
+                    name: "checkTest",
+                    label: "Testes",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('T', task.value.taskType)
+                  },
+                  {
+                    name: "testAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('T') || ''
+                  },
+                  {
+                    name: "deadlineTest",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
+                  }
+                ]
+              }
 
-            inputFieldsImprovement.value = {
-              generalFields: [
-                {
-                  name: "priority",
-                  label: "Prioridade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.priority
-                },
-                {
-                  name: "complexity",
-                  label: "Complexidade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.complexity
-                },
-                {
-                  name: "effort",
-                  label: "Esforço",
-                  placeholder: "Digite o valor do esforço",
-                  required: true,
-                  disabled: true,
-                  validation: yup.number().required().min(1),
-                  value: task.value.effort
-                },
-                {
-                  name: "size",
-                  label: "Tamanho",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.sizeTask.toString()
-                },
-                {
-                  name: "detail",
-                  label: "Detalhamento",
-                  placeholder: "Digite o detalhamento da tarefa",
-                  type: "textarea",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.details
-                },     
-                {
-                  name: "detailsCancelled",
-                  label: "Cancelamento de Tarefa",
-                  placeholder: "Digite o motivo do cancelamento da tarefa",
-                  type: "textarea",
-                  required: false,
-                  disabled: task.value.checkCancelled,
-                  validation: yup.string().required(),
-                  value: task.value.detailsCancelled
-                }
-              ],
-              specificFields: [
-                {
-                  name: "checkRequirement",
-                  label: "Requisito",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('R', task.value.taskType)
-                },
-                {
-                  name: "requirementAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('R') || ''
-                },
-                {
-                  name: "deadlineRequirement",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
-                },
-                {
-                  name: "checkProject",
-                  label: "Projeto",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('P', task.value.taskType)
-                },
-                {
-                  name: "projectAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('P') || ''
-                },
-                {
-                  name: "deadlineProject",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
-                },
-                {
-                  name: "checkFront",
-                  label: "Front-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('F', task.value.taskType)
-                },
-                {
-                  name: "frontAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('F') || ''
-                },
-                {
-                  name: "deadlineFront",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
-                },
-                {
-                  name: "checkBack",
-                  label: "Back-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('B', task.value.taskType)
-                },
-                {
-                  name: "backAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('B') || ''
-                },
-                {
-                  name: "deadlineBack",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
-                },
-                {
-                  name: "checkTest",
-                  label: "Testes",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('T', task.value.taskType)
-                },
-                {
-                  name: "testAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('T') || ''
-                },
-                {
-                  name: "deadlineTest",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
-                }
-              ]
-            }
+              inputFieldsImprovement.value = {
+                generalFields: [
+                  {
+                    name: "priority",
+                    label: "Prioridade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.priority
+                  },
+                  {
+                    name: "complexity",
+                    label: "Complexidade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.complexity
+                  },
+                  {
+                    name: "effort",
+                    label: "Esforço",
+                    placeholder: "Digite o valor do esforço",
+                    required: true,
+                    disabled: true,
+                    validation: yup.number().required().min(1),
+                    value: task.value.effort
+                  },
+                  {
+                    name: "size",
+                    label: "Tamanho",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.sizeTask.toString()
+                  },
+                  {
+                    name: "detail",
+                    label: "Detalhamento",
+                    placeholder: "Digite o detalhamento da tarefa",
+                    type: "textarea",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.details
+                  },     
+                  {
+                    name: "detailsCancelled",
+                    label: "Cancelamento de Tarefa",
+                    placeholder: "Digite o motivo do cancelamento da tarefa",
+                    type: "textarea",
+                    required: false,
+                    disabled: task.value.checkCancelled,
+                    validation: yup.string().required(),
+                    value: task.value.detailsCancelled
+                  }
+                ],
+                specificFields: [
+                  {
+                    name: "checkRequirement",
+                    label: "Requisito",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('R', task.value.taskType)
+                  },
+                  {
+                    name: "requirementAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('R') || ''
+                  },
+                  {
+                    name: "deadlineRequirement",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('R')) !== 'undefined' ? String(getStepDeadline('R')) : '0'
+                  },
+                  {
+                    name: "checkProject",
+                    label: "Projeto",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('P', task.value.taskType)
+                  },
+                  {
+                    name: "projectAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('P') || ''
+                  },
+                  {
+                    name: "deadlineProject",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('P')) !== 'undefined' ? String(getStepDeadline('P')) : '0'
+                  },
+                  {
+                    name: "checkFront",
+                    label: "Front-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('F', task.value.taskType)
+                  },
+                  {
+                    name: "frontAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('F') || ''
+                  },
+                  {
+                    name: "deadlineFront",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
+                  },
+                  {
+                    name: "checkBack",
+                    label: "Back-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('B', task.value.taskType)
+                  },
+                  {
+                    name: "backAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('B') || ''
+                  },
+                  {
+                    name: "deadlineBack",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
+                  },
+                  {
+                    name: "checkTest",
+                    label: "Testes",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('T', task.value.taskType)
+                  },
+                  {
+                    name: "testAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('T') || ''
+                  },
+                  {
+                    name: "deadlineTest",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
+                  }
+                ]
+              }
 
-            inputFieldsBug.value = {
-              generalFields: [
-                {
-                  name: "priority",
-                  label: "Prioridade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.priority
-                },
-                {
-                  name: "complexity",
-                  label: "Complexidade",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.complexity
-                },
-                {
-                  name: "effort",
-                  label: "Esforço",
-                  placeholder: "Digite o valor do esforço",
-                  required: true,
-                  disabled: true,
-                  validation: yup.number().required().min(1),
-                  value: task.value.effort
-                },
-                {
-                  name: "size",
-                  label: "Tamanho",
-                  placeholder: "Selecione",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.sizeTask.toString()
-                },
-                {
-                  name: "detail",
-                  label: "Detalhamento",
-                  placeholder: "Digite o detalhamento da tarefa",
-                  type: "textarea",
-                  required: true,
-                  disabled: true,
-                  validation: yup.string().required(),
-                  value: task.value.details
-                },
-                {
-                  name: "detailsCancelled",
-                  label: "Cancelamento de Tarefa",
-                  placeholder: "Digite o motivo do cancelamento da tarefa",
-                  type: "textarea",
-                  required: false,
-                  disabled: task.value.checkCancelled,
-                  validation: yup.string().required(),
-                  value: task.value.detailsCancelled
-                }
-              ],
-              specificFields: [
-                {
-                  name: "checkFront",
-                  label: "Front-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('F', task.value.taskType)
-                },
-                {
-                  name: "frontAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('F') || ''
-                },
-                {
-                  name: "deadlineFront",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
-                },
-                {
-                  name: "checkBack",
-                  label: "Back-end",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('B', task.value.taskType)
-                },
-                {
-                  name: "backAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('B') || ''
-                },
-                {
-                  name: "deadlineBack",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
-                },
-                {
-                  name: "checkTest",
-                  label: "Testes",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: getStepChecksByTaskType('T', task.value.taskType)
-                },
-                {
-                  name: "testAssignee",
-                  label: "Responsável",
-                  placeholder: "Selecione",
-                  type: "select",
-                  options: getTeamMemberOptions(),
-                  required: false,
-                  validation: yup.string(),
-                  value: getSelectedTeamMemberOption('T') || ''
-                },
-                {
-                  name: "deadlineTest",
-                  label: "Prazo",
-                  placeholder: "Digite o prazo para esta etapa",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
-                }
-              ]
-            }
+              inputFieldsBug.value = {
+                generalFields: [
+                  {
+                    name: "priority",
+                    label: "Prioridade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.priority
+                  },
+                  {
+                    name: "complexity",
+                    label: "Complexidade",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.complexity
+                  },
+                  {
+                    name: "effort",
+                    label: "Esforço",
+                    placeholder: "Digite o valor do esforço",
+                    required: true,
+                    disabled: true,
+                    validation: yup.number().required().min(1),
+                    value: task.value.effort
+                  },
+                  {
+                    name: "size",
+                    label: "Tamanho",
+                    placeholder: "Selecione",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.sizeTask.toString()
+                  },
+                  {
+                    name: "detail",
+                    label: "Detalhamento",
+                    placeholder: "Digite o detalhamento da tarefa",
+                    type: "textarea",
+                    required: true,
+                    disabled: true,
+                    validation: yup.string().required(),
+                    value: task.value.details
+                  },
+                  {
+                    name: "detailsCancelled",
+                    label: "Cancelamento de Tarefa",
+                    placeholder: "Digite o motivo do cancelamento da tarefa",
+                    type: "textarea",
+                    required: false,
+                    disabled: task.value.checkCancelled,
+                    validation: yup.string().required(),
+                    value: task.value.detailsCancelled
+                  }
+                ],
+                specificFields: [
+                  {
+                    name: "checkFront",
+                    label: "Front-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('F', task.value.taskType)
+                  },
+                  {
+                    name: "frontAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('F') || ''
+                  },
+                  {
+                    name: "deadlineFront",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('F')) !== 'undefined' ? String(getStepDeadline('F')) : '0'
+                  },
+                  {
+                    name: "checkBack",
+                    label: "Back-end",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('B', task.value.taskType)
+                  },
+                  {
+                    name: "backAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('B') || ''
+                  },
+                  {
+                    name: "deadlineBack",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('B')) !== 'undefined' ? String(getStepDeadline('B')) : '0'
+                  },
+                  {
+                    name: "checkTest",
+                    label: "Testes",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: getStepChecksByTaskType('T', task.value.taskType)
+                  },
+                  {
+                    name: "testAssignee",
+                    label: "Responsável",
+                    placeholder: "Selecione",
+                    type: "select",
+                    options: getTeamMemberOptions(),
+                    required: false,
+                    validation: yup.string(),
+                    value: getSelectedTeamMemberOption('T') || ''
+                  },
+                  {
+                    name: "deadlineTest",
+                    label: "Prazo",
+                    placeholder: "Digite o prazo para esta etapa",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: String(getStepDeadline('T')) !== 'undefined' ? String(getStepDeadline('T')) : '0'
+                  }
+                ]
+              }
 
-            inputFieldsPlanning.value = {
-              generalFields: [],
-              specificFields: [
-              {
-                  name: "startDate",
-                  label: "Data inicial",
-                  placeholder: "Data inicial",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
-                },
+              inputFieldsPlanning.value = {
+                generalFields: [],
+                specificFields: [
                 {
-                  name: "endDate",
-                  label: "Data final",
-                  placeholder: "Data final",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
-                },
-              {
-                  name: "totalSize",
-                  label: "Tamanho total",
-                  placeholder: "Tamanho total selecionado",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskPlanning?.totalSize === undefined ? '0' : String(task.value.taskPlanning?.totalSize),
-                  disabled: true
-                },
+                    name: "startDate",
+                    label: "Data inicial",
+                    placeholder: "Data inicial",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
+                  },
+                  {
+                    name: "endDate",
+                    label: "Data final",
+                    placeholder: "Data final",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
+                  },
                 {
-                  name: "totalEffort",
-                  label: "Esforço total",
-                  placeholder: "Esforço total selecionado",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskPlanning?.totalEffort === undefined ? '0' : String(task.value.taskPlanning?.totalEffort),
-                  disabled: true
-                },      {
-                  name: "plannedSpeed",
-                  label: "Tamanho total",
-                  placeholder: "Tamanho total selecionado",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskPlanning?.plannedSpeed === undefined ? '0' : String(task.value.taskPlanning?.plannedSpeed),
-                  disabled: true
-                },
-              ],
-              backlogFields: inputFieldsPlanning.value.backlogFields,
-              membersFields: inputFieldsPlanning.value.membersFields
-            }
+                    name: "totalSize",
+                    label: "Tamanho total",
+                    placeholder: "Tamanho total selecionado",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskPlanning?.totalSize === undefined ? '0' : String(task.value.taskPlanning?.totalSize),
+                    disabled: true
+                  },
+                  {
+                    name: "totalEffort",
+                    label: "Esforço total",
+                    placeholder: "Esforço total selecionado",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskPlanning?.totalEffort === undefined ? '0' : String(task.value.taskPlanning?.totalEffort),
+                    disabled: true
+                  },      {
+                    name: "plannedSpeed",
+                    label: "Velocidade",
+                    placeholder: "Tamanho total selecionado",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskPlanning?.plannedSpeed === undefined ? '0' : String(task.value.taskPlanning?.plannedSpeed),
+                    disabled: true
+                  },
+                ],
+                backlogFields: inputFieldsPlanning.value.backlogFields,
+                membersFields: inputFieldsPlanning.value.membersFields
+              }
 
-            inputFieldsReview.value = {
-              generalFields: [],
-              specificFields: [
-              {
-                  name: "startDate",
-                  label: "Data inicial",
-                  placeholder: "Data inicial",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
-                },
+              inputFieldsReview.value = {
+                generalFields: [],
+                specificFields: [
                 {
-                  name: "endDate",
-                  label: "Data final",
-                  placeholder: "Data final",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
-                },
-              {
-                  name: "totalSize",
-                  label: "Tamanho total concluído",
-                  placeholder: "Tamanho total concluído",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskReview?.totalSize === undefined ? '0' : String(task.value.taskReview?.totalSize),
-                  disabled: true
-                },
+                    name: "startDate",
+                    label: "Data inicial",
+                    placeholder: "Data inicial",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
+                  },
+                  {
+                    name: "endDate",
+                    label: "Data final",
+                    placeholder: "Data final",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
+                  },
                 {
-                  name: "totalEffort",
-                  label: "Esforço total concluído",
-                  placeholder: "Esforço total concluído",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskReview?.totalEffort === undefined ? '0' : String(task.value.taskReview?.totalEffort),
-                  disabled: true
-                },      
-                {
-                  name: "completedSpeed",
-                  label: "Velocidade concluída",
-                  placeholder: "Velocidade total concluída",
-                  type: "text",
-                  required: false,
-                  validation: yup.number(),
-                  value: task.value.taskReview?.completedSpeed === undefined ? '0' : String(task.value.taskReview?.completedSpeed),
-                  disabled: true
-                },
-                {
-                  name: "checkHumanResources",
-                  label: "Recursos humanos de acordo?",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.taskReview?.checkHumanResources === undefined ? true : Boolean(task.value.taskReview?.checkHumanResources),
-                },
-                {
-                  name: "checkSpeed",
-                  label: "Velocidade concluída de acordo?",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.taskReview?.checkSpeed === undefined ? true : Boolean(task.value.taskReview?.checkSpeed),
-                },
-                {
-                  name: "checkScope",
-                  label: "Escopo concluído de acordo?",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.taskReview?.checkScope === undefined ? true : Boolean(task.value.taskReview?.checkScope),
-                },
-                {
-                  name: "checkRisks",
-                  label: "Riscos de acordo?",
-                  placeholder: "",
-                  type: "checkbox",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.taskReview?.checkRisks === undefined ? true : Boolean(task.value.taskReview?.checkRisks),
-                },
-              ],
-              backlogIterationFields: inputFieldsReview.value.backlogIterationFields,
-              backlogCompletedFields: inputFieldsReview.value.backlogCompletedFields,
-              membersFields: inputFieldsReview.value.membersFields
-            }
+                    name: "totalSize",
+                    label: "Tamanho total concluído",
+                    placeholder: "Tamanho total concluído",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskReview?.totalSize === undefined ? '0' : String(task.value.taskReview?.totalSize),
+                    disabled: true
+                  },
+                  {
+                    name: "totalEffort",
+                    label: "Esforço total concluído",
+                    placeholder: "Esforço total concluído",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskReview?.totalEffort === undefined ? '0' : String(task.value.taskReview?.totalEffort),
+                    disabled: true
+                  },      
+                  {
+                    name: "completedSpeed",
+                    label: "Velocidade concluída",
+                    placeholder: "Velocidade total concluída",
+                    type: "text",
+                    required: false,
+                    validation: yup.number(),
+                    value: task.value.taskReview?.completedSpeed === undefined ? '0' : String(task.value.taskReview?.completedSpeed),
+                    disabled: true
+                  },
+                  {
+                    name: "checkHumanResources",
+                    label: "Recursos humanos de acordo?",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.taskReview?.checkHumanResources === undefined ? true : Boolean(task.value.taskReview?.checkHumanResources),
+                  },
+                  {
+                    name: "checkSpeed",
+                    label: "Velocidade concluída de acordo?",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.taskReview?.checkSpeed === undefined ? true : Boolean(task.value.taskReview?.checkSpeed),
+                  },
+                  {
+                    name: "checkScope",
+                    label: "Escopo concluído de acordo?",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.taskReview?.checkScope === undefined ? true : Boolean(task.value.taskReview?.checkScope),
+                  },
+                  {
+                    name: "checkRisks",
+                    label: "Riscos de acordo?",
+                    placeholder: "",
+                    type: "checkbox",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.taskReview?.checkRisks === undefined ? true : Boolean(task.value.taskReview?.checkRisks),
+                  },
+                ],
+                backlogIterationFields: inputFieldsReview.value.backlogIterationFields,
+                backlogCompletedFields: inputFieldsReview.value.backlogCompletedFields,
+                membersFields: inputFieldsReview.value.membersFields
+              }
 
-            inputFieldsRetrospective.value = {
-              generalFields: [],
-              specificFields: [
-              {
-                  name: "startDate",
-                  label: "Data inicial",
-                  placeholder: "Data inicial",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
-                },
+              inputFieldsRetrospective.value = {
+                generalFields: [],
+                specificFields: [
                 {
-                  name: "endDate",
-                  label: "Data final",
-                  placeholder: "Data final",
-                  type: "text",
-                  required: false,
-                  validation: yup.string(),
-                  value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
-                },
-                {
-                  name: "strengths",
-                  label: "Pontos fortes",
-                  placeholder: "Digite aqui os pontos fortes desta iteração",
-                  type: "textarea",
-                  required: false,
-                  disabled: task.value.checkCancelled,
-                  validation: yup.string().required(),
-                  value: task.value.taskRetrospective?.strengths === undefined ? '' : String(task.value.taskRetrospective?.strengths)
-                },
-                {
-                  name: "weaknesses",
-                  label: "Pontos fracos",
-                  placeholder: "Digite aqui os pontos fracos desta iteração",
-                  type: "textarea",
-                  required: false,
-                  validation: yup.string().required(),
-                  value: task.value.taskRetrospective?.weaknesses === undefined ? '' : String(task.value.taskRetrospective?.weaknesses)
-                },
-                {
-                  name: "improvements",
-                  label: "Pontos de melhoria",
-                  placeholder: "Digite aqui os pontos a serem melhorados desta iteração",
-                  type: "textarea",
-                  required: false,
-                  validation: yup.string().required(),
-                  value: task.value.taskRetrospective?.improvements === undefined ? '' : String(task.value.taskRetrospective?.improvements)
-                },
-          
-              ],
-              membersFields: inputFieldsRetrospective.value.membersFields
-            }
+                    name: "startDate",
+                    label: "Data inicial",
+                    placeholder: "Data inicial",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.startDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.startDate))
+                  },
+                  {
+                    name: "endDate",
+                    label: "Data final",
+                    placeholder: "Data final",
+                    type: "text",
+                    required: false,
+                    validation: yup.string(),
+                    value: task.value.endDate === undefined ? `${getCurrentDate}` : String(formatDate(task.value.endDate))
+                  },
+                  {
+                    name: "strengths",
+                    label: "Pontos fortes",
+                    placeholder: "Digite aqui os pontos fortes desta iteração",
+                    type: "textarea",
+                    required: false,
+                    disabled: task.value.checkCancelled,
+                    validation: yup.string().required(),
+                    value: task.value.taskRetrospective?.strengths === undefined ? '' : String(task.value.taskRetrospective?.strengths)
+                  },
+                  {
+                    name: "weaknesses",
+                    label: "Pontos fracos",
+                    placeholder: "Digite aqui os pontos fracos desta iteração",
+                    type: "textarea",
+                    required: false,
+                    validation: yup.string().required(),
+                    value: task.value.taskRetrospective?.weaknesses === undefined ? '' : String(task.value.taskRetrospective?.weaknesses)
+                  },
+                  {
+                    name: "improvements",
+                    label: "Pontos de melhoria",
+                    placeholder: "Digite aqui os pontos a serem melhorados desta iteração",
+                    type: "textarea",
+                    required: false,
+                    validation: yup.string().required(),
+                    value: task.value.taskRetrospective?.improvements === undefined ? '' : String(task.value.taskRetrospective?.improvements)
+                  },
+            
+                ],
+                membersFields: inputFieldsRetrospective.value.membersFields
+              }
 
-            typeTaskForm['1'] = inputFieldsRequirement.value
-            typeTaskForm['2'] = inputFieldsImprovement.value
-            typeTaskForm['3'] = inputFieldsBug.value
-            typeTaskForm['4'] = inputFieldsPlanning.value
-            typeTaskForm['5'] = inputFieldsReview.value
-            typeTaskForm['6'] = inputFieldsRetrospective.value
+              inputFieldsActivty.value = {
+                generalFields:[
+                  {
+                    name: "activityTitle",
+                    label: "Título da ação",
+                    placeholder: "Digite o título da ação",
+                    required: true,
+                    validation: yup.string().required(),
+                    value: ''
+                  },
+                  {
+                    name: "activityPriority",
+                    label: "Prioridade da ação",
+                    placeholder: "Selecione",
+                    required: true,
+                    options:setSelectOptions(priorityOptions.value),
+                    validation: yup.string().required(),
+                    value: '',
+                  },
+                  {
+                    name: "activityActionType",
+                    label: "Tipo da ação",
+                    placeholder: "Selecione",
+                    required: true,
+                    options:setSelectOptions(riskActionTypeOptions.value),
+                    validation: yup.string().required(),
+                    value: '',
+               
+                  },
+                  {
+                    name: "activityDescription",
+                    label: "Descrição da ação",
+                    placeholder: "Digite a descrição da ação",
+                    required: true,
+                    validation: yup.string().required().min(20),
+                    value: '',
+                  },
+                ]
+              }
+
+              typeTaskForm['1'] = inputFieldsRequirement.value
+              typeTaskForm['2'] = inputFieldsImprovement.value
+              typeTaskForm['3'] = inputFieldsBug.value
+              typeTaskForm['4'] = inputFieldsPlanning.value
+              typeTaskForm['5'] = inputFieldsReview.value
+              typeTaskForm['6'] = inputFieldsRetrospective.value
+            })
           })
         });
       })
@@ -1383,10 +1489,20 @@ onMounted(async () => {
         />
       </div>
     </div>
-    <div class="w-full flex flex-col items-start">
-      <p v-if="isTaskReview" class="text-left">
+    <div 
+      class="w-full flex flex-col items-start" 
+      v-if="isTaskReview"
+    >
+      <p class="text-left">
         Marque ou desmarque as checkbox se os itens estão ou não de acordo. Por padrão todos estarão marcados.
       </p>
+      <button
+        type="button"
+        class="flex text-white w-32 justify-evenly items-center bg-lavenderIndigo-900 px-4 py-2 gap-4 rounded-md"
+        @click="() => openModal()"
+      >
+        <span>Criar ação</span>
+      </button>
     </div>
     <div 
       v-if="isTaskPlanning"
@@ -1448,13 +1564,9 @@ onMounted(async () => {
       </div>
       <div class="flex flex-col space-y-5">
         <span class="font-bold">Escopo concluído</span>
-
-        <!-- Verifica se inputFieldsReview.backlogCompletedFields está vazio -->
         <p v-if="inputFieldsReview.backlogCompletedFields.length === 0">
           Não foram encontrados requisitos com status de concluído
         </p>
-
-        <!-- Renderiza os campos se a lista não estiver vazia -->
         <div
           v-else
           v-for="inputField in inputFieldsReview.backlogCompletedFields"
@@ -1526,9 +1638,6 @@ onMounted(async () => {
         />
       </div>
     </div>
-
-
-
     <div class="flex gap-5">
       <button
         class="flex text-white w-32 justify-evenly items-center bg-stone-400 dark:bg-stone-600 px-4 py-2 gap-4 rounded-md"
@@ -1543,5 +1652,25 @@ onMounted(async () => {
         <span>Salvar</span>
       </button>
     </div>
+  </Form>
+  <Form
+    ref="activityForm"
+    :validation-schema="schema"
+    @submit="onSubmitActivity"
+    class="flex flex-col gap-5 p-5 items-center overflow-auto">
+    <ActionModal
+      v-model="isActionModalOpen"
+      :title="'Criar ação'"
+      @cancel="isActionModalOpen = false"
+      icon="square-plus"
+    >
+      <div class="flex flex-col px-8 py-4 gap-5">
+        <InputField
+          v-for="inputField in inputFieldsActivty.generalFields"
+          :key="inputField.name"
+          v-bind="inputField"
+        />
+      </div>
+    </ActionModal>
   </Form>
 </template>
