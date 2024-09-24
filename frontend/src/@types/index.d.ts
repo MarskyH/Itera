@@ -576,6 +576,13 @@ export interface TeamMemberForm {
   role: string
 }
 
+export interface ActivityForm {
+  title: string
+  priority: string
+  description: string
+  type: string
+}
+
 export interface RiskForm {
   title: string
   effect: string

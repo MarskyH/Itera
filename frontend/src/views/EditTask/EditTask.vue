@@ -14,7 +14,7 @@ import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useTaskStore } from "src/stores/TaskStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
-import { useActivityStore } from "src/stores/ActivtyStore"
+import { useActivityStore } from "src/stores/ActivityStore"
 import ActionModal from "src/components/ActionModal.vue";
 
 interface Task extends models.Task { }

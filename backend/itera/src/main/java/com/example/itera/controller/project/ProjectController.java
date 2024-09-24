@@ -3,6 +3,7 @@ package com.example.itera.controller.project;
 import com.example.itera.controller.task.TaskController;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.dto.activity.ActivityResponseDTO;
 import com.example.itera.dto.iteration.IterationRequirementResponseDTO;
 import com.example.itera.dto.iteration.IterationResponseDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
@@ -26,6 +27,7 @@ import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.infra.security.TokenService;
+import com.example.itera.repository.activity.ActivityRepository;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRepository;
 import com.example.itera.repository.role.RoleRepository;
@@ -78,6 +80,10 @@ public class ProjectController {
 
     @Autowired
     RiskRepository riskRepository;
+
+    @Autowired
+    ActivityRepository activityRepository;
+
 
     @Autowired
     RequirementRepository requirementRepository;
@@ -333,6 +339,13 @@ public class ProjectController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<RiskResponseDTO> getProjectRisks(@PathVariable String id){
         return riskRepository.findByProject(id).stream().toList();
+
+    }
+
+    @GetMapping("/{id}/activities")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ActivityResponseDTO> getProjectActivities(@PathVariable String id){
+        return activityRepository.findByProjectId(id).stream().toList();
 
     }
 

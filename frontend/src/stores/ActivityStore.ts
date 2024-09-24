@@ -78,10 +78,21 @@ export const useActivityStore = defineStore('Activity', {
       return (response?.status) !== undefined ? response.status : 500
     },
 
+    async updateActivity(id: string, activityData: Activity) {
+      const response = await Api.request({
+        method: 'put',
+        route: `/activity/${id}`,
+        body: activityData
+      })
+
+      return response?.status === 200
+    },
+
+
     async deleteActivity(id: string) {
       const response = await Api.request({
         method: 'delete',
-        route: `/risk/${id}`
+        route: `/activity/${id}`
       })
 
       if (response?.status === 200) {

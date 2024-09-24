@@ -87,7 +87,12 @@ export default [
                     path: 'requisitos-nao-funcionais',
                     name: 'view-non-functional-requirements',
                     component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
-                  }
+                  },
+                  {
+                    path: 'acoes',
+                    name: 'view-activity',
+                    component: async () => await import('src/views/NewProject/components/ActivityStep.vue'),
+                  },
                 ]
               },
               {
