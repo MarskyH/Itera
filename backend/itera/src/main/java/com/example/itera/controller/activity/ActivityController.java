@@ -77,6 +77,7 @@ public class ActivityController {
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> updateActivity(@PathVariable String id, @RequestBody ActivityRequestDTO data) {
+        System.out.println(data);
         try {
             Activity activityExistente = repository.findById(id).orElseThrow(EntityNotFoundException::new);
             Activity activityNova = new Activity(data);
@@ -91,7 +92,7 @@ public class ActivityController {
                 activityExistente.setType(data.type());
             }
             if(!data.priority().isEmpty() && !data.priority().isBlank()){
-                activityExistente.setPriority(data.type());
+                activityExistente.setPriority(data.priority());
             }
 
             repository.save(activityExistente);

@@ -69,6 +69,7 @@ async function setOptions() {
 async function setActivities() {
   await $activityStore.fetchActivities(String($route.params.projectId)).then(() => {
     activities.value = $activityStore.activities
+    console.log(activities.value)
   })
 }
 
@@ -177,6 +178,7 @@ function editActivity(activityId: string | undefined) {
 }
 
 function updateActivity(values: ActivityForm) {
+  console.log(values)
   let activityToEdit: Activity | undefined = undefined
   let activityIndex = 0
 
@@ -282,7 +284,7 @@ async function viewActivityOnSide(activityId: string) {
     </div>
   </div>
 
-  <Form ref="riskForm" :validation-schema="schema" @submit="onSubmit" v-if="!formOnLoad">
+  <Form ref="activityForm" :validation-schema="schema" @submit="onSubmit" v-if="!formOnLoad">
     <ActionModal v-model="isActionModalOpen" :title="actionModalTitle" icon="warning">
       <div class="flex flex-col px-8 py-4 gap-5">
         <div class="grid grid-cols-2 w-full gap-5">
