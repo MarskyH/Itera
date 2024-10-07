@@ -6,11 +6,12 @@
   >
     <main
       class="py-8 flex items-center justify-center min-h-screen"
-      :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}"
+      :style="{ background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})` }"
     >
-      <ModeToggleButton2 class="absolute top-8 right-8" />
+      <ModeToggleButton class="absolute top-8 right-8" type="button"/>
 
-      <div class="flex flex-col items-center w-[800px] h-[500px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
+      <!-- Adicione justify-center para centralizar verticalmente e remova a altura fixa -->
+      <div class="flex flex-col items-center justify-center w-[800px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
         <img
           :src="logoPath"
           alt="Itera Logo"
@@ -18,46 +19,31 @@
         />
         <div class="flex flex-col w-full items-center mb-4">
           <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
-            Entre com suas credenciais
+            Utilize o campo abaixo para inserir seu e-mail cadastrado. Iremos enviar um e-mail informando o link para que você possa redefinir sua senha. Verifique o lixo eletrônico ou spam.
           </p>
           <CustomInput
-            name="login"
-            label="Usuário"
-            class-helper-text="text-lightSilver-900"
-            :required="true"
-            :max-length="16"
-            :icon-path="mdiAccount"
-          />
-          <CustomInput
-            name="password"
-            label="Senha"
+            name="email"
+            type="email"
+            label="E-mail"
             helper-text=""
             class-helper-text="text-lightSilver-900"
-            :type="showPassword ? 'text' : 'password'"
+            :icon-path="mdiEmail"
             :required="true"
-            :icon-path="mdiLock"
-            :max-length="80"
+            :max-length="50"
           />
-          <div class="flex-col itmens-center align-center">
-            <div class="flex">
-              <p class="font text-16 text-black dark:text-lightSilver-900">
-                Esqueceu sua senha?
-              </p>
-              <p class="px-1 font-bold text-16 text-maximumBluePurple-900 dark:text-maximumBluePurple-900">
-                <a href="/esqueceu-sua-senha"> Recupere aqui</a>
-              </p>
-            </div>
+        
+          <div class="flex-col items-center align-center">
             <CustomButton
-              title="Entrar"
+              title="Confirmar"
               color="bg-lavenderIndigo-900"
               color-dark="bg-ube-900"
             />
             <div class="flex">
               <p class="font text-16 text-black dark:text-lightSilver-900">
-                Não possui login?
+                Já possui login?
               </p>
               <p class="px-1 font-bold text-16 text-maximumBluePurple-900 dark:text-maximumBluePurple-900">
-                <a href="/cadastro"> Crie sua conta</a>
+                <a href="/login">Entre aqui</a>
               </p>
             </div>
           </div>
@@ -67,31 +53,28 @@
   </Form>
 </template>
 
+
+
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
+import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
-import { useLoginStore } from 'src/stores/LoginStore'
+import { usePasswordStore } from 'src/stores/PasswordStore'
 import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
-import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
-
-
-interface UserLogin extends models.LoginModel { }
-
-
+interface ForgotPassword extends models.ForgotPassword { }
 
 
 const $router = useRouter()
 const error = ref(false)
 const errorText = ref('')
-const showPassword = ref(false)
-const $store = useLoginStore()
+const $store = usePasswordStore()
 const loading = ref(false)
 const userEmail = ref('')
 const showRegistrationModal = ref(false)
@@ -106,27 +89,22 @@ const gradientColors = computed(() => {
 })
 
 const schema = object().shape({
-  login: string().required('Informe um nome de usuário').min(4, 'Nome de usuário pequeno').max(15, 'Nome de usuário muito grande').trim().matches(/^[A-Za-z0-9_.-]+$/, 'Use apenas letras, números e os seguintes caracteres . _ -'),
-  password: string().required('Informe uma senha').matches(/^(?=.*[a-zA-Z])(?=.*\d).{8,}$/, 'Senha inválida'),
+  email: string().required('Informe seu e-mail').matches(/^([A-Za-z\d]+([._][A-Za-z\d]+)*@[A-Za-z\d]+(.[A-Za-z\d]+)*(.[A-z]{2,}))?$/, 'Email inválido')
 })
 
-const toggleShowPassword = () => {
-  showPassword.value = !showPassword.value
-}
 
 const handleSubmit = async (submitData: any) => {
-  const profileData: UserLogin = submitData
+  const data: ForgotPassword = submitData
   loading.value = true
-  const response = await $store.userLogin(
-    profileData.login,
-    profileData.password,
+  const response = await $store.ForgotPassword(
+    data.email
   )
-  
-  if (response.status === 201 || response.status === 200) {
-    error.value = false
+
+  if (response.status === 200 || response.status === 201) {
+    userEmail.value = submitData.email
     loading.value = false
     showRegistrationModal.value = true
-    $router.push('/home')
+    alert('E-mail enviado. Verifique o e-mail ' + data.email)
   } else if (response.status !== 201) {
     errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
     error.value = true

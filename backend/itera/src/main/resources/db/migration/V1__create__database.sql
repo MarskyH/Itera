@@ -246,6 +246,15 @@ CREATE TABLE pendency (
     task_id TEXT
 );
 
+CREATE TABLE public.password (
+    id TEXT PRIMARY KEY, -- Gera UUID automaticamente
+    user_id TEXT NOT NULL, -- Referência ao ID do usuário
+    token VARCHAR(255) NOT NULL, -- Token de redefinição de senha
+    expiry_date TIMESTAMP NOT NULL, -- Data de expiração do token
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) -- Define a chave estrangeira para a tabela de usuários
+);
+
+
 -- Foreign Keys (Chaves Estrangeiras)
 
 ALTER TABLE public.role

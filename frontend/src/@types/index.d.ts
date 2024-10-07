@@ -47,6 +47,15 @@ export namespace models {
     accountNonLocked: boolean
   }
 
+  export interface ForgotPassword{
+    email: string
+  }
+
+  export interface ResetPassword{
+    token: string
+    newPassword: string
+  }
+
   export interface LoginModel {
     login: string
     password: string
