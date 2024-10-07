@@ -8,7 +8,7 @@
       class="py-8 flex items-center justify-center min-h-screen"
       :style="{background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})`}"
     >
-      <ModeToggleButton2 class="absolute top-8 right-8" />
+      <ModeToggleButton2 class="absolute top-8 right-8" type="button"/>
 
       <div class="flex flex-col items-center w-[800px] h-[500px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
         <img
