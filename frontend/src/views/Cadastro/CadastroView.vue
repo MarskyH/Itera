@@ -8,9 +8,12 @@
       class="py-8 flex items-center justify-center min-h-screen"
       :style="{ background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})` }"
     >
-      <ModeToggleButton class="absolute top-8 right-8" type="button"/>
+      <ModeToggleButton2
+        class="absolute top-8 right-8"
+        type="button"
+      />
 
-      <div class="flex flex-col items-center w-[800px] h-[750px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
+      <div class="flex flex-col items-center w-[800px] h-max shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
         <img
           :src="logoPath"
           alt="Itera Logo"
@@ -65,6 +68,48 @@
             :icon-path="mdiLock"
             :max-length="80"
           />
+          <div style="width: 40%">
+            <input
+              type="checkbox"
+              id="showPasswordCheckbox"
+              v-model="showPassword"
+              class="mr-2 cursor-pointer"
+            />
+            <label
+              for="showPasswordCheckbox"
+              class="text-jordyBlue-900 dark:text-lightSilver-900 cursor-pointer"
+            >
+              Mostrar Senha
+            </label>
+          </div>
+          <div class="flex space-x-20 mb-4 mt-4">
+            <div
+              @click="selectRole('GERENTE')"
+              :class="selectedRole === 'GERENTE' ? 'border-lavenderIndigo-900' : 'border-gray-300'"
+              class="p-4 border-2 cursor-pointer w-1/2 text-center rounded-lg"
+            >
+              <FontAwesomeIcon
+                icon="fa-solid fa-user-tie"
+                class="text-neutral-500 dark:text-white text-3xl mb-2"
+              />
+              <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
+                Gerente
+              </p>
+            </div>
+            <div
+              @click="selectRole('USER')"
+              :class="selectedRole === 'USER' ? 'border-lavenderIndigo-900' : 'border-gray-300'"
+              class="p-4 border-2 cursor-pointer w-1/2 text-center rounded-lg"
+            >
+              <FontAwesomeIcon
+                icon="fa-solid fa-user"
+                class="text-neutral-500 dark:text-white text-3xl mb-2"
+              />
+              <p class="font-bold text-25 text-jordyBlue-900 dark:text-lightSilver-900">
+                Membro
+              </p>
+            </div>
+          </div>
 
           <div class="flex-col items-center align-center">
             <CustomButton
@@ -89,31 +134,30 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useDark, useToggle } from '@vueuse/core'
-import { computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
+import { useDark } from '@vueuse/core'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
-import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
+import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
 import { useCadastroPerfilStore } from 'src/stores/CadastroStore'
 import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
-interface UserProfileRegisterModel extends models.UserModel { }
 
+interface UserProfileRegisterModel extends models.UserModel { }
 
 const $router = useRouter()
 const error = ref(false)
 const errorText = ref('')
-const missingDigits = ref(0)
-const showPassword = ref(false)
-const $store = useCadastroPerfilStore()
 const loading = ref(false)
 const userEmail = ref('')
 const showRegistrationModal = ref(false)
+const selectedRole = ref('USER')
+const showPassword = ref(false)
 
+const $store = useCadastroPerfilStore()
 
 const isDark = useDark()
 const gradientColors = computed(() => {
@@ -135,15 +179,20 @@ const toggleShowPassword = () => {
   showPassword.value = !showPassword.value
 }
 
+const selectRole = (role: string) => {
+  selectedRole.value = role
+}
+
 const handleSubmit = async (submitData: any) => {
   const profileData: UserProfileRegisterModel = submitData
   loading.value = true
+
   const response = await $store.userProfileRegister(
     profileData.name,
     profileData.email,
     profileData.login,
     profileData.password,
-    "ADMIN",
+    selectedRole.value,
   )
 
   if (response.status === 200 || response.status === 201) {
@@ -151,7 +200,7 @@ const handleSubmit = async (submitData: any) => {
     loading.value = false
     showRegistrationModal.value = true
     $router.push('/home')
-  } else if (response.status !== 201) {
+  } else {
     errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
     error.value = true
     loading.value = false

@@ -28,6 +28,7 @@
             :max-length="16"
             :icon-path="mdiAccount"
           />
+         
           <CustomInput
             name="password"
             label="Senha"
@@ -40,19 +41,29 @@
           />
           <div class="flex-col itmens-center align-center">
             <div class="flex">
-              <p class="font text-16 text-black dark:text-lightSilver-900">
-                Esqueceu sua senha?
-              </p>
-              <p class="px-1 font-bold text-16 text-maximumBluePurple-900 dark:text-maximumBluePurple-900">
-                <a href="/esqueceu-sua-senha"> Recupere aqui</a>
+              <input
+                type="checkbox"
+                id="showPasswordCheckbox"
+                v-model="showPassword"
+                class="mr-2 cursor-pointer"
+              />
+              <label
+                for="showPasswordCheckbox"
+                class="text-jordyBlue-900 dark:text-lightSilver-900 cursor-pointer"
+              >
+                Mostrar Senha
+              </label>
+              <p class="ml-8 px-1 font-bold text-16 text-maximumBluePurple-900 dark:text-maximumBluePurple-900">
+                <a href="/esqueceu-sua-senha"> Esqueceu sua senha?</a>
               </p>
             </div>
+            
             <CustomButton
               title="Entrar"
               color="bg-lavenderIndigo-900"
               color-dark="bg-ube-900"
             />
-            <div class="flex">
+            <div class="flex ml-9">
               <p class="font text-16 text-black dark:text-lightSilver-900">
                 Não possui login?
               </p>
