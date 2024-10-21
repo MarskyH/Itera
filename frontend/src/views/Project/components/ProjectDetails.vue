@@ -188,7 +188,7 @@ $projectStore.$subscribe(() => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold">Prazo</span>
 
-          <span>{{ project.deadline }}</span>
+          <span> {{ project.deadline + ' dias úteis' }} </span>
         </div>
       </div>
 
@@ -201,7 +201,7 @@ $projectStore.$subscribe(() => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold">Tempo de iteração</span>
 
-          <span>{{ project.iterationTime }}</span>
+          <span>{{ project.iterationTime + ' dias úteis' }}</span>
         </div>
       </div>
           
@@ -214,7 +214,7 @@ $projectStore.$subscribe(() => {
         <div class="flex flex-col gap-1">
           <span class="font-semibold">Carga horária</span>
 
-          <span>{{ project.workHours }}</span>
+          <span>{{ project.workHours + 'h' }}</span>
         </div>
       </div>
     </div>

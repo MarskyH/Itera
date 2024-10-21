@@ -129,13 +129,6 @@ onMounted(async () => {
           validation: yup.string().required()
         },
         {
-          name: "details",
-          label: "Detalhamento",
-          placeholder: "Digite os detalhes",
-          required: true,
-          validation: yup.string().required().min(3)
-        },
-        {
           name: "complexity",
           label: "Complexidade",
           placeholder: "Selecione a complexidade",
@@ -158,6 +151,14 @@ onMounted(async () => {
           required: true,
           options: setSelectOptions(sizeRequirementOptions.value),
           validation: yup.string().required()
+        },
+        {
+          name: "details",
+          label: "Detalhamento",
+          placeholder: "Digite os detalhes",
+          type: "textarea",
+          required: true,
+          validation: yup.string().required().min(3)
         },
       ]
 
@@ -324,11 +325,11 @@ async function viewFunctionalRequirementOnSide(requirementId: string) {
 
         <div class="flex flex-col gap-1">
           <span class="text-sm font-semibold">
-            Esforço
+            Esforço 
           </span>
 
           <span class="text-xs text-stone-500 dark:text-stone-400">
-            {{ requirement.effort }}
+            {{ requirement.effort + 'h'}}
           </span>
         </div>
 
@@ -380,7 +381,7 @@ async function viewFunctionalRequirementOnSide(requirementId: string) {
     @submit="onSubmit"
     v-if="!formOnLoad"
   >
-    <ActionModal
+  <ActionModal
       v-model="isActionModalOpen"
       :title="actionModalTitle"
       icon="bookmark"
@@ -395,8 +396,9 @@ async function viewFunctionalRequirementOnSide(requirementId: string) {
           :type="inputField.type"
           :required="inputField.required"
           :options="inputField.options"
+          :class="{ 'col-span-2': inputField.name === 'details' }"
         />
       </div>
-    </ActionModal>
+</ActionModal>
   </Form>
 </template>

@@ -8,7 +8,7 @@
       class="py-8 flex items-center justify-center min-h-screen"
       :style="{ background: `linear-gradient(to right, ${gradientColors.color1}, ${gradientColors.color2})` }"
     >
-      <ModeToggleButton class="absolute top-8 right-8" type="button"/>
+      <ModeToggleButton2 class="absolute top-8 right-8" type="button"/>
 
       <!-- Adicione justify-center para centralizar verticalmente e remova a altura fixa -->
       <div class="flex flex-col items-center justify-center w-[800px] shadow-md p-6 rounded-md bg-white dark:bg-onyx-900">
@@ -71,7 +71,7 @@ import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
-import ModeToggleButton from 'src/views/Navigation/components/ModeToggleButton.vue'
+import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'

@@ -108,6 +108,7 @@ onMounted(async () => {
           name: "description",
           label: "Descrição da ação",
           placeholder: "Digite a descrição da ação",
+          type: 'textarea',
           required: true,
           validation: yup.string().required().min(20),
           value: '',

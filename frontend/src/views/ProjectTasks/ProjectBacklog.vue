@@ -37,7 +37,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="!onLoad" class="flex gap-3 grow shrink-0 overflow-auto">
-    <TaskList title="Backlog" :tasks="backlogRequirements" />
+    <TaskList title="Backlog" :tasks="backlogRequirements" :edit="false" :remove="false" />
 
     <TaskList v-for="(iteration, index) in iterations" :key="iteration.id" :list-id="iteration.id"
       :title="`Iteração ${index + 1}`" title-link="project-iteration" :tasks="iteration.requirements" :order="index + 1"

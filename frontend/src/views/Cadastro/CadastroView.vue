@@ -82,11 +82,11 @@
               Mostrar Senha
             </label>
           </div>
-          <div class="flex space-x-20 mb-4 mt-4">
+          <div class="flex space-x-4 mb-4 mt-4 justify-center w-full">
             <div
               @click="selectRole('GERENTE')"
               :class="selectedRole === 'GERENTE' ? 'border-lavenderIndigo-900' : 'border-gray-300'"
-              class="p-4 border-2 cursor-pointer w-1/2 text-center rounded-lg"
+              class="p-4 border-2 cursor-pointer w-[150px] text-center rounded-lg"
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-user-tie"
@@ -96,10 +96,11 @@
                 Gerente
               </p>
             </div>
+
             <div
               @click="selectRole('USER')"
               :class="selectedRole === 'USER' ? 'border-lavenderIndigo-900' : 'border-gray-300'"
-              class="p-4 border-2 cursor-pointer w-1/2 text-center rounded-lg"
+              class="p-4 border-2 cursor-pointer w-[150px] text-center rounded-lg"
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-user"
@@ -110,6 +111,7 @@
               </p>
             </div>
           </div>
+
 
           <div class="flex-col items-center align-center">
             <CustomButton
