@@ -847,7 +847,7 @@ onMounted(async () => {
                     label: "Prioridade",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.priority
                   },
@@ -856,7 +856,7 @@ onMounted(async () => {
                     label: "Complexidade",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.complexity
                   },
@@ -865,7 +865,7 @@ onMounted(async () => {
                     label: "Esforço",
                     placeholder: "Digite o valor do esforço",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.number().required().min(1),
                     value: task.value.effort
                   },
@@ -874,7 +874,7 @@ onMounted(async () => {
                     label: "Tamanho",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.sizeTask.toString()
                   },
@@ -884,7 +884,7 @@ onMounted(async () => {
                     placeholder: "Digite o detalhamento da tarefa",
                     type: "textarea",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.details
                   },     
@@ -895,7 +895,7 @@ onMounted(async () => {
                     type: "textarea",
                     required: false,
                     disabled: task.value.checkCancelled,
-                    validation: yup.string().required(),
+                    validation: yup.string().nullable(),
                     value: task.value.detailsCancelled
                   }
                 ],
@@ -1050,7 +1050,7 @@ onMounted(async () => {
                     label: "Prioridade",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.priority
                   },
@@ -1059,7 +1059,7 @@ onMounted(async () => {
                     label: "Complexidade",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.complexity
                   },
@@ -1068,7 +1068,7 @@ onMounted(async () => {
                     label: "Esforço",
                     placeholder: "Digite o valor do esforço",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.number().required().min(1),
                     value: task.value.effort
                   },
@@ -1077,7 +1077,7 @@ onMounted(async () => {
                     label: "Tamanho",
                     placeholder: "Selecione",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.sizeTask.toString()
                   },
@@ -1087,7 +1087,7 @@ onMounted(async () => {
                     placeholder: "Digite o detalhamento da tarefa",
                     type: "textarea",
                     required: true,
-                    disabled: true,
+                    disabled: false,
                     validation: yup.string().required(),
                     value: task.value.details
                   },

@@ -466,7 +466,7 @@ public class TaskController {
                     taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
 
                     if(taskPlanning.getTotalEffort() != 0 && taskPlanning.getTotalSize() != 0){
-                        taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
+                        taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalEffort() / taskPlanning.getTotalSize());
                     }else{
                         taskPlanning.setPlannedSpeed(0.0);
                     }
@@ -507,7 +507,7 @@ public class TaskController {
                     taskReview.setTotalSize(taskReview.getSizeCalculation(taskReview.getCompletedScopelogAsList()));
                     taskReview.setTotalEffort(taskReview.getEffortCalculation(taskReview.getCompletedScopelogAsList()));
                     if (taskReview.getTotalEffort() != 0 && taskReview.getTotalSize() != 0) {
-                        taskReview.setCompletedSpeed((double) taskReview.getTotalSize() / taskReview.getTotalEffort());
+                        taskReview.setCompletedSpeed((double)  taskReview.getTotalEffort() / taskReview.getTotalSize());
                     } else {
                         taskReview.setCompletedSpeed(0.0);
                     }
