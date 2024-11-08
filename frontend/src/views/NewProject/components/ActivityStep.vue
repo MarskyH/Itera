@@ -16,6 +16,15 @@ import { useActivityStore } from "src/stores/ActivityStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useRoute } from "vue-router";
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
 
 interface Activity extends models.Activity { }
 interface Priority extends models.Priority { }
@@ -233,7 +242,7 @@ async function viewActivityOnSide(activityId: string) {
         <span class="font-semibold px-2">Ações do projeto</span>
       </div>
 
-      <button class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
+      <button class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md" v-if="!disableAction()"
         @click="setNewActivityForm()">
         <FontAwesomeIcon icon="fa-solid fa-plus" />
 

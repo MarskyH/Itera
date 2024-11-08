@@ -14,6 +14,16 @@ import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useRoute } from "vue-router";
 
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
+
 interface Role extends models.Role { }
 
 const $emit = defineEmits(['sideViewContentChange'])
@@ -27,26 +37,7 @@ const roleForm = ref<any>(null)
 const onEditRecord = ref<string | null>(null)
 const actionModalTitle = ref<string>('Adicionar papel')
 
-const roles = ref<Role[]>([/*
-  {
-    id: 1,
-    function: 'Desenvolvedor Front-end',
-    skill: 'Capacidade de trabalhar em squads multidisciplinares',
-    competency: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  },
-  {
-    id: 2,
-    function: 'Desenvolvedor Back-end',
-    skill: 'Capacidade de trabalhar em squads multidisciplinares',
-    competency: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  },
-  {
-    id: 3,
-    function: 'Testador',
-    skill: 'Capacidade de trabalhar em squads multidisciplinares',
-    competency: 'Ter conhecimento de plataformas móveis, como iOS e Android'
-  }*/
-])
+const roles = ref<Role[]>([])
 
 yup.setLocale(yupErrorMessages);
 
@@ -207,6 +198,7 @@ async function viewRoleOnSide(roleId: string) {
       </div>
 
       <button
+        v-if="!disableAction()"
         class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
         @click="setNewRoleForm()"
       >

@@ -10,14 +10,21 @@ const myProjects = ref<any[]>([])
 
 const storage = new LocalStorage();
 
+
+let userRole = storage.getLoggedUser()?.role || ''
+
 let userId = storage.getLoggedUser()?.id || ''
 
-
 onMounted(async () => {
+if(userRole !== 'Gerente'){
+  await $projectStore.fetchProjectsByMember(userId).then(() =>{
+    myProjects.value = $projectStore.projects
+  })
+}else{
   await $projectStore.fetchProjectsByUser(userId).then(() => {
     myProjects.value = $projectStore.projects
   })
-})
+}})
 
 </script>
 

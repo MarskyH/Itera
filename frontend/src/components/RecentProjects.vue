@@ -16,14 +16,23 @@ const storage = new LocalStorage();
 const $projectStore = useProjectStore()
 const recentProjects = ref<Project[]>([])
 
-onMounted(async () => {
-  let userId = storage.getLoggedUser()?.id || ''
+let userRole = storage.getLoggedUser()?.role || ''
 
-  await $projectStore.fetchRecentProjectsByUser(userId)
-    .then(() => {
-      recentProjects.value = $projectStore.recentProjects
-    })
-})
+let userId = storage.getLoggedUser()?.id || ''
+
+
+onMounted(async () => {
+if(userRole !== 'Gerente'){
+  await $projectStore.fetchRecentProjectsByMember(userId).then(() =>{
+    recentProjects.value = $projectStore.projects
+  })
+}else{
+  await $projectStore.fetchRecentProjectsByUser(userId).then(() => {
+    recentProjects.value = $projectStore.projects
+  })
+}})
+
+
 
 </script>
 

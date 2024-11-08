@@ -16,6 +16,17 @@ import { useDegreeStore } from "src/stores/DegreeStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useSizeRequirementStore } from "src/stores/SizeRequirementStore";
 
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
+
+
 interface FunctionalRequirement extends models.FunctionalRequirement {}
 interface Degree extends models.Degree {}
 interface Priority extends models.Priority {}
@@ -292,6 +303,7 @@ async function viewFunctionalRequirementOnSide(requirementId: string) {
       </div>
 
       <button
+        v-if="!disableAction()"
         class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
         @click="setNewFunctionalRequirementForm()"
       >

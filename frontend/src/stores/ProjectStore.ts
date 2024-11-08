@@ -93,10 +93,52 @@ export const useProjectStore = defineStore('Project', {
       }
     },
 
+    async fetchProjectsByMember(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `project/member/user/${id}`
+      })
+
+      if (response?.status === 200) {
+        this.projects = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            name: elem.name,
+            deadline: elem.deadline,
+            workHours: elem.workHours,
+            iterationTime: elem.iterationTime,
+            clientName: elem.clientName,
+            createdBy: elem.createdBy
+          }
+        })
+      }
+    },
+
     async fetchRecentProjectsByUser(id: string) {
       const response = await Api.request({
         method: 'get',
         route: `/project/recent/user/${id}`
+      })
+
+      if (response?.status === 200) {
+        this.recentProjects = response.data?.map((elem: any) => {
+          return {
+            id: elem.id,
+            name: elem.name,
+            deadline: elem.deadline,
+            workHours: elem.workHours,
+            iterationTime: elem.iterationTime,
+            clientName: elem.clientName,
+            createdBy: elem.createdBy
+          }
+        })
+      }
+    },
+
+    async fetchRecentProjectsByMember(id: string) {
+      const response = await Api.request({
+        method: 'get',
+        route: `/project/recent/member/user/${id}`
       })
 
       if (response?.status === 200) {

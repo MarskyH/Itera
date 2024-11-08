@@ -11,6 +11,15 @@ import { useProjectStore } from "src/stores/ProjectStore";
 import ActionModal from "src/components/ActionModal.vue";
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import MaskedInput from "src/components/MaskedInput.vue";
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
 
 interface ProjectOnView extends models.ProjectOnView {}
 interface Project extends models.Project {}
@@ -219,7 +228,9 @@ $projectStore.$subscribe(() => {
       </div>
     </div>
     
-    <div class="flex justify-end gap-5">
+    <div 
+      class="flex justify-end gap-5" 
+      v-if="!disableAction()">
       <button
         class="flex items-center rounded px-3 py-2 bg-platinum-900 dark:bg-davysGray-900 text-blueCrayola-900 dark:text-naplesYellow-900 hover:bg-blueCrayola-900/25 hover:dark:bg-naplesYellow-900/25 text-sm gap-2 text"
         @click="()=> onEdit = true"

@@ -286,6 +286,39 @@ public class ProjectController {
         List<ProjectResponseDTO> projects = projectRepository.findByCreatedBy(id);
         return projects.stream().toList();
     }
+    @GetMapping("/member/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ProjectResponseDTO> getProjectByMmeber(@PathVariable String id) throws ResourceNotFoundException {
+        List<ProjectResponseDTO> projects = new ArrayList<>();
+        List<TeamMemberResponseDTO> members = teamMemberRepository.findAllByUserId(id);
+        for (TeamMemberResponseDTO member : members) {
+            Project project = projectRepository.findById(member.project().getId()).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+            if(project != null){
+                projects.add(new ProjectResponseDTO(project));
+            }
+        }
+        return projects.stream().toList();
+    }
+
+    @GetMapping("/recent/member/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ProjectResponseDTO> getRecentProjectsByMember(@PathVariable String id) throws ResourceNotFoundException {
+        List<ProjectResponseDTO> projects = new ArrayList<>();
+        List<TeamMemberResponseDTO> members = teamMemberRepository.findAllByUserId(id);
+
+        for (TeamMemberResponseDTO member : members) {
+            Project project = projectRepository.findById(member.project().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+
+            if (project != null) {
+                projects.add(new ProjectResponseDTO(project));
+            }
+        }
+        return projects.stream()
+                .sorted((p1, p2) -> p2.lastAccessDate().compareTo(p1.lastAccessDate()))
+                .toList();
+    }
 
     /**
      * Endpoint responsável por retornar uma lista de roles associadas a um projeto específico.
