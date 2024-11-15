@@ -12,7 +12,8 @@ interface TaskForm extends models.TaskForm { }
 
 interface State {
   task: Task
-  tasks: Task[]
+  tasks: Task[],
+  onError: Boolean
 }
 
 const taskDefault: Task = {
@@ -83,10 +84,15 @@ const taskDefault: Task = {
 export const useTaskStore = defineStore('Task', {
   state: (): State => ({
     task: { ...taskDefault },
-    tasks: []
+    tasks: [],
+    onError: false
   }),
 
   actions: {
+    setOnError(value: Boolean) {
+      this.onError = value
+    },
+
     async fetchTasks(iterationId: string) {
       const response = await Api.request({
         method: 'get',

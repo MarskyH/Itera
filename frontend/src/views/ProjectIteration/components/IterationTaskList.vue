@@ -19,8 +19,11 @@ const props = defineProps<{
   title: string
   tasks: Object[]
   listName: string
-  addButton?: Boolean
+  addButton?: Boolean,
+  onError: string
 }>()
+
+const $emits = defineEmits(['onCancelDrag'])
 
 const isActionModalOpen = ref<boolean>(false)
 const actionModalTitle = ref<string>('Adicionar')
@@ -78,9 +81,6 @@ function createInputCancel(){
   formOnLoad.value = false
 }
 
-
-
-
 const $taskStore = useTaskStore()
 
 const $router = useRouter()
@@ -116,7 +116,12 @@ async function updateTaskList(evt: any) {
     formOnLoad.value = false
     isActionModalOpen.value = true
   }
-  await $taskStore.updateTaskListName(movingTaskId, taskListName)
+
+  return await $taskStore.updateTaskListName(movingTaskId, taskListName)
+    .then((response) => {
+      console.log(response?.status)
+      return response?.status
+    })
 }
 
 function updateTaskOrder(list: any[], sliceIndex: number) {
@@ -127,30 +132,37 @@ function updateTaskOrder(list: any[], sliceIndex: number) {
   });
 }
 
-async function moveTask(evt: any) {
-  console.log(props.tasks)
+async function moveTask (evt: any) {
+  let oldIndex = evt.draggedContext.index
+  let newIndex = evt.relatedContext.index
+  
   setTimeout(async () => {
-    let oldIndex = evt.draggedContext.index
-    let newIndex = evt.relatedContext.index
 
-    if(!newIndex) {      
-      updateTaskList(evt)
-      updateTaskOrder(tasksList.value, evt.draggedContext.futureIndex)
-      updateTaskOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
+    if(!newIndex) {  
+      await updateTaskList(evt).then((response) => {
+        console.log(response)
+        updateTaskOrder(tasksList.value, evt.draggedContext.futureIndex)
+        updateTaskOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
+        
+        if(response === 400) {
+          $emits('onCancelDrag', { 
+            fromList: props.listName, 
+            toList: evt.relatedContext.component.componentData.listName, 
+            task: evt.draggedContext.element 
+          })
 
-      return
-    }
-    
-    if (oldIndex < newIndex) {
-      updateTaskOrder(tasksList.value, oldIndex)
-    } else {
-      updateTaskOrder(tasksList.value, newIndex)
+          return false
+        }
+      })
     }
   }, 500)
+  
+  if (oldIndex < newIndex) {
+    updateTaskOrder(tasksList.value, oldIndex)
+  } else {
+    updateTaskOrder(tasksList.value, newIndex)
+  }
 }
-
-
-
 
 async function onSubmit(values: any) {
   if(listNameInput.value === "Pendente"){
@@ -192,11 +204,9 @@ async function onSubmit(values: any) {
     <div class="flex max-h-[calc(100vh-200px)] flex-col gap-2 overflow-auto">
       <draggable
         :list="tasksList"
-        :move="moveTask"
+        :move="(evt: any)=> moveTask(evt)"
         :component-data="{ listName }"
         group="people"
-        @start="(drag: any) => drag = true"
-        @end="(drag: any) => drag = false"
         item-key="id"
         animation="200"
         class="flex flex-col gap-2 min-w-64"
