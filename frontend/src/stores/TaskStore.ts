@@ -76,6 +76,13 @@ const taskDefault: Task = {
     checkScope: true,
     checkRisks: true
   },
+  taskRetrospective:{
+    id: '',
+		strengths: '',
+    weaknesses: '',
+    improvements: '',
+    participants: []
+  },
   iteration_id: "",
   assignees: [],
   pendencies: [],
@@ -118,6 +125,7 @@ export const useTaskStore = defineStore('Task', {
             taskbug_id: elem.taskbug_id,
             taskplanning_id: elem.taskplanning_id,
             taskreview_id: elem.taskreview_id,
+            taskretrospective_id: elem.taskretrospective_id,
             iteration_id: elem.iteration_id,
           }
         })
@@ -150,6 +158,7 @@ export const useTaskStore = defineStore('Task', {
             taskbug_id: elem.taskData.taskbug_id,
             taskplanning_id: elem.taskData.taskplanning_id,
             taskreview_id: elem.taskData.taskreview_id,
+            taskretrospective_id: elem.taskData.taskretrospective_id,
             iteration_id: elem.taskData.iteration_id,
           }
         })
@@ -181,6 +190,7 @@ export const useTaskStore = defineStore('Task', {
           taskBug: response.data.taskBug,
           taskPlanning: response.data.taskPlanning,
           taskReview: response.data.taskReview,
+          taskRetrospective: response.data.taskRetrospective,
           iteration_id: response.data.iteration_id,
           assignees: response.data.assignees,
           pendencies: response.data.pendencies
@@ -344,7 +354,7 @@ export const useTaskStore = defineStore('Task', {
         body: taskData
       })
 
-      if(taskData.taskPlanning == null){
+      if(taskData.taskPlanning == null && taskData.taskReview == null && taskData.taskRetrospective == null){
         if(taskData.taskRequirement.detailsCancelled != null){
           this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
         }

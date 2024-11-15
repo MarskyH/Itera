@@ -15,6 +15,16 @@ export default [
     component: async () => await import('src/views/Cadastro/CadastroView.vue'),
   },
   {
+    path: '/esqueceu-sua-senha',
+    name: 'forgot-password',
+    component: async () => await import('src/views/ResetPassword/ForgotPasswordView.vue'),
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: async () => await import('src/views/ResetPassword/ResetPasswordView.vue'),
+  },
+  {
     path: '/',
     name: 'protected',
     redirect: () => { return 'home' },
@@ -87,7 +97,12 @@ export default [
                     path: 'requisitos-nao-funcionais',
                     name: 'view-non-functional-requirements',
                     component: async () => await import('src/views/NewProject/components/NonFunctionalRequirementsStep.vue'),
-                  }
+                  },
+                  {
+                    path: 'acoes',
+                    name: 'view-activity',
+                    component: async () => await import('src/views/NewProject/components/ActivityStep.vue'),
+                  },
                 ]
               },
               {

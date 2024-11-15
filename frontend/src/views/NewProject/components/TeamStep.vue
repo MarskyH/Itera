@@ -16,6 +16,15 @@ import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useUserStore } from "src/stores/UserStore";
 import { useRoute } from "vue-router";
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
 
 interface TeamMember extends models.TeamMember {}
 interface Role extends models.Role {}
@@ -320,6 +329,7 @@ async function viewTeamMemberOnSide(memberId: string) {
       </div>
 
       <button
+        v-if="!disableAction()"
         class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
         @click="setNewTeamMemberForm()"
       >

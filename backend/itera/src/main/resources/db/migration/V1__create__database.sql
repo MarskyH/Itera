@@ -2,9 +2,9 @@
 CREATE TABLE public.activity (
     id TEXT PRIMARY KEY, -- Identificador único da atividade
     title VARCHAR(30), -- Título da atividade
-    description VARCHAR(255), -- Descrição da atividade
+    description TEXT, -- Descrição da atividade
     type VARCHAR(20), -- Tipo da atividade
-    risk_id TEXT, -- Identificador de risco associado
+    priority VARCHAR(30), -- Identificador de risco associado
     project_id TEXT -- Identificador de projeto associado
 );
 
@@ -158,6 +158,7 @@ CREATE TABLE task (
     task_bug_id TEXT,
     task_planning_id TEXT,
     task_review_id TEXT,
+    task_retrospective_id TEXT,
     iteration_id TEXT
 );
 
@@ -216,6 +217,15 @@ CREATE TABLE task_review(
     task_id TEXT
 );
 
+CREATE TABLE task_retrospective(
+    id TEXT PRIMARY KEY,
+    participants TEXT,
+    strengths TEXT,
+    weaknesses TEXT,
+    improvements TEXT,
+    task_id TEXT
+);
+
 
 CREATE TABLE assignee (
     id TEXT PRIMARY KEY,
@@ -236,6 +246,15 @@ CREATE TABLE pendency (
     task_id TEXT
 );
 
+CREATE TABLE public.password (
+    id TEXT PRIMARY KEY, -- Gera UUID automaticamente
+    user_id TEXT NOT NULL, -- Referência ao ID do usuário
+    token VARCHAR(255) NOT NULL, -- Token de redefinição de senha
+    expiry_date TIMESTAMP NOT NULL, -- Data de expiração do token
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id) -- Define a chave estrangeira para a tabela de usuários
+);
+
+
 -- Foreign Keys (Chaves Estrangeiras)
 
 ALTER TABLE public.role
@@ -247,10 +266,6 @@ ALTER TABLE public.requirement
 ADD CONSTRAINT FK_requirement_project
 FOREIGN KEY (project_id) REFERENCES project(id)
 ON DELETE CASCADE;
-
-ALTER TABLE public.activity
-ADD CONSTRAINT FK_activity_risk
-FOREIGN KEY (risk_id) REFERENCES risk(id);
 
 ALTER TABLE public.activity
 ADD CONSTRAINT FK_activity_project
@@ -343,6 +358,12 @@ ON DELETE CASCADE;
 ALTER TABLE task
 ADD CONSTRAINT fk_task_task_review
 FOREIGN KEY (task_review_id) REFERENCES task_review(id)
+ON DELETE CASCADE;
+
+-- Adicionando chave estrangeira para task
+ALTER TABLE task
+ADD CONSTRAINT fk_task_task_retrospective
+FOREIGN KEY (task_retrospective_id) REFERENCES task_retrospective(id)
 ON DELETE CASCADE;
 
 -- Adicionando chave estrangeira para assignee

@@ -50,27 +50,22 @@ onMounted(async () => {
   onLoad.value = true
 
   await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'A fazer').then(async () => {
-    console.log('A fazer tasks:', $taskStore.tasks);
     iterationTasks.value.toDoTasks.splice(0, iterationTasks.value.toDoTasks.length, ...$taskStore.tasks);
     onLoad.value = false
   })
   await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'Fazendo').then(async () => {
-    console.log('Fazendo tasks:', $taskStore.tasks);
     iterationTasks.value.doingTasks.splice(0, iterationTasks.value.doingTasks.length, ...$taskStore.tasks);
     onLoad.value = false
   })
   await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'Feito').then(async () => {
-    console.log('Feito tasks:', $taskStore.tasks);
     iterationTasks.value.doneTasks.splice(0, iterationTasks.value.doneTasks.length, ...$taskStore.tasks);
     onLoad.value = false
   })
   await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'Cancelado').then(async () => {
-    console.log('Cancelado tasks:', $taskStore.tasks);
     iterationTasks.value.canceledTasks.splice(0, iterationTasks.value.canceledTasks.length, ...$taskStore.tasks);
     onLoad.value = false
   })
   await $taskStore.fetchIterationTasks(String($route.params.iterationId), 'Pendente').then(async () => {
-    console.log('Pendente tasks:', $taskStore.tasks);
     iterationTasks.value.pendingTasks.splice(0, iterationTasks.value.pendingTasks.length, ...$taskStore.tasks);
     onLoad.value = false
   })

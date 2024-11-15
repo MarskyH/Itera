@@ -1,7 +1,10 @@
+
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useDark } from "@vueuse/core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import LocalStorage from "src/services/localStorage";
+const storage = new LocalStorage();
 
 const isDark = useDark();
 
@@ -20,36 +23,48 @@ const logoPath = computed(() =>
   isDark.value ? iteraLogoHorizontalDark : iteraLogoHorizontalLight
 )
 
+const role = storage.getLoggedUser()?.role
+
+function rolePermission(){
+  return role === 'Gerente'
+}
+
 const menuButtons = [
   {
     icon: "house",
     title: "Início",
-    link: "home" 
+    link: "home",
+    disable: false
   },
   {
     icon: "folder-open",
     title: "Meus projetos",
-    link: "my-projects"
+    link: "my-projects",
+    disable: false
   },
   {
     icon: "folder-plus",
     title: "Novo projeto",
-    link: "new-project"
+    link: "new-project",
+    disable: !rolePermission()
   },
   {
     icon: "file-export",
     title: "Exportar relatório",
-    link: "export-report"
+    link: "export-report",
+    disable: false
   },
   {
     icon: "bell",
     title: "Notificações",
-    link: "notifications"
+    link: "notifications",
+    disable: false
   },
   {
     icon: "gear",
     title: "Configurações",
-    link: "settings"
+    link: "settings",
+    disable: false
   },
 ];
 </script>
@@ -84,7 +99,7 @@ const menuButtons = [
 
       <div class="flex flex-col h-full w-full my-3 gap-2">
         <button
-          v-for="menuButton in menuButtons"
+          v-for="menuButton in menuButtons.filter((menuButton) => !menuButton.disable)"
           :key="menuButton.link"
           class="flex items-center rounded-md gap-4 p-3 hover:bg-gray-800/5 dark:hover:bg-gray-100/5 font-semibold"
           :class="[menuExpanded ? 'justify-start' : 'justify-center']"

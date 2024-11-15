@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="fix: pendency get by task id no response">
+    <list default="true" id="cccc9832-749d-4d46-a19b-7ba9f5b89fd2" name="Changes" comment="feat: taskPlanning put ok.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/InformationModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/InformationModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/activity/ActivityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/activity/ActivityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/activity/ActivityResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/itera/src/main/java/com/example/itera/dto/activity/ActivityResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/NewProject/components/ActivityStep.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/NewProject/components/ActivityStep.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +88,7 @@
     &quot;git-widget-placeholder&quot;: &quot;refactor-tarefas&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_directory_selection&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/Fernanda Kipper/Aplicação Cárdapio/cardapio/cardapio/src/main/java/com/example/cardapio&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lockhart/OneDrive/Projetos/itera/backend/itera/src/main/java/com/example/itera/dto/nonFunctionalRequirementProject&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lockhart/OneDrive/Documentos/UFPA/TCC/Fonte/backend/itera/src/main/java/com/example/itera/dto/taskRetrospective&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
@@ -100,11 +102,11 @@
       <recent name="com.example.cardapio.food" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\dto\nonFunctionalRequirementProject" />
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\repository" />
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\dto" />
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\domain" />
-      <recent name="C:\Users\Lockhart\OneDrive\Projetos\itera\backend\itera\src\main\java\com\example\itera\controller" />
+      <recent name="C:\Users\Lockhart\OneDrive\Documentos\UFPA\TCC\Fonte\backend\itera\src\main\java\com\example\itera\dto\taskRetrospective" />
+      <recent name="C:\Users\Lockhart\OneDrive\Documentos\UFPA\TCC\Fonte\backend\itera\src\main\java\com\example\itera\repository" />
+      <recent name="C:\Users\Lockhart\OneDrive\Documentos\UFPA\TCC\Fonte\backend\itera\src\main\java\com\example\itera\dto" />
+      <recent name="C:\Users\Lockhart\OneDrive\Documentos\UFPA\TCC\Fonte\backend\itera\src\main\java\com\example\itera\domain" />
+      <recent name="C:\Users\Lockhart\OneDrive\Documentos\UFPA\TCC\Fonte\backend\itera\src\main\java\com\example\itera\dto\taskReview" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -114,11 +116,11 @@
       <recent name="com.example.itera.repository.user" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.example.itera.controller.nonFunctionalRequirementProject" />
-      <recent name="com.example.itera.repository.nonFunctionalRequirementProject" />
-      <recent name="com.example.itera.controller.exposureDegree" />
-      <recent name="com.example.itera.repository.exposureDegree" />
-      <recent name="com.example.itera.repository.riskActionType" />
+      <recent name="com.example.itera.repository.taskRetrospective" />
+      <recent name="com.example.itera.domain.taskRetrospective" />
+      <recent name="com.example.itera.repository.taskReview" />
+      <recent name="com.example.itera.domain.taskReview" />
+      <recent name="com.example.itera.dto.project" />
     </key>
   </component>
   <component name="RunManager" selected="Application.IteraApplication">
@@ -277,7 +279,39 @@
       <option name="project" value="LOCAL" />
       <updated>1724790333911</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="feat: taskPlanning estruturada.">
+      <option name="closed" value="true" />
+      <created>1726059623243</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1726059623243</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat: taskPlanning post ok.">
+      <option name="closed" value="true" />
+      <created>1726100598775</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1726100598775</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat: taskPlanning get ok.">
+      <option name="closed" value="true" />
+      <created>1726148965088</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1726148965088</updated>
+    </task>
+    <task id="LOCAL-00017" summary="feat: taskPlanning put ok.">
+      <option name="closed" value="true" />
+      <created>1726159421584</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1726159421584</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -303,19 +337,32 @@
     <MESSAGE value="feat: pendency get by task id" />
     <MESSAGE value="fix: pendency get by task id" />
     <MESSAGE value="fix: pendency get by task id no response" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: pendency get by task id no response" />
+    <MESSAGE value="feat: taskPlanning estruturada." />
+    <MESSAGE value="feat: taskPlanning post ok." />
+    <MESSAGE value="feat: taskPlanning get ok." />
+    <MESSAGE value="feat: taskPlanning put ok." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: taskPlanning put ok." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/requirement/RequirementController.java</url>
-          <line>77</line>
-          <properties class="com.example.itera.controller.requirement.RequirementController" method="saveRequirement">
+          <url>file://$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/activity/ActivityController.java</url>
+          <line>42</line>
+          <properties class="com.example.itera.controller.activity.ActivityController" method="saveActivity">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/itera/src/main/java/com/example/itera/controller/activity/ActivityController.java</url>
+          <line>78</line>
+          <properties class="com.example.itera.controller.activity.ActivityController" method="updateActivity">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

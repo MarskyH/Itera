@@ -5,6 +5,7 @@ import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
+import com.example.itera.domain.taskRetrospective.TaskRetrospective;
 import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.dto.task.TaskResponseDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -72,6 +73,12 @@ public class Task {
     @JsonIgnore
     private TaskReview taskReview = null;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "task_retrospective_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private TaskRetrospective taskRetrospective = null;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "iteration_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -126,7 +133,7 @@ public class Task {
         this.iteration = iterationData;
     }
 
-    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, TaskPlanning taskPlanningData, TaskReview taskReviewData, Iteration iterationData) {
+    public Task(String title, String priority, String details, String complexity, String effort, String sizeTask, Timestamp startDate, Timestamp endDate, Integer orderTask, String listName, String taskType, TaskRequirement taskRequirementData, TaskImprovement taskImprovementData,TaskBug taskBugData, TaskPlanning taskPlanningData, TaskReview taskReviewData, TaskRetrospective taskRetrospectiveData, Iteration iterationData) {
         this.title = title;
         this.priority = priority;
         this.details = details;
@@ -143,6 +150,7 @@ public class Task {
         this.taskBug = taskBugData;
         this.taskPlanning = taskPlanningData;
         this.taskReview = taskReviewData;
+        this.taskRetrospective = taskRetrospectiveData;
         this.iteration = iterationData;
     }
 

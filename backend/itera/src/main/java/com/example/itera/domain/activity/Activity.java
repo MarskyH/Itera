@@ -20,10 +20,7 @@ public class Activity {
     private String title;
     private String description;
     private String type;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "risk_id")
-    private Risk risk;
+    private String priority;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
@@ -35,11 +32,11 @@ public class Activity {
         this.type = data.type();
     }
 
-    public Activity(String title, String description, String type, Risk risk, Project project) {
+    public Activity(String title, String description, String type, String priority, Project project) {
         this.title = title;
         this.description = description;
         this.type = type;
-        this.risk = risk;
+        this.priority = priority;
         this.project = project;
     }
 }

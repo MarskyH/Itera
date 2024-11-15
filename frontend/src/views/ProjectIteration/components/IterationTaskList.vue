@@ -50,6 +50,7 @@ function createInputPendency(){
       name: "description",
       label: "Descrição",
       placeholder: "Digite a descrição da pendência",
+      type: "textarea",
       required: true,
       validation: yup.string().required().min(20)
     },

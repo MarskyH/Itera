@@ -13,6 +13,8 @@ const props = defineProps<{
   order?: number
   listId?: string
   disable?: boolean
+  edit?: boolean
+  remove?: boolean
 }>()
 
 defineEmits(['titleClick'])
@@ -91,6 +93,8 @@ async function moveRequirement(evt: any) {
             @remove="() => { }"
             @side-view-content-change="() => () => { }"
             :class="{'opacity-50': element.checkCancelled}"
+            :edit="false" 
+            :remove="false" 
           >
             <div class="flex flex-col gap-1">
               <span class="text-sm font-semibold">

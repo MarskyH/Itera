@@ -3,6 +3,7 @@ package com.example.itera.controller.project;
 import com.example.itera.controller.task.TaskController;
 import com.example.itera.domain.iteration.Iteration;
 import com.example.itera.domain.requirement.Requirement;
+import com.example.itera.dto.activity.ActivityResponseDTO;
 import com.example.itera.dto.iteration.IterationRequirementResponseDTO;
 import com.example.itera.dto.iteration.IterationResponseDTO;
 import com.example.itera.dto.nonFunctionalRequirementProject.NonFunctionalRequirementProjectResponseDTO;
@@ -11,6 +12,7 @@ import com.example.itera.dto.project.ProjectWithJoinResponseDTO;
 import com.example.itera.dto.task.TaskCompleteRequestDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningRequestDTO;
 import com.example.itera.dto.taskPlanning.TaskPlanningResponseDTO;
+import com.example.itera.dto.taskRetrospective.TaskRetrospectiveRequestDTO;
 import com.example.itera.dto.taskReview.TaskReviewRequestDTO;
 import com.example.itera.exception.ResourceNotFoundException;
 import com.example.itera.exception.UnauthorizedException;
@@ -25,6 +27,7 @@ import com.example.itera.dto.role.RoleResponseDTO;
 import com.example.itera.dto.teamMember.TeamMemberResponseDTO;
 import com.example.itera.enumeration.ResponseType;
 import com.example.itera.infra.security.TokenService;
+import com.example.itera.repository.activity.ActivityRepository;
 import com.example.itera.repository.iteration.IterationRepository;
 import com.example.itera.repository.nonFunctionalRequirementProject.NonFunctionalRequirementProjectRepository;
 import com.example.itera.repository.role.RoleRepository;
@@ -77,6 +80,10 @@ public class ProjectController {
 
     @Autowired
     RiskRepository riskRepository;
+
+    @Autowired
+    ActivityRepository activityRepository;
+
 
     @Autowired
     RequirementRepository requirementRepository;
@@ -257,6 +264,7 @@ public class ProjectController {
             createIterations(project.getId());
             createTaskPlanning(project.getId());
             createTaskReview(project.getId());
+            createTaskRetrospective(project.getId());
         }
 
         return new ProjectResponseDTO(project);
@@ -277,6 +285,39 @@ public class ProjectController {
     public List<ProjectResponseDTO> getProjectByCreatedBy(@PathVariable String id) throws ResourceNotFoundException {
         List<ProjectResponseDTO> projects = projectRepository.findByCreatedBy(id);
         return projects.stream().toList();
+    }
+    @GetMapping("/member/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ProjectResponseDTO> getProjectByMmeber(@PathVariable String id) throws ResourceNotFoundException {
+        List<ProjectResponseDTO> projects = new ArrayList<>();
+        List<TeamMemberResponseDTO> members = teamMemberRepository.findAllByUserId(id);
+        for (TeamMemberResponseDTO member : members) {
+            Project project = projectRepository.findById(member.project().getId()).orElseThrow(() -> new ResourceNotFoundException(ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+            if(project != null){
+                projects.add(new ProjectResponseDTO(project));
+            }
+        }
+        return projects.stream().toList();
+    }
+
+    @GetMapping("/recent/member/user/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ProjectResponseDTO> getRecentProjectsByMember(@PathVariable String id) throws ResourceNotFoundException {
+        List<ProjectResponseDTO> projects = new ArrayList<>();
+        List<TeamMemberResponseDTO> members = teamMemberRepository.findAllByUserId(id);
+
+        for (TeamMemberResponseDTO member : members) {
+            Project project = projectRepository.findById(member.project().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            ResponseType.EMPTY_GET.getMessage() + " id: " + id));
+
+            if (project != null) {
+                projects.add(new ProjectResponseDTO(project));
+            }
+        }
+        return projects.stream()
+                .sorted((p1, p2) -> p2.lastAccessDate().compareTo(p1.lastAccessDate()))
+                .toList();
     }
 
     /**
@@ -331,6 +372,13 @@ public class ProjectController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<RiskResponseDTO> getProjectRisks(@PathVariable String id){
         return riskRepository.findByProject(id).stream().toList();
+
+    }
+
+    @GetMapping("/{id}/activities")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ActivityResponseDTO> getProjectActivities(@PathVariable String id){
+        return activityRepository.findByProjectId(id).stream().toList();
 
     }
 
@@ -531,7 +579,7 @@ public class ProjectController {
         List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
         for (IterationResponseDTO iteration : iterations){
             taskController.saveTask(new TaskCompleteRequestDTO("Planejamento da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Planejamento", null, null, null,
-                    new TaskPlanningRequestDTO(0, 0, 0.0, null, null), null, iteration.id(), null, null));
+                    new TaskPlanningRequestDTO(0, 0, 0.0, null, null), null, null, iteration.id(), null, null));
         }
     }
 
@@ -539,7 +587,14 @@ public class ProjectController {
         List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
         for (IterationResponseDTO iteration : iterations){
             taskController.saveTask(new TaskCompleteRequestDTO("Revisão da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Revisão", null, null, null,
-                    null, new TaskReviewRequestDTO(0, 0, 0.0, null, null, null, true, true, true, true), iteration.id(), null, null));
+                    null, new TaskReviewRequestDTO(0, 0, 0.0, null, null, null, true, true, true, true), null, iteration.id(), null, null));
+        }
+    }
+    public void createTaskRetrospective(String projectId){
+        List<IterationResponseDTO> iterations = iterationRepository.findByProject(projectId).stream().toList();
+        for (IterationResponseDTO iteration : iterations){
+            taskController.saveTask(new TaskCompleteRequestDTO("Retrospectiva da iteração "+ iteration.number(), null, null, null, null, null, iteration.startDate(), iteration.endDate(), null, null, null, null, "A fazer", "Retrospectiva", null, null, null,
+                    null, null, new TaskRetrospectiveRequestDTO("", "", "", null), iteration.id(), null, null));
         }
     }
 }

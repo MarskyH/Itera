@@ -16,6 +16,15 @@ import { useRiskStore } from "src/stores/RiskStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useRoute } from "vue-router";
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
 
 interface Risk extends models.Risk { }
 interface Degree extends models.Degree { }
@@ -290,6 +299,7 @@ async function viewRiskOnSide(riskId: string) {
       </div>
 
       <button
+        v-if="!disableAction()"
         class="flex text-white justify-evenly items-center bg-lavenderIndigo-900 px-3 py-2 gap-4 rounded-md"
         @click="setNewRiskForm()"
       >

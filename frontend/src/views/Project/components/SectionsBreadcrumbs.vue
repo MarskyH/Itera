@@ -20,6 +20,10 @@ const sections = [
   {
     title: 'Requisitos não funcionais',
     link: 'view-non-functional-requirements'
+  },
+  {
+    title: 'Ações',
+    link: 'view-activity'
   }
 ]
 

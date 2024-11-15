@@ -9,6 +9,16 @@ import { InputFieldProps, NonFunctionalRequirementForm, models } from "src/@type
 import { useNonFunctionalRequirementStore } from "src/stores/NonFunctionalRequirementStore";
 import { useRoute, useRouter } from "vue-router";
 
+import LocalStorage from "src/services/localStorage";
+
+const storage = new LocalStorage();
+
+let userRole = storage.getLoggedUser()?.role || ''
+
+function disableAction(){
+  return (userRole !== 'Gerente')
+}
+
 interface NonFunctionalRequirement extends models.NonFunctionalRequirement { }
 interface NonFunctionalRequirementProject extends models.NonFunctionalRequirementProject { }
 interface NonFunctionalRequirementProjectOnUpdate extends models.NonFunctionalRequirementProjectOnUpdate { }
@@ -157,7 +167,7 @@ function onSubmit(values: any) {
       </div>
 
       <div
-        v-if="$route.name !== 'non-functional-requirements'" 
+        v-if="$route.name !== 'non-functional-requirements' && !disableAction()" 
         class="flex gap-5"
       >
         <button

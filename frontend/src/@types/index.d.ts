@@ -47,6 +47,15 @@ export namespace models {
     accountNonLocked: boolean
   }
 
+  export interface ForgotPassword{
+    email: string
+  }
+
+  export interface ResetPassword{
+    token: string
+    newPassword: string
+  }
+
   export interface LoginModel {
     login: string
     password: string
@@ -89,6 +98,22 @@ export namespace models {
     accountNonLocked: boolean
     credentialsNonExpired: boolean
     accountNonExpired: boolean
+  }
+
+  export interface Activity{
+    id?: string
+    title: string
+    description: string
+    priority: string
+    type: string
+  }
+
+  export interface ActivityOnCreate{
+    title: string
+    description: string
+    priority: string
+    type: string
+    project_id: string
   }
 
   export interface BacklogRequirement {
@@ -344,6 +369,7 @@ export namespace models {
     taskBug?: TaskBug
     taskPlanning?: TaskPlanning
     taskReview?: TaskReview
+    taskRetrospective?: TaskRetrospective
     iteration_id: string
     assignees: Assignee[]
     pendencies: Pendency[]
@@ -452,6 +478,23 @@ export namespace models {
     checkRisks: boolean
   }
 
+  export interface TaskRetrospective {
+    id: string,
+		strengths: string,
+    weaknesses: string,
+    improvements: string,
+    participants:TeamMemberPlanning[]
+  }
+
+
+  export interface TaskRetrospectiveOnUpdate {
+    id: string,
+		strengths: string,
+    weaknesses: string,
+    improvements: string,
+    participants:TeamMemberPlanning[]
+  }
+
   export interface TaskOnCreate {
     title: string
     priority: string
@@ -503,6 +546,14 @@ export namespace models {
     taskBug: TaskBugOnUpdate
     taskPlanning: TaskPlanningOnUpdate
     taskReview:TaskReviewOnUpdate
+    taskRetrospective: TaskRetrospectiveOnUpdate
+  }
+
+  export interface ActivityForm {
+    title: string
+    priority: string
+    description: string
+    type: string
   }
 }
 
@@ -534,6 +585,13 @@ export interface TeamMemberForm {
   role: string
 }
 
+export interface ActivityForm {
+  title: string
+  priority: string
+  description: string
+  type: string
+}
+
 export interface RiskForm {
   title: string
   effect: string
@@ -543,6 +601,8 @@ export interface RiskForm {
   description: string
   type: string
 }
+
+
 
 export interface FunctionalRequirementForm {
   title: string

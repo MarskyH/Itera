@@ -12,6 +12,7 @@ import com.example.itera.domain.taskBug.TaskBug;
 import com.example.itera.domain.taskImprovement.TaskImprovement;
 import com.example.itera.domain.taskPlanning.TaskPlanning;
 import com.example.itera.domain.taskRequirement.TaskRequirement;
+import com.example.itera.domain.taskRetrospective.TaskRetrospective;
 import com.example.itera.domain.taskReview.TaskReview;
 import com.example.itera.domain.teamMember.TeamMember;
 import com.example.itera.domain.user.User;
@@ -38,6 +39,7 @@ import com.example.itera.repository.task.TaskRepository;
 import com.example.itera.repository.taskBug.TaskBugRepository;
 import com.example.itera.repository.taskImprovement.TaskImprovementRepository;
 import com.example.itera.repository.taskRequirement.TaskRequirementRepository;
+import com.example.itera.repository.taskRetrospective.TaskRetrospectiveRepository;
 import com.example.itera.repository.taskReview.TaskReviewRepository;
 import com.example.itera.repository.teamMember.TeamMemberRepository;
 import com.example.itera.repository.user.UserRepository;
@@ -89,6 +91,9 @@ public class TaskController {
 
     @Autowired
     TaskReviewRepository taskReviewRepository;
+
+    @Autowired
+    TaskRetrospectiveRepository taskRetrospectiveRepository;
     @Autowired
     TeamMemberRepository teamMemberRepository;
 
@@ -140,6 +145,7 @@ public class TaskController {
                     null,  // TaskBug
                     null, // taskPlanning
                     null, // tasReview
+                    null, // taskRetrospective
                     iterationData
             );
 
@@ -185,7 +191,7 @@ public class TaskController {
             }
 
             // Tratamento de TaskBug
-            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null && data.taskPlanning() == null) {
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() != null && data.taskPlanning() == null && data.taskReview() == null && data.taskRetrospective() == null) {
                 TaskBug taskBugData = new TaskBug(taskData);
 
                 if (data.taskBug().requirement_id() != null) {
@@ -199,7 +205,7 @@ public class TaskController {
             }
 
             // Tratamento de TaskPlanning
-            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() != null) {
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() != null && data.taskReview() == null && data.taskRetrospective() == null) {
                 TaskPlanning taskPlanningData = new TaskPlanning(
                         taskData,
                         data.taskPlanning().totalSize(),
@@ -214,7 +220,7 @@ public class TaskController {
                 response.put("Task_planning_id", taskPlanningData.getId());
             }
 
-            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() == null && data.taskReview() != null) {
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() == null && data.taskReview() != null && data.taskRetrospective() == null) {
                 TaskReview taskReviewData = new TaskReview(
                         taskData,
                         data.taskReview().totalSize(),
@@ -232,6 +238,20 @@ public class TaskController {
                 taskReviewRepository.save(taskReviewData);
                 taskRepository.save(taskData);
                 response.put("Task_review_id", taskReviewData.getId());
+            }
+
+            else if (data.taskRequirement() == null && data.taskImprovement() == null && data.taskBug() == null && data.taskPlanning() == null && data.taskReview() == null && data.taskRetrospective() != null) {
+                TaskRetrospective taskRetrospectiveData = new TaskRetrospective(
+                        taskData,
+                        data.taskRetrospective().participants(),
+                        data.taskRetrospective().strengths(),
+                        data.taskRetrospective().weaknesses(),
+                        data.taskRetrospective().improvements()
+                );
+                taskData.setTaskRetrospective(taskRetrospectiveData);
+                taskRetrospectiveRepository.save(taskRetrospectiveData);
+                taskRepository.save(taskData);
+                response.put("Task_review_id", taskRetrospectiveData.getId());
             }
 
             // Adicionando Assignees, se houver
@@ -446,10 +466,12 @@ public class TaskController {
                     taskPlanning.setTotalEffort(taskPlanning.getEffortCalculation(taskPlanning.getProjectBacklogAsList()));
 
                     if(taskPlanning.getTotalEffort() != 0 && taskPlanning.getTotalSize() != 0){
-                        taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalSize() / taskPlanning.getTotalEffort());
+                        taskPlanning.setPlannedSpeed((double) taskPlanning.getTotalEffort() / taskPlanning.getTotalSize());
                     }else{
                         taskPlanning.setPlannedSpeed(0.0);
                     }
+                    task.setTaskPlanning(taskPlanning);
+                    taskPlanningRepository.save(taskPlanning);
                 }
             }
 
@@ -485,10 +507,32 @@ public class TaskController {
                     taskReview.setTotalSize(taskReview.getSizeCalculation(taskReview.getCompletedScopelogAsList()));
                     taskReview.setTotalEffort(taskReview.getEffortCalculation(taskReview.getCompletedScopelogAsList()));
                     if (taskReview.getTotalEffort() != 0 && taskReview.getTotalSize() != 0) {
-                        taskReview.setCompletedSpeed((double) taskReview.getTotalSize() / taskReview.getTotalEffort());
+                        taskReview.setCompletedSpeed((double)  taskReview.getTotalEffort() / taskReview.getTotalSize());
                     } else {
                         taskReview.setCompletedSpeed(0.0);
                     }
+
+                    task.setTaskReview(taskReview);
+                    taskReviewRepository.save(taskReview);
+                }
+            }
+            if(data.taskRetrospective() != null){
+                TaskRetrospective taskRetrospective = taskRetrospectiveRepository.findById(task.getTaskRetrospective().getId()).orElse(null);
+                if(taskRetrospective != null){
+                    if(data.taskRetrospective().participants() != null){
+                        taskRetrospective.setParticipants(taskRetrospective.setParticipantsAsJson(data.taskRetrospective().participants()));
+                    }
+                    if(!data.taskRetrospective().strengths().isEmpty() && !data.taskRetrospective().strengths().isBlank()){
+                        taskRetrospective.setStrengths(data.taskRetrospective().strengths());
+                    }
+                    if(!data.taskRetrospective().weaknesses().isEmpty() && !data.taskRetrospective().weaknesses().isBlank()){
+                        taskRetrospective.setWeaknesses(data.taskRetrospective().weaknesses());
+                    }
+                    if(!data.taskRetrospective().improvements().isEmpty() && !data.taskRetrospective().improvements().isBlank()){
+                        taskRetrospective.setImprovements(data.taskRetrospective().improvements());
+                    }
+                    task.setTaskRetrospective(taskRetrospective);
+                    taskRetrospectiveRepository.save(taskRetrospective);
                 }
             }
             if (data.iteration_id() != null) {
