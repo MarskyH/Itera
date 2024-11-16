@@ -23,7 +23,7 @@ const props = defineProps<{
   onError: string
 }>()
 
-const $emits = defineEmits(['onCancelDrag'])
+const $emits = defineEmits(['onCancelDrag', 'onConfirmDrag'])
 
 const isActionModalOpen = ref<boolean>(false)
 const actionModalTitle = ref<string>('Adicionar')
@@ -145,7 +145,7 @@ async function moveTask (evt: any) {
         updateTaskOrder(tasksList.value, evt.draggedContext.futureIndex)
         updateTaskOrder(evt.relatedContext.list, evt.draggedContext.futureIndex)
         
-        if(response === 400) {
+        if(response !== 200) {
           $emits('onCancelDrag', { 
             fromList: props.listName, 
             toList: evt.relatedContext.component.componentData.listName, 
@@ -153,6 +153,14 @@ async function moveTask (evt: any) {
           })
 
           return false
+        }else{
+          $emits('onConfirmDrag', { 
+            fromList: props.listName, 
+            toList: evt.relatedContext.component.componentData.listName, 
+            task: evt.draggedContext.element 
+          })
+
+          return true
         }
       })
     }

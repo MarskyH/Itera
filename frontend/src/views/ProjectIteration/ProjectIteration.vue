@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import IterationTaskList from './components/IterationTaskList.vue';
+import FeedbackUserAction from '../../components/FeedbackUserAction.vue';
 import { useRoute } from "vue-router";
 import { models } from "src/@types";
 import { onMounted, ref } from "vue";
@@ -24,6 +25,8 @@ const $taskStore = useTaskStore()
 const $route = useRoute()
 
 const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Tarefa movida com sucesso")
 
 const listNameKey: {[key: string]: string} = {
   'A fazer': 'toDoTasks',
@@ -35,6 +38,8 @@ const listNameKey: {[key: string]: string} = {
 
 function onCancelDrag(cancelEvent: { fromList: string, toList: string, task: Task }) {
     onError.value = true
+    isVisible.value = true
+    textResult.value = "Não é possível mover para essa lista"
 
     var taskIndex: number = iterationTasks.value[listNameKey[cancelEvent.toList]].indexOf(cancelEvent.task)
 
@@ -45,6 +50,13 @@ function onCancelDrag(cancelEvent: { fromList: string, toList: string, task: Tas
     iterationTasks.value[listNameKey[cancelEvent.toList]].splice(taskIndex, 1)
     iterationTasks.value[listNameKey[cancelEvent.fromList]].push(cancelEvent.task)
 }
+
+function onConfirmDrag(confirmEvent: { fromList: string, toList: string, task: Task }) {
+    onError.value = false
+    isVisible.value = true
+    textResult.value = "Tarefa movida com sucesso da lista '" + confirmEvent.fromList + "' para a lista '"  + confirmEvent.toList + "'" 
+}
+
 
 onMounted(async () => {
   onLoad.value = true
@@ -74,28 +86,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    class="absolute flex gap-3 items-center bottom-0 right-0 bg-red-500/80 rounded p-3 border-[1px] border-red-400 m-4 text-white"
-    v-show="onError"
-  >
-    <FontAwesomeIcon
-      icon="fa-solid fa-triangle-exclamation"
-    />
-
-    <span class="text-sm">
-      Não é possível mover para essa lista
-    </span>
-
-    <button
-      class="hover:bg-red-500/50 px-[6px] rounded-full" 
-      @click="() => onError = false"
-    >
-      <FontAwesomeIcon
-        icon="fa-solid fa-xmark"
-      />
-    </button>
-  </div>
-
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div
     v-if="!onLoad"
     class="flex gap-3 grow shrink-0 overflow-auto"
@@ -107,6 +103,7 @@ onMounted(async () => {
       :add-button="true"
       on-error="false"
       @on-cancel-drag="onCancelDrag"
+      @on-confirm-drag="onConfirmDrag"
     />
     <IterationTaskList
       title="Fazendo"
@@ -114,6 +111,7 @@ onMounted(async () => {
       :tasks="iterationTasks.doingTasks"
       on-error="false"
       @on-cancel-drag="onCancelDrag"
+      @on-confirm-drag="onConfirmDrag"
     />
     <IterationTaskList
       title="Feito"
@@ -121,6 +119,7 @@ onMounted(async () => {
       :tasks="iterationTasks.doneTasks"
       on-error="false"
       @on-cancel-drag="onCancelDrag"
+      @on-confirm-drag="onConfirmDrag"
     />
     <IterationTaskList
       title="Pendente"
@@ -128,6 +127,7 @@ onMounted(async () => {
       :tasks="iterationTasks.pendingTasks"
       on-error="false"
       @on-cancel-drag="onCancelDrag"
+      @on-confirm-drag="onConfirmDrag"
     />
     <IterationTaskList
       title="Cancelado"
@@ -135,6 +135,7 @@ onMounted(async () => {
       :tasks="iterationTasks.canceledTasks"
       on-error="false"
       @on-cancel-drag="onCancelDrag"
+      @on-confirm-drag="onConfirmDrag"
     />
   </div>
 </template>
