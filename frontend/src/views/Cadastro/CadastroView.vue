@@ -1,4 +1,10 @@
 <template>
+   <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
@@ -136,11 +142,12 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useDark } from '@vueuse/core'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
 import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
+import FeedbackUserAction from '../../components/FeedbackUserAction.vue';
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
@@ -158,6 +165,9 @@ const userEmail = ref('')
 const showRegistrationModal = ref(false)
 const selectedRole = ref('USER')
 const showPassword = ref(false)
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Cadastro realizado com sucesso.")
 
 const $store = useCadastroPerfilStore()
 
@@ -201,9 +211,12 @@ const handleSubmit = async (submitData: any) => {
     userEmail.value = submitData.email
     loading.value = false
     showRegistrationModal.value = true
-    $router.push('/home')
+    isVisible.value = true
   } else {
-    errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
+    onError.value = false
+    isVisible.value = true
+    errorText.value = response.data?.message ? response.data.message : 'Requisição rejeitada pelo servidor.'
+    textResult.value = "Falha ao realizar o cadastro. Motivo: " + errorText.value
     error.value = true
     loading.value = false
   }
@@ -216,6 +229,13 @@ const onInvalid = (e: any) => {
 onMounted(() => {
   window.scrollTo(0, 0)
 })
+
+
+watch(isVisible, (newValue) => {
+  if (!newValue && !error.value) {
+    $router.push('/home');
+  }
+});
 
 const logoPath = computed(() =>
   isDark.value ? 'src/assets/iteraLogoDark.svg' : 'src/assets/iteraLogoLight.svg'

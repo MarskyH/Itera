@@ -286,6 +286,12 @@ async function viewTeamMemberOnSide(memberId: string) {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div
     v-if="teamMembers.length === 0"
     class="flex flex-col w-full h-full items-center justify-center gap-8"

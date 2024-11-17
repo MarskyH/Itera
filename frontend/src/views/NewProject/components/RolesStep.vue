@@ -13,8 +13,11 @@ import RoleDetails from "src/views/Project/components/RoleDetails.vue";
 import { InputFieldProps, RoleForm, models } from "src/@types";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useRoute } from "vue-router";
-
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 const storage = new LocalStorage();
 
@@ -84,9 +87,14 @@ async function createRole(roleFormValues: RoleForm) {
   await $roleStore.createRole(projectId, roleFormValues)
     .then((responseStatus: any) => {
       if (responseStatus === 200) {
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Informações cadastradas com sucesso."
         setRoles()
       } else {
-        alert('Falha ao criar papel!')
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "Ocorreu um erro. Por favor tente novamente."
       }
     }
     )
@@ -157,6 +165,12 @@ async function viewRoleOnSide(roleId: string) {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div
     v-if="roles.length === 0"
     class="flex flex-col w-full h-full items-center justify-center gap-8"

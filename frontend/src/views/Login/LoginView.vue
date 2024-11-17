@@ -1,4 +1,10 @@
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
@@ -90,6 +96,7 @@ import { object, string, ref as refYup } from 'yup'
 import { useLoginStore } from 'src/stores/LoginStore'
 import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
+import FeedbackUserAction from '../../components/FeedbackUserAction.vue';
 import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
 
 
@@ -106,7 +113,9 @@ const $store = useLoginStore()
 const loading = ref(false)
 const userEmail = ref('')
 const showRegistrationModal = ref(false)
-
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 const isDark = useDark()
 const gradientColors = computed(() => {
@@ -139,7 +148,10 @@ const handleSubmit = async (submitData: any) => {
     showRegistrationModal.value = true
     $router.push('/home')
   } else if (response.status !== 201) {
-    errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
+    errorText.value = response.data?.message ? response.data.message : 'Requisição rejeitada pelo servidor.'
+    isVisible.value = true
+    onError.value = true
+    textResult.value = "Falha ao realizar o login. Motivo: " + errorText.value
     error.value = true
     loading.value = false
   }
