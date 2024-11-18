@@ -16,8 +16,11 @@ import { useRiskStore } from "src/stores/RiskStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useRoute } from "vue-router";
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
-
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 const storage = new LocalStorage();
 
 let userRole = storage.getLoggedUser()?.role || ''
@@ -180,14 +183,19 @@ async function createRisk(riskFormValues: RiskForm) {
   const projectId = String($route.params.projectId)
 
   await $riskStore.createRisk(riskFormValues, projectId)
-    .then((responseStatus: any) => {
+  .then((responseStatus: any) => {
       if (responseStatus === 200) {
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Informações cadastradas com sucesso."
         setRisks()
       } else {
-        alert('Falha ao criar risco!')
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "Ocorreu um erro. Por favor tente novamente."
       }
     }
-    )
+  )
 }
 
 function onSubmit(values: any) {
@@ -258,6 +266,12 @@ async function viewRiskOnSide(riskId: string) {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div
     v-if="risks.length === 0"
     class="flex flex-col w-full h-full items-center justify-center gap-8"

@@ -16,7 +16,11 @@ import { useActivityStore } from "src/stores/ActivityStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useRoute } from "vue-router";
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 const storage = new LocalStorage();
 
@@ -138,10 +142,14 @@ async function createActivity(activityFormValues: ActivityForm) {
   await $activityStore.createActivity(activityFormValues, projectId).then((response: any) => {
     console.log(response)
     if (response === 200) {
-      alert('Salvo com sucesso')
+      isVisible.value = true
+      onError.value = false
+      textResult.value = "Informações cadastradas com sucesso."
       isActionModalOpen.value = false
     } else {
-      alert('Erro ao salvar')
+      isVisible.value = true
+      onError.value = true
+      textResult.value = "Ocorreu um erro. Por favor tente novamente."
       isActionModalOpen.value = false
     }
   })
@@ -216,6 +224,12 @@ async function viewActivityOnSide(activityId: string) {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div v-if="activities.length === 0" class="flex flex-col w-full h-full items-center justify-center gap-8">
     <img :src="ilustracao" alt="Ilustração Novo Projeto" class="shrink-0 w-60 h-60">
 

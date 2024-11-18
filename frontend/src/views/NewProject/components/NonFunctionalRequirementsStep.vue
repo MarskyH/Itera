@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Form } from 'vee-validate'
 import * as yup from 'yup'
 
@@ -8,9 +8,12 @@ import yupErrorMessages from 'src/utils/yupErrorMessages';
 import { InputFieldProps, NonFunctionalRequirementForm, models } from "src/@types";
 import { useNonFunctionalRequirementStore } from "src/stores/NonFunctionalRequirementStore";
 import { useRoute, useRouter } from "vue-router";
-
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
 
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 const storage = new LocalStorage();
 
 let userRole = storage.getLoggedUser()?.role || ''
@@ -102,10 +105,13 @@ async function createNonFunctionalRequirement(nonFunctionalRequirementsFormValue
   const responseStatus = await $nonFunctionalRequirementStore.createNonFunctionalRequirements(nonFunctionalRequirementsFormValues, projectId);
   if (responseStatus === 200) {
     await setNonFunctionalRequirements();
-    alert('Configuração do projeto concluída!');
-    $router.push({ name: 'my-projects' })
+    isVisible.value = true
+    onError.value = false
+    textResult.value = "Informações cadastradas com sucesso."
   } else {
-    //alert('Falha ao cadastrar requisito não funcional!');
+    isVisible.value = true
+    onError.value = true
+    textResult.value = "Ocorreu um erro. Por favor tente novamente."
   }
 }
 
@@ -151,9 +157,23 @@ function onSubmit(values: any) {
     createNonFunctionalRequirement(nonFunctionalRequirementFormValuesList)
   }
 }
+
+watch(isVisible, (newValue) => {
+  if (!newValue && !onError.value) {
+    $router.push({ name: 'my-projects' })
+  }
+});
+
+
 </script>
 
 <template>
+   <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     ref="nonFunctionalRequirementForm"
     :validation-schema="schema"

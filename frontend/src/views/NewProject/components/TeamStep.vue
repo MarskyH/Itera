@@ -16,8 +16,11 @@ import { useTeamMemberStore } from "src/stores/TeamMemberStore";
 import { useRoleStore } from "src/stores/RoleStore";
 import { useUserStore } from "src/stores/UserStore";
 import { useRoute } from "vue-router";
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
-
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 const storage = new LocalStorage();
 
 let userRole = storage.getLoggedUser()?.role || ''
@@ -158,11 +161,16 @@ async function createTeamMember(teamMemberFormValues: TeamMemberForm) {
   const projectId: string = String($route.params.projectId)
 
   await $teamMemberStore.createTeamMember(teamMemberFormValues, projectId)
-    .then((responseStatus: any) => {
-      if(responseStatus === 200) {
+  .then((responseStatus: any) => {
+      if (responseStatus === 200) {
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Informações cadastradas com sucesso."
         setTeamMembers()
       } else {
-        alert('Falha ao criar integrante!')
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "Ocorreu um erro. Por favor tente novamente."
       }
     }
   )

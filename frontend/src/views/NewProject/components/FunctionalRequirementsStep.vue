@@ -15,11 +15,13 @@ import { useFunctionalRequirementStore } from "src/stores/FunctionalRequirementS
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useSizeRequirementStore } from "src/stores/SizeRequirementStore";
-
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import LocalStorage from "src/services/localStorage";
 
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 const storage = new LocalStorage();
-
 let userRole = storage.getLoggedUser()?.role || ''
 
 function disableAction(){
@@ -187,11 +189,16 @@ async function createFunctionalRequirement(functionalRequirementFormValues: Func
   const projectId: string = String($route.params.projectId)
 
   await $functionalRequirementStore.createFunctionalRequirement(functionalRequirementFormValues, projectId)
-    .then((responseStatus: any) => {
-      if(responseStatus === 200) {
+  .then((responseStatus: any) => {
+      if (responseStatus === 200) {
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Informações cadastradas com sucesso."
         setFunctionalRequirements()
       } else {
-        alert('Falha ao criar requisito! Tente novamente.')
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "Ocorreu um erro. Por favor tente novamente."
       }
     }
   )
@@ -266,6 +273,12 @@ async function viewFunctionalRequirementOnSide(requirementId: string) {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div
     v-if="functionalRequirements.length === 0"
     class="flex flex-col w-full h-full items-center justify-center gap-8"
