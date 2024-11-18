@@ -1,4 +1,10 @@
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
@@ -62,6 +68,7 @@ import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
 import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
+import FeedbackUserAction from '../../components/FeedbackUserAction.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
@@ -70,6 +77,11 @@ import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
 interface ForgotPassword extends models.ForgotPassword { }
 
+
+
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 const $router = useRouter()
 const error = ref(false)
@@ -104,11 +116,16 @@ const handleSubmit = async (submitData: any) => {
     userEmail.value = submitData.email
     loading.value = false
     showRegistrationModal.value = true
-    alert('E-mail enviado. Verifique o e-mail ' + data.email)
+    isVisible.value = true
+    onError.value = false
+    textResult.value = 'E-mail enviado. Verifique o e-mail ' + data.email
   } else if (response.status !== 201) {
     errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
     error.value = true
     loading.value = false
+    isVisible.value = true
+    onError.value = true
+    textResult.value = "Ocorreu um erro. Por favor tente novamente."
   }
 }
 

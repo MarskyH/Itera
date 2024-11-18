@@ -1,4 +1,10 @@
 <template>
+   <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     @submit="handleSubmit"
     @invalid-submit="onInvalid"
@@ -66,12 +72,13 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed } from 'vue'
 import CustomButton from 'src/components/CustomButton.vue'
 import CustomInput from 'src/components/CustomInput.vue'
 import ModeToggleButton2 from '../Navigation/components/ModeToggleButton2.vue'
+import FeedbackUserAction from '../../components/FeedbackUserAction.vue'
 import { mdiAccount, mdiLock, mdiEmail } from '@mdi/js';
 import { Form } from 'vee-validate'
 import { object, string, ref as refYup } from 'yup'
@@ -79,7 +86,9 @@ import { usePasswordStore } from 'src/stores/PasswordStore'
 import { models } from 'src/@types'
 import { useRouter } from 'vue-router'
 interface ResetPassword extends models.ResetPassword { }
-
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 const $router = useRouter()
 const error = ref(false)
@@ -122,8 +131,10 @@ const handleSubmit = async (submitData: any) => {
     userEmail.value = submitData.email
     loading.value = false
     showRegistrationModal.value = true
-    alert('Senha redefinida com sucesso. Faça login')
-    $router.push('/login')
+    isVisible.value = true
+    onError.value = false
+    textResult.value = 'Senha redefinida com sucesso. Faça login'
+  
   } else if (response.status !== 201) {
     errorText.value = response.data?.message ? response.data.message : 'Requisição não aceita.'
     error.value = true
@@ -138,6 +149,12 @@ const onInvalid = (e: any) => {
 onMounted(() => {
   window.scrollTo(0, 0)
 })
+
+watch(isVisible, (newValue) => {
+  if (!newValue && !error.value) {
+    $router.push('/login')
+  }
+});
 
 const logoPath = computed(() =>
   isDark.value ? 'src/assets/iteraLogoDark.svg' : 'src/assets/iteraLogoLight.svg'
