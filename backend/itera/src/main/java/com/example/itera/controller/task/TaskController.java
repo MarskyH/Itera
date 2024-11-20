@@ -325,6 +325,9 @@ public class TaskController {
             boolean isListNameValided = task.updateTaskListName(task.getListName(), data.listName());
             if (data.listName() != null && isListNameValided) {
                 task.setListName(data.listName());
+                if(data.listName().equals("Feito")){
+                    task.setProgressiveBar(100);
+                }
             } else if (data.listName() != null) {
                 response.put("data_id", task.getId());
                 response.put("message", ResponseType.FAIL_UPDATE.getMessage() + " - " + data.listName() + " to " + task.getListName());

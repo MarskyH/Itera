@@ -354,15 +354,15 @@ export const useTaskStore = defineStore('Task', {
         body: taskData
       })
 
-      if(taskData.taskPlanning == null && taskData.taskReview == null && taskData.taskRetrospective == null){
-        if(taskData.taskRequirement.detailsCancelled != null){
-          this.updateTaskCancel(id, taskData.taskRequirement.detailsCancelled)
-        }
-        if( taskData.taskImprovement.detailsCancelled != null ){
-          this.updateTaskCancel(id, taskData.taskImprovement.detailsCancelled)
-        }
-        if(taskData.taskBug.detailsCancelled != null){
-          this.updateTaskCancel(id, taskData.taskBug.detailsCancelled)
+      if (!taskData.taskPlanning && !taskData.taskReview && !taskData.taskRetrospective) {
+        const detailsCancelled =
+          taskData.taskRequirement?.detailsCancelled ||
+          taskData.taskImprovement?.detailsCancelled ||
+          taskData.taskBug?.detailsCancelled ||
+          null;
+    
+        if (detailsCancelled) {
+          this.updateTaskCancel(id, detailsCancelled);
         }
       }
 

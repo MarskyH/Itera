@@ -146,6 +146,7 @@ async function createActivity(activityFormValues: ActivityForm) {
       onError.value = false
       textResult.value = "Informações cadastradas com sucesso."
       isActionModalOpen.value = false
+      setActivities()
     } else {
       isVisible.value = true
       onError.value = true

@@ -15,6 +15,7 @@ import { useTaskStore } from "src/stores/TaskStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useRiskActionTypeStore } from "src/stores/RiskActionTypeStore";
 import { useActivityStore } from "src/stores/ActivityStore"
+import FeedbackUserAction from "src/components/FeedbackUserAction.vue";
 import ActionModal from "src/components/ActionModal.vue";
 
 interface Task extends models.Task { }
@@ -25,6 +26,10 @@ interface ActivityForm extends models.ActivityForm {}
 interface BacklogRequirement extends models.BacklogRequirement { }
 interface Priority extends models.Priority { }
 interface RiskActionType extends models.RiskActionType { }
+
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Tarefa atualizada com sucesso.")
 
 const getCurrentDate = formatDate(new Date().toISOString());
 const $taskStore = useTaskStore();
@@ -253,7 +258,7 @@ async function setBacklogIteration() {
   await $functionalRequirementStore.fetchFunctionalRequirementsByIteration(String($route.params.iterationId)).then(() => {
     backlogIterarion.value = $functionalRequirementStore.functionalRequirements;
     let index = 0
-    console.log(backlogIterarion.value)
+    console.log($functionalRequirementStore.functionalRequirements)
     backlogIterarion.value.forEach((element)=>{
       console.log(element.title)
       inputFieldsReview.value.backlogIterationFields[index] = {
@@ -387,7 +392,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Requisito') {
     taskRequirement = {
       id: task.value.taskRequirement?.id,
-      detailsCancelled: values.detailsCancelled,
+      detailsCancelled:  values.detailsCancelled ?? '',
       checkProject: values.checkProject,
       checkRequirement: values.checkRequirement,
       checkFront: values.checkFront,
@@ -401,7 +406,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Melhoria') {
     taskImprovement = {
       id: task.value.taskImprovement?.id,
-      detailsCancelled: values.detailsCancelled,
+      detailsCancelled:  values.detailsCancelled ?? '',
       checkProject: values.checkProject,
       checkRequirement: values.checkRequirement,
       checkFront: values.checkFront,
@@ -414,7 +419,7 @@ async function onSubmit(values: any) {
   if (task.value.taskType === 'Bug') {
     taskBug = {
       id: task.value.taskBug?.id,
-      detailsCancelled: values.detailsCancelled,
+      detailsCancelled:  values.detailsCancelled ?? '',
       checkFront: values.checkFront,
       checkBack: values.checkBack,
       checkTest: values.checkTest
@@ -552,10 +557,15 @@ async function onSubmit(values: any) {
 
   await $taskStore.updateTask(task.value.id, taskData).then((response: any) => {
     if (response.status === 200) {
-      alert('Salvo com sucesso')
-      $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
+      isVisible.value = true
+      onError.value = false
+      textResult.value = "Sucesso ao atualizar a tarefa."
+      isActionModalOpen.value = false
     } else {
       alert('Erro ao salvar')
+      onError.value = true
+      textResult.value = "Falha ao atualizar a tarefa. Tente novamente."
+      isActionModalOpen.value = false
     }
   })
 }
@@ -571,10 +581,15 @@ async function onSubmitActivity(values: any) {
   await $activityStore.createActivity(activityFormData, projectId).then((response: any)=>{
     console.log(response)
     if (response === 200) {
-      alert('Salvo com sucesso')
+      isVisible.value = true
+      onError.value = true
+      textResult.value = "Sucesso ao criar a ação."
       isActionModalOpen.value = false
     } else {
       alert('Erro ao salvar')
+      isVisible.value = true
+      onError.value = true
+      textResult.value = "Falha ao criar a ação. Tente novamente."
       isActionModalOpen.value = false
     }
   })
@@ -691,7 +706,7 @@ onMounted(async () => {
                     type: "textarea",
                     required: false,
                     disabled: task.value.checkCancelled,
-                    validation: yup.string(),
+                    validation: yup.string().nullable(),
                     value: task.value.detailsCancelled
                   }
 
@@ -1098,7 +1113,7 @@ onMounted(async () => {
                     type: "textarea",
                     required: false,
                     disabled: task.value.checkCancelled,
-                    validation: yup.string().required(),
+                    validation: yup.string().nullable(),
                     value: task.value.detailsCancelled
                   }
                 ],
@@ -1452,6 +1467,12 @@ onMounted(async () => {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     ref="taskForm"
     :validation-schema="schema"
