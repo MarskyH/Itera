@@ -405,7 +405,7 @@ export const useTaskStore = defineStore('Task', {
         route: `/task/${id}`
       })
 
-      return response?.status === 200
+      return response
     },
   }
 })

@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   title: string
   edit?: boolean
   remove?: boolean
+  taskType?: string
 }>(), {
   edit: true,
   remove: true
@@ -24,6 +25,10 @@ function disableAction(){
   return (userRole !== 'Gerente')
 }
 
+function disableActionRemove(){
+  return (props.taskType === "Planejamento" || props.taskType === "Revisão" || props.taskType === "Retrospectiva")
+}
+
 
 function deleteAction() {
   if (onDelete.value) {
@@ -32,6 +37,8 @@ function deleteAction() {
     onDelete.value = true
   }
 }
+
+console.log()
 
 </script>
 
@@ -73,6 +80,7 @@ function deleteAction() {
       </button>
 
       <button
+        v-if="!disableActionRemove()"
         v-show="remove"
         class="flex items-center rounded px-3 py-2 text-sm gap-2"
         :class="[onDelete ? 'bg-lightRed-900 text-white' : 'bg-platinum-900 dark:bg-davysGray-900 text-lightRed-900 hover:bg-lightRed-900/25 hover:dark:bg-lightRed-900/25']"

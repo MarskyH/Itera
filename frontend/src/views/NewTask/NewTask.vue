@@ -15,6 +15,7 @@ import { useTaskStore } from "src/stores/TaskStore";
 import { usePriorityStore } from "src/stores/PriorityStore";
 import { useDegreeStore } from "src/stores/DegreeStore";
 import { useSizeRequirementStore } from "src/stores/SizeRequirementStore";
+import FeedbackUserAction from "src/components/FeedbackUserAction.vue";
 
 interface Task extends models.Task { }
 interface TeamMember extends models.TeamMember { }
@@ -26,6 +27,10 @@ interface TaskBugOnCreate extends models.TaskBugOnCreate { }
 interface Priority extends models.Priority { }
 interface Degree extends models.Degree { }
 interface SizeRequirement extends models.SizeRequirement { }
+const onError = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Tarefa criada com sucesso.")
+const routeName = ref<String>("")
 
 const $taskStore = useTaskStore();
 const $taskTypeStore = useTaskTypeStore();
@@ -48,12 +53,16 @@ const taskDefault: Task = {
   sizeTask: 0,
   startDate: "",
   endDate: "",
+  checkCancelled: false,
+  detailsCancelled: "",
   taskType: "",
   taskrequirement_id: "",
   taskimprovement_id: "",
   taskbug_id: "",
+  taskplanning_id: "",
   iteration_id: "",
-  assignees: []
+  assignees: [],
+  pendencies: [],
 }
 
 const task = ref<Task>({ ...taskDefault })
@@ -123,6 +132,13 @@ function getStepChecksByTaskType(step: string, taskType: string) {
     'B': 'Back',
     'T': 'Test'
   }
+
+let taskTypeValues: { [key: string]: string } = {
+  'Requisito': '1',
+  'Melhoria': '2',
+  'Bug': '3'
+}
+
 
   const taskTypeKey = `task${taskTypes[taskType]}`
   const checkStepKey = `check${steps[step]}`
@@ -249,11 +265,18 @@ let taskType: { [key: string]: string } = {
   '3': 'Bug'
 }
 
-let taskTypeValues: { [key: string]: string } = {
-  'Requisito': '1',
-  'Melhoria': '2',
-  'Bug': '3'
-}
+watch(isVisible, (newValue) => {
+  if (!newValue && !onError.value) {
+    $router.push({
+            name: 'project-iteration',
+            params: {
+              projectId: $route.params.projectId,
+              iterationId: $route.params.iterationId
+            }
+          });
+  }
+});
+
 
 async function onSubmit(values: any) {
   let taskData: TaskOnCreate = {
@@ -307,21 +330,19 @@ async function onSubmit(values: any) {
     await $taskStore.createTaskImprovement(taskData.iteration_id, taskData, taskImprovement, assignees)
       .then((response: any) => {
         if (response.status === 200) {
-          alert('Salvo com sucesso');
-          $router.push({
-            name: 'project-iteration',
-            params: {
-              projectId: $route.params.projectId,
-              iterationId: $route.params.iterationId
-            }
-          });
-        } else {
-          alert('Erro ao salvar: ' + response.message + ' (' + response.status + ')');
-        }
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Tarefa criada com sucesso."
+      } else {
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "IOcorreu um erro. Tente novamente."
+      }
       })
       .catch((error: any) => {
-        console.error(error);
-        alert('Erro inesperado: ' + error.message);
+        isVisible.value = true
+        onError.value = true
+        textResult.value = 'Erro inesperado: ' + error.message
       });
 
   }
@@ -353,10 +374,13 @@ async function onSubmit(values: any) {
 
     await $taskStore.createTaskBug(taskData.iteration_id, taskData, taskBug, assignees).then((response: any) => {
       if (response.status === 200) {
-        alert('Salvo com sucesso')
-        $router.push({ name: 'project-iteration', params: { projectId: $route.params.projectId, iterationId: $route.params.iterationId } })
+        isVisible.value = true
+        onError.value = false
+        textResult.value = "Tarefa criada com sucesso."
       } else {
-        alert('Erro ao salvar')
+        isVisible.value = true
+        onError.value = true
+        textResult.value = "IOcorreu um erro. Tente novamente."
       }
     })
   }
@@ -960,6 +984,12 @@ onMounted(async () => {
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onError" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <Form
     ref="taskForm"
     :validation-schema="schema"

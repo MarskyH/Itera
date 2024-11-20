@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import * as yup from 'yup'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import draggable from "vuedraggable";
 import ActionGridItem from 'src/views/NewProject/components/ActionGridItem.vue';
 import InputField from 'src/views/NewProject/components/InputField.vue'
 import yupErrorMessages from 'src/utils/yupErrorMessages';
 import ActionModal from 'src/components/ActionModal.vue';
 import ProgressiveBar from './ProgressiveBar.vue';
+import FeedbackUserAction from '../../../components/FeedbackUserAction.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTaskStore } from 'src/stores/TaskStore';
 import { InputFieldProps, models} from "src/@types";
@@ -33,6 +34,9 @@ const pendencyForm = ref<any>(null)
 const idTaskInput = ref<string>('')
 const listNameInput = ref<string>('')
 const $pendencyStore = usePendencyStore()
+const onErrorFeed = ref<Boolean>(false)
+const isVisible = ref<Boolean>(false)
+const textResult = ref<String>("Login realizado com sucesso.")
 
 yup.setLocale(yupErrorMessages);
 const schema = ref<any>(null)
@@ -90,6 +94,7 @@ const $route = useRoute()
 const tasksList = ref<Object[]>(props.tasks)
 
 function openTaskForm(taskId: string) {
+  console.log(props.tasks)
   $router.push({ 
     name: 'iteration-task-edit', 
     params: { 
@@ -133,6 +138,8 @@ function updateTaskOrder(list: any[], sliceIndex: number) {
   });
 }
 
+
+
 async function moveTask (evt: any) {
   let oldIndex = evt.draggedContext.index
   let newIndex = evt.relatedContext.index
@@ -172,6 +179,20 @@ async function moveTask (evt: any) {
     updateTaskOrder(tasksList.value, newIndex)
   }
 }
+async function onRemove(id: string) {
+  $taskStore.deleteTask(id).then((response) => {
+    if(response?.status === 204){
+      isVisible.value = true
+      onErrorFeed.value = false
+      textResult.value = "Tarefa deletada com sucesso."
+    }else{
+      isVisible.value = true
+      onErrorFeed.value = false
+      textResult.value = "Ocorreu um erro. Tente novamente"
+    }
+  })
+}
+
 
 async function onSubmit(values: any) {
   if(listNameInput.value === "Pendente"){
@@ -185,9 +206,21 @@ async function onSubmit(values: any) {
   }
 }
 
+watch(isVisible, (newValue) => {
+  if (!newValue && !onErrorFeed.value) {
+    location.reload()
+  }
+});
+
 </script>
 
 <template>
+  <FeedbackUserAction
+    :text="textResult" 
+    :onError="onErrorFeed" 
+    :isVisible="isVisible" 
+    @update:isVisible="isVisible = $event" 
+  />
   <div class="flex flex-col h-fit gap-3 bg-whiteSmoke-900/50 dark:bg-jet-900/50 rounded p-3">
     <div class="flex gap-2 items-center justify-between text-lavenderIndigo-900 dark:text-tropicalIndigo-900 font-semibold">
       <div class="flex gap-2 items-center">
@@ -224,8 +257,9 @@ async function onSubmit(values: any) {
           <ActionGridItem
             icon="bookmark"
             :title="element.title"
-            @edit="() => {}"
-            @remove="() => {}"
+            :task-type="element.taskType"
+            @edit="openTaskForm(element.id)"
+            @remove="onRemove(element.id)"
             @side-view-content-change="() => openTaskForm(element.id)"
           >
             <div class="flex flex-col gap-1">
@@ -239,14 +273,6 @@ async function onSubmit(values: any) {
             </div>
       
             <div class="flex flex-col gap-1">
-              <span class="text-sm font-semibold">
-                Responsável
-              </span>
-        
-              <span class="text-xs text-stone-500 dark:text-stone-400">
-                {{ element.responsible }}
-              </span>
-
               <ProgressiveBar :progress="element.progressiveBar" />
             </div>
           </ActionGridItem>
