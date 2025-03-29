@@ -17,7 +17,7 @@ A aplicação segue uma arquitetura baseada em três componentes principais:
 ## 2. Requisitos do Sistema
 
 ### Servidores Necessários
-- **Servidor Web**: Para hospedar o front-end (Nginx, Apache ou uma CDN como Netlify).
+- **Servidor Web**: Para hospedar o front-end
 - **Servidor de Aplicação**: Para rodar o back-end (Heroku, AWS EC2, ou um servidor local).
 - **Servidor de Banco de Dados**: Para o PostgreSQL (local ou em nuvem, como AWS RDS).
 
